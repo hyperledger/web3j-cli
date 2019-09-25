@@ -13,19 +13,21 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.nio.file.Path;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.TempFileProvider;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.assertEquals;
-
-public class ProjectStructureTest extends TempFileProvider {
+public class ProjectStructureTest {
     private ProjectStructure projectStructure;
+    private String tempDirPath;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    public void init(@TempDir Path temp) {
+        tempDirPath = temp.toString();
         projectStructure = new ProjectStructure(tempDirPath, "test.test", "Test");
         projectStructure.createDirectoryStructure();
     }

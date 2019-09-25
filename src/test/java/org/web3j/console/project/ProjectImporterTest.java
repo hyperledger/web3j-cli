@@ -20,28 +20,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 import org.web3j.console.project.utills.ClassExecutor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectImporterTest extends ClassExecutor {
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
+    private String tempDirPath;
 
-    @Before
-    public void setUpStreams() {
-
+    @BeforeEach
+    public void setUpStreams(@TempDir Path temp) {
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
+        tempDirPath = temp.toString();
     }
 
     @Test

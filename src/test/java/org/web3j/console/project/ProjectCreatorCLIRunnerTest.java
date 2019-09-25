@@ -12,33 +12,46 @@
  */
 package org.web3j.console.project;
 
-import org.junit.Test;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
-import org.web3j.TempFileProvider;
+public class ProjectCreatorCLIRunnerTest {
+    private String tempDirPath;
 
-public class ProjectCreatorCLIRunnerTest extends TempFileProvider {
-    @Test(expected = CommandLine.MissingParameterException.class)
+    @BeforeEach
+    void setup(@TempDir Path temp) {
+        tempDirPath = temp.toString();
+    }
+
+    @Test
     public void testWhenNonDefinedArgsArePassed() {
         final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
         final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
         final CommandLine commandLine = new CommandLine(projectCreatorCLIRunner);
-        commandLine.parseArgs(args);
+        Assertions.assertThrows(
+                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
     }
 
-    @Test(expected = CommandLine.MissingParameterException.class)
+    @Test
     public void testWhenNoArgsArePassed() {
         final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
         final String[] args = {};
         final CommandLine commandLine = new CommandLine(projectCreatorCLIRunner);
-        commandLine.parseArgs(args);
+        Assertions.assertThrows(
+                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
     }
 
-    @Test(expected = CommandLine.OverwrittenOptionException.class)
+    @Test
     public void testWhenDuplicateArgsArePassed() {
         final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
         final String[] args = {"-p=org.org", "-n=test", "-n=OverrideTest", "-o=" + tempDirPath};
         final CommandLine commandLine = new CommandLine(projectCreatorCLIRunner);
-        commandLine.parseArgs(args);
+        Assertions.assertThrows(
+                CommandLine.OverwrittenOptionException.class, () -> commandLine.parseArgs(args));
     }
 }

@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.web3j.TempFileProvider;
-
-public class ClassExecutor extends TempFileProvider {
+public class ClassExecutor {
     public ProcessBuilder executeClassAsSubProcessAndReturnProcess(
             Class classToExecute, List<String> jvmArgs, List<String> args)
             throws IOException, InterruptedException {

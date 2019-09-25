@@ -14,18 +14,26 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.TempFileProvider;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.Assert.assertTrue;
-
-public class ProjectWriterTest extends TempFileProvider {
+public class ProjectWriterTest {
 
     private static final ProjectWriter projectWriter = new ProjectWriter();
     private static final TemplateProvider templateProvider =
             new TemplateProvider.Builder().loadGradleJar("gradle-wrapper.jar").build();
+
+    private String tempDirPath;
+
+    @BeforeEach
+    void setup(@TempDir Path temp) {
+        tempDirPath = temp.toString();
+    }
 
     @Test
     public void writeResourceFileTest() throws Exception {

@@ -12,37 +12,44 @@
  */
 package org.web3j.console;
 
-import org.junit.Test;
+import java.nio.file.Path;
 
-import org.web3j.crypto.SampleKeys;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.startsWith;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.web3j.console.SampleKeys.PASSWORD;
 
-public class KeyImporterTest extends WalletTester {
+public class KeyImporterTest {
+
+    static final char[] WALLET_PASSWORD = PASSWORD.toCharArray();
+    IODevice console = mock(IODevice.class);
 
     @Test
-    public void testSpecifyPrivateKey() {
-        prepareWalletCreation(SampleKeys.PRIVATE_KEY_STRING);
+    public void testSpecifyPrivateKey(@TempDir Path tempDirPath) {
+        prepareWalletCreation(SampleKeys.PRIVATE_KEY_STRING, tempDirPath);
     }
 
     @Test
-    public void testLoadPrivateKeyFromFile() {
+    public void testLoadPrivateKeyFromFile(@TempDir Path tempDirPath) {
         prepareWalletCreation(
                 KeyImporterTest.class
                         .getResource("/keyfiles/" + "sample-private-key.txt")
-                        .getFile());
+                        .getFile(),
+                tempDirPath);
     }
 
-    private void prepareWalletCreation(String input) {
+    private void prepareWalletCreation(String input, Path tempDirPath) {
         when(console.readLine(startsWith("Please enter the hex encoded private key")))
                 .thenReturn(input);
         when(console.readPassword(contains("password")))
                 .thenReturn(WALLET_PASSWORD, WALLET_PASSWORD);
         when(console.readLine(contains("Please enter a destination directory location")))
-                .thenReturn(tempDirPath);
+                .thenReturn(tempDirPath.toString());
 
         KeyImporter.main(console);
 

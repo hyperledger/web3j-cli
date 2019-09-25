@@ -16,21 +16,24 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Path;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.TempFileProvider;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.assertEquals;
-
-public class InteractiveOptionsTest extends TempFileProvider {
+public class InteractiveOptionsTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
+    private String tempDirPath;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void setup(@TempDir Path temp) {
+        tempDirPath = temp.toString();
+
         final String input = "Test\norg.com\n" + tempDirPath + "\n";
         inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);

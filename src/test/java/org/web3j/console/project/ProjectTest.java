@@ -13,22 +13,21 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.nio.file.Path;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.TempFileProvider;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.Assert.assertTrue;
-
-public class ProjectTest extends TempFileProvider {
+public class ProjectTest {
     private ProjectStructure projectStructure;
     private TemplateProvider templateProviderNew;
 
-    @Before
-    public void setUpProject() throws Exception {
-        setUp();
-        projectStructure = new ProjectStructure(tempDirPath, "test", "test");
+    @BeforeEach
+    public void setUpProject(@TempDir Path tempDirPath) throws Exception {
+        projectStructure = new ProjectStructure(tempDirPath.toFile().getPath(), "test", "test");
         templateProviderNew =
                 new TemplateProvider.Builder()
                         .loadGradlewBatScript("gradlew.bat.template")

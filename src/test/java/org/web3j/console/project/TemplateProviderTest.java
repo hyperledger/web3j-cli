@@ -14,17 +14,15 @@ package org.web3j.console.project;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.web3j.TempFileProvider;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import static org.junit.Assert.assertFalse;
-
-public class TemplateProviderTest extends TempFileProvider {
+public class TemplateProviderTest {
     private TemplateProvider templateProvider;
 
-    @Before
+    @BeforeEach
     public void init() throws IOException {
         templateProvider =
                 new TemplateProvider.Builder()

@@ -12,24 +12,28 @@
  */
 package org.web3j.console;
 
-import org.junit.Test;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.startsWith;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.web3j.console.KeyImporterTest.WALLET_PASSWORD;
 
-public class WalletUpdaterTest extends WalletTester {
+public class WalletUpdaterTest {
+    IODevice console = mock(IODevice.class);
 
     @Test
-    public void testWalletUpdate() {
+    public void testWalletUpdate(@TempDir Path tempDirPath) {
         when(console.readPassword(startsWith("Please enter your existing wallet file password")))
                 .thenReturn(WALLET_PASSWORD);
 
         when(console.readPassword(contains("password")))
                 .thenReturn(WALLET_PASSWORD, WALLET_PASSWORD);
         when(console.readLine(startsWith("Please enter a destination directory ")))
-                .thenReturn(tempDirPath);
+                .thenReturn(tempDirPath.toString());
         when(console.readLine(startsWith("Would you like to delete"))).thenReturn("N");
 
         WalletUpdater.main(

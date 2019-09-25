@@ -1,31 +1,69 @@
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'application'
-apply plugin: 'distribution'
+plugins {
+    id "application"
+    id "distribution"
+    id "idea"
+    id "com.github.johnrengelman.shadow" version "5.1.0"
+    id "com.diffplug.gradle.spotless" version "3.24.3"
+}
 
-description 'web3j command line tools'
+repositories {
+    maven {
+        url 'http://dl.bintray.com/web3j/maven'
+    }
+    jcenter()
+}
+
+ext {
+    web3jVersion = "4.+"
+    slf4jVersion = "1.7.+"
+    junitVersion = '5.+'
+    mockitoVersion = "3.+"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
 
 dependencies {
-    compile project(':codegen'),
-            project(':hosted-providers'),
-            project(':contracts')
-    runtime "org.slf4j:slf4j-nop:$slf4jVersion"  // prevent logging of the library to the console
-    testCompile project(path: ':crypto', configuration: 'testArtifacts'),
-    project(path: ':core', configuration: 'testArtifacts')
+    implementation "org.web3j:codegen:$web3jVersion",
+            "org.web3j:contracts:$web3jVersion",
+            "org.web3j:core:$web3jVersion",
+            "org.web3j:crypto:$web3jVersion",
+            "org.web3j:hosted-providers:$web3jVersion"
+
+    runtime "org.slf4j:slf4j-nop:$slf4jVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
+            "org.mockito:mockito-core:$mockitoVersion"
 }
 
-// Build command line library release with target distShadowZip
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/src/*/java/**/*.java'
+            exclude '**/.gradle/**'
+            exclude '**/generated/**'
+        }
+        removeUnusedImports()
+        googleJavaFormat("1.7").aosp()
+        importOrder 'java', '', 'org.web3j', '\\#'
+        trimTrailingWhitespace()
+        endWithNewline()
+        licenseHeaderFile "$rootDir/gradle/spotless.java.license"
+        paddedCell()
+    }
+    groovyGradle {
+        target '*.gradle'
+        greclipse().configFile(rootProject.file('gradle/formatter.properties'))
+        endWithNewline()
+        indentWithSpaces(4)
+        paddedCell()
+    }
+}
+
+description 'web3j command line tools'
 mainClassName = 'org.web3j.console.Runner'
 applicationName = 'web3j'
-
-project.afterEvaluate {
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifact source: distShadowZip, extension: 'zip'
-                artifact source: distShadowTar, extension: 'tar'
-            }
-        }
-
-    }
-
-}

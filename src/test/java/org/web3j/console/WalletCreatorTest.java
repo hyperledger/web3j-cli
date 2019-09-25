@@ -12,21 +12,26 @@
  */
 package org.web3j.console;
 
-import org.junit.Test;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.startsWith;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.web3j.console.KeyImporterTest.WALLET_PASSWORD;
 
-public class WalletCreatorTest extends WalletTester {
+public class WalletCreatorTest {
+
+    IODevice console = mock(IODevice.class);
 
     @Test
-    public void testWalletCreation() {
+    public void testWalletCreation(@TempDir Path tempDirPath) {
         when(console.readPassword(contains("password")))
                 .thenReturn(WALLET_PASSWORD, WALLET_PASSWORD);
         when(console.readLine(startsWith("Please enter a destination directory ")))
-                .thenReturn(tempDirPath);
+                .thenReturn(tempDirPath.toString());
 
         WalletCreator.main(console);
 

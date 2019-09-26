@@ -18,10 +18,8 @@ jobs:
   include:
     - stage: spotlessCheck
       script: ./gradlew spotlessCheck
-    - stage: build
-      script: ./gradlew build
-    - stage: test
-      script: ./gradlew --info check jacocoRootTestReport
+    - stage: build & test
+      script: ./gradlew --info check jacocoTestReport
     - stage: release
       if: branch != master
       script: ./scripts/release.sh

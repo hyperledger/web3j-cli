@@ -1,29 +1,27 @@
 language: java
-
 jdk:
-  - openjdk8
-
-sudo: false  # as per http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
-
-# Avoid uploading cache after every build with Gradle - see https://docs.travis-ci.com/user/languages/java/#Caching
+- openjdk8
+sudo: false
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 jobs:
   include:
-    - stage: spotlessCheck
-      script: ./gradlew spotlessCheck
-    - stage: build & test
-      script: ./gradlew --info check jacocoTestReport
-    - stage: release
-      if: branch != master
-      script: ./scripts/release.sh
-
-# Upload code coverage metrics
+  - stage: build & test
+    script:
+    - "./gradlew spotlessCheck"
+    - "./gradlew check jacocoTestReport"
+  - stage: release
+    if: branch  =~ /release/
+    script:
+    - "./gradlew distZip"
+    - "./scripts/release.sh"
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
+env:
+  matrix:
+  - secure: UGlPwgcOSfbfiOQ88B920Fg/BMFZoQltgXNd8igCVSP8mllDkKQa5KLmM0YAZS0RxIKP5NB5h6xj/tP+zm90xzIU96BmNoPO8S+uRMAGa0MXhf0mUNxwUaHocuPGcOgyjToX1OQNgr0VupyLP8eL1XYgm9vzcvKP+IPkt8rzzF0xDn/nkZnstlrjhTneMaFCLTpQFMYrxbTBcespxv0xvK45n8bJCqk30eV18mwbTNSDh+3ljYYiFElvIgLGUQaFujM73z1u/EYPezs0c8uLEK+9IINSX1UQS5GhuOR2um+7oy1VrK4dpnn22c9WOh5cEEXsFnEzRzKI/vYm6vdusx+sQT8gvZZdwx0EtwWvoqEIoUZmMv6KBNEd0pi3Coe9P28GtPuNI9vyfGPvF9i1tO8uxrGFpxdVmvABkXlbPWoQKQSfJHSwiNIgdWVVyc1rl6qkPiEfrkXUEIf+R4quCWitDay4yXAFWoV4LXf8KHOpwzl3i7weI9cuM7sT7Y6hctKJOt6mxjzm/3viX+BsOwWmSFbniJgtDIRt7jiK0o54HwCoSGRI41itJhBNeUE4BKmtGEoA6M9kB8nx26JI5wLHkunfPGq6eqlpw+t4jWyS7Y+T8Xx4Hs/vIlCda4UgpVXBBoHvuvP/Jv4SJO1m8UJ/YiVn605qZuKW3oFjeZg=

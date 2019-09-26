@@ -2,6 +2,7 @@ plugins {
     id "application"
     id "distribution"
     id "idea"
+    id "jacoco"
     id "com.github.johnrengelman.shadow" version "5.1.0"
     id "com.diffplug.gradle.spotless" version "3.24.3"
 }
@@ -62,6 +63,10 @@ spotless {
         indentWithSpaces(4)
         paddedCell()
     }
+}
+
+jacocoTestReport {
+    reports { xml.enabled true }
 }
 
 description 'web3j command line tools'

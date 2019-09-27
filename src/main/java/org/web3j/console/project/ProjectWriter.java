@@ -14,10 +14,10 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 class ProjectWriter {
 
@@ -31,9 +31,13 @@ class ProjectWriter {
         return file.getBytes();
     }
 
-    final void copyResourceFile(final InputStream file, final String destinationPath)
+    final void copyResourceFile(final String file, final String destinationPath)
             throws IOException {
-        Files.copy(file, Paths.get(destinationPath), StandardCopyOption.REPLACE_EXISTING);
+
+        Files.copy(
+                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(file)),
+                Paths.get(destinationPath),
+                StandardCopyOption.REPLACE_EXISTING);
     }
 
     final void importSolidityProject(final File file, final String destination) throws IOException {

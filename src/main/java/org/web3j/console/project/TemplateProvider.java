@@ -26,7 +26,7 @@ public class TemplateProvider {
     private final String gradlewWrapperSettings;
     private final String gradlewBatScript;
     private final String gradlewScript;
-    private final InputStream gradlewJar;
+    private final String gradlewJar;
 
     private TemplateProvider(
             final String mainJavaClass,
@@ -36,7 +36,7 @@ public class TemplateProvider {
             final String gradlewWrapperSettings,
             final String gradlewBatScript,
             final String gradlewScript,
-            final InputStream gradlewJar) {
+            final String gradlewJar) {
         this.mainJavaClass = mainJavaClass;
         this.solidityProject = solidityProject;
         this.gradleBuild = gradleBuild;
@@ -75,7 +75,7 @@ public class TemplateProvider {
         return gradlewScript;
     }
 
-    InputStream getGradlewJar() {
+    String getGradlewJar() {
         return gradlewJar;
     }
 
@@ -87,7 +87,7 @@ public class TemplateProvider {
         private String gradlewBatScript;
         private String gradlewScript;
         private String solidityProject;
-        private InputStream gradlewJar;
+        private String gradlewWraperJar;
         private Function<String, String> packageNameReplacement = s -> s;
         private Function<String, String> projectNameReplacement = s -> s;
 
@@ -133,7 +133,7 @@ public class TemplateProvider {
         }
 
         public Builder loadGradleJar(final String name) {
-            this.gradlewJar = getClass().getClassLoader().getResourceAsStream(name);
+            this.gradlewWraperJar = name;
             return this;
         }
 
@@ -158,7 +158,7 @@ public class TemplateProvider {
                     gradlewWrapperSettings,
                     gradlewBatScript,
                     gradlewScript,
-                    gradlewJar);
+                    gradlewWraperJar);
         }
 
         private String readFile(final String name) throws IOException {

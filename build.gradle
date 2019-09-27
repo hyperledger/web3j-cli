@@ -15,7 +15,7 @@ repositories {
 }
 
 ext {
-    web3jVersion = "4.+"
+    web3jVersion = project.property('version') != 'unspecified' ? project.property('version') : "4.+"
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"

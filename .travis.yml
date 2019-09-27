@@ -9,17 +9,24 @@ cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
+
+install: skip
+
 jobs:
   include:
-  - stage: build & test
+  - stage: build master
     script:
-    - "./gradlew spotlessCheck"
-    - "./gradlew check jacocoTestReport"
-  - stage: release
-    if: branch  =~ /release/
+    - ./gradlew spotlessCheck
+    - ./gradlew check jacocoTestReport
+    if: branch = master
+  - stage: build release
+    if: branch =~ /release/
     script:
-    - "./gradlew distZip"
-    - "./scripts/release.sh"
+    - export VERSION=${TRAVIS_BRANCH#"release/"}
+    - echo "building release ${VERSION}"
+    - ./gradlew check distZip -Pversion=${VERSION}
+    - ./scripts/github-release.sh
+    - ./scripts/homebrew-release.sh
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 env:

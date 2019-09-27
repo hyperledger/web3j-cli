@@ -17,17 +17,14 @@ jobs:
   include:
   - stage: build master
     script:
-    - ./gradlew spotlessCheck
-    - ./gradlew check jacocoTestReport
+    - ./gradlew spotlessCheck check jacocoTestReport
     if: branch = master
-  - stage: build release
+  - stage: release github
     if: branch =~ /release/
-    script:
-    - export VERSION=${TRAVIS_BRANCH#"release/"}
-    - echo "building release ${VERSION}"
-    - ./gradlew check distZip -Pversion=${VERSION}
-    - ./scripts/github-release.sh
-    - ./scripts/homebrew-release.sh
+    script: "./gradlew check distZip -Pversion=${TRAVIS_BRANCH#"release/"} && ./scripts/github-release.sh"
+  - stage: release homebrew
+    if: branch =~ /release/
+    script: "./scripts/homebrew-release.sh"
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 env:

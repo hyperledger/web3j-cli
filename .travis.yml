@@ -21,7 +21,7 @@ jobs:
     if: branch = master
   - stage: release github
     if: branch =~ /release/
-    script: "./gradlew check distZip -Pversion=${TRAVIS_BRANCH#"release/"} && ./scripts/github-release.sh"
+    script: "./gradlew check distZip distTar -Pversion=${TRAVIS_BRANCH#'release/'} && ./scripts/github-release.sh"
   - stage: release homebrew
     if: branch =~ /release/
     script: "./scripts/homebrew-release.sh"

@@ -10,6 +10,9 @@ plugins {
 repositories {
     maven {
         url 'http://dl.bintray.com/web3j/maven'
+                maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://dl.bintray.com/ethereum/maven" }
+
     }
     jcenter()
 }
@@ -36,7 +39,7 @@ dependencies {
             "org.web3j:hosted-providers:$web3jVersion"
 
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
-
+    compile "org.web3j:web3j-unit:4.6.0-SNAPSHOT"
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion"
 }

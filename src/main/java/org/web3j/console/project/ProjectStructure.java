@@ -79,7 +79,7 @@ public class ProjectStructure {
 
     private String formatPackageName(final String packageName) {
         if (packageName.contains(".")) {
-            return packageName.replaceAll("[.]", File.separator);
+            return packageName.replace("\\.", File.separator);
         }
         return packageName;
     }

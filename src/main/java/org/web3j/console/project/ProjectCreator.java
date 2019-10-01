@@ -43,10 +43,8 @@ public class ProjectCreator {
                         .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
                         .loadGradleJar("gradle-wrapper.jar")
                         .loadSolidityGreeter("Greeter.sol")
-                        .withPackageNameReplacement(
-                                s -> s.replaceAll("<package_name>", packageName))
-                        .withProjectNameReplacement(
-                                s -> s.replaceAll("<project_name>", projectName))
+                        .withPackageNameReplacement(s -> s.replace("<package_name>", packageName))
+                        .withProjectNameReplacement(s -> s.replace("<project_name>", projectName))
                         .build();
     }
 

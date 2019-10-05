@@ -38,8 +38,8 @@ public class ProjectTest {
                         .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
                         .loadGradleJar("gradle-wrapper.jar")
                         .loadSolidityGreeter("Greeter.sol")
-                        .withPackageNameReplacement(s -> s.replaceAll("<package_name>", "test"))
-                        .withProjectNameReplacement(s -> s.replaceAll("<project_name>", "test"))
+                        .withPackageNameReplacement(s -> s.replace("<package_name>", "test"))
+                        .withProjectNameReplacement(s -> s.replace("<project_name>", "test"))
                         .build();
         Project.builder()
                 .withTemplateProvider(templateProviderNew)

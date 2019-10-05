@@ -33,8 +33,8 @@ public class TemplateProviderTest {
                         .loadGradleSettings("settings.gradle.template")
                         .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
                         .loadGradleJar("gradle-wrapper.jar")
-                        .withPackageNameReplacement(s -> s.replaceAll("<package_name>", "test"))
-                        .withProjectNameReplacement(s -> s.replaceAll("<project_name>", "test"))
+                        .withPackageNameReplacement(s -> s.replace("<package_name>", "test"))
+                        .withProjectNameReplacement(s -> s.replace("<project_name>", "test"))
                         .build();
     }
 

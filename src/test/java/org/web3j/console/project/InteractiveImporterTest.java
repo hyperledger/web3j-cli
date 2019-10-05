@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InteractiveImporterTest {
     private static final String FORMATTED_SOLIDITY_PATH =
-            "/web3j/console/src/test/resources/Solidity".replaceAll("/", File.separator);
+            "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
     private InputStream inputStream;
     private String tempDirPath;
 

@@ -98,7 +98,7 @@ public class ProjectImporterTest extends ClassExecutor {
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException {
         String formattedPath =
-                "/web3j/console/src/test/resources/Solidity".replaceAll("/", File.separator);
+                "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
         final String[] args = {"import"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(

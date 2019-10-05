@@ -17,6 +17,7 @@ import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.ProjectImporter;
+import org.web3j.console.project.unit.gen.Generator;
 import org.web3j.utils.Version;
 
 import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDITY;
@@ -61,6 +62,9 @@ public class Runner {
                     break;
                 case COMMAND_IMPORT:
                     ProjectImporter.main(args);
+                    break;
+                case "generate":
+                    Generator.main(args);
                     break;
                 case "version":
                     Console.exitSuccess(

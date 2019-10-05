@@ -10,9 +10,8 @@ plugins {
 repositories {
     maven {
         url 'http://dl.bintray.com/web3j/maven'
-                maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url "https://dl.bintray.com/ethereum/maven" }
-
     }
     jcenter()
 }

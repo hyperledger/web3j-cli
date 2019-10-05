@@ -20,22 +20,27 @@ import java.net.URLClassLoader;
 public class Generator {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        String pathToProject = "/home/alexander/Documents/dev/temp/Test/build/generated/source/web3j/main/java/org/com/generated/contracts/Greeter.java";
-        CompilerClassLoader compilerClassLoader = new CompilerClassLoader(new File("/home/alexander/Documents/dev/otherClasses"), new File("/home/alexander/Documents/dev/generated/Test/build/generated/source/web3j/main/java/org/com/generated/contracts").toURI().toURL());
-        ClassLoader cl = new URLClassLoader(new URL[]{new File("/home/alexander/Documents/dev/otherClasses").toURL()});
+        String pathToProject =
+                "/home/alexander/Documents/dev/temp/Test/build/generated/source/web3j/main/java/org/com/generated/contracts/Greeter.java";
+        CompilerClassLoader compilerClassLoader =
+                new CompilerClassLoader(
+                        new File("/home/alexander/Documents/dev/otherClasses"),
+                        new File(
+                                        "/home/alexander/Documents/dev/generated/Test/build/generated/source/web3j/main/java/org/com/generated/contracts")
+                                .toURI()
+                                .toURL());
+        ClassLoader cl =
+                new URLClassLoader(
+                        new URL[] {new File("/home/alexander/Documents/dev/otherClasses").toURL()});
         Class test = cl.loadClass("org.com.generated.contracts.Greeter");
         File[] generatedContracts = new File(pathToProject).listFiles();
         assert generatedContracts != null;
 
-        new ContractTestClassGenerator(test).writeClass(new File("/home/alexander/Documents/dev/otherClasses/generated"));
-
-
+        new ContractTestClassGenerator(test)
+                .writeClass(new File("/home/alexander/Documents/dev/otherClasses/generated"));
     }
 
     private static Class getClassFromFile(File javaFile) throws Exception {
         return null;
-
     }
-
-
 }

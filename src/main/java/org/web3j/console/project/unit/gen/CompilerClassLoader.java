@@ -1,24 +1,33 @@
+/*
+ * Copyright 2019 Web3 Labs LTD.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package org.web3j.console.project.unit.gen;
 
-import javax.tools.JavaCompiler;
-import javax.tools.JavaCompiler.CompilationTask;
-import javax.tools.JavaFileObject;
-import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
+import javax.tools.ToolProvider;
 
-/**
- * Class loader with compilation capabilities.
- */
+/** Class loader with compilation capabilities. */
 class CompilerClassLoader extends ClassLoader {
 
     private final File outputDir;
@@ -28,7 +37,7 @@ class CompilerClassLoader extends ClassLoader {
      * Creates a class loader from the given source URLs.
      *
      * @param outputDir Directory where classes will be compiled.
-     * @param urls      Classpath URLs to compile the Java sources.
+     * @param urls Classpath URLs to compile the Java sources.
      */
     CompilerClassLoader(final File outputDir, final URL... urls) {
         super(CompilerClassLoader.class.getClassLoader());
@@ -69,15 +78,15 @@ class CompilerClassLoader extends ClassLoader {
         }
 
         final Iterable<? extends JavaFileObject> javaFileObjects =
-                compiler.getStandardFileManager(null, null, null)
-                        .getJavaFileObjects(sourceFile);
+                compiler.getStandardFileManager(null, null, null).getJavaFileObjects(sourceFile);
 
-        final List<String> options = Arrays.asList(
-                "-d", outputDir.getAbsolutePath(),
-                "-cp", buildClassPath());
+        final List<String> options =
+                Arrays.asList(
+                        "-d", outputDir.getAbsolutePath(),
+                        "-cp", buildClassPath());
 
-        final CompilationTask task = compiler.getTask(null, null,
-                System.err::println, options, null, javaFileObjects);
+        final CompilationTask task =
+                compiler.getTask(null, null, System.err::println, options, null, javaFileObjects);
 
         final File classFile = new File(outputDir, path + ".class");
         return task.call() ? Optional.of(classFile) : Optional.empty();

@@ -67,7 +67,7 @@ class ContractTestClassGenerator {
         JavaFile javaFile = JavaFile.builder(className.getPackage().getName(), testClass).build();
         javaFile.writeTo(System.out);
         System.out.printf("Generated");
-       // javaFile.writeTo(destination);
+        // javaFile.writeTo(destination);
     }
 
     private boolean isSupported(Method method) {

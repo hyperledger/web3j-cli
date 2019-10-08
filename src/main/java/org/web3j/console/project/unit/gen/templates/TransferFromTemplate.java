@@ -22,15 +22,13 @@ import org.junit.jupiter.api.Test;
 
 public class TransferFromTemplate extends UnitTemplate {
 
-    private List<Class> deployArguments;
-    private List<ParameterSpec> methodParameters;
-    private Class contractName;
+    private final List<ParameterSpec> methodParameters;
 
     public TransferFromTemplate(
-            Class contractName, List<Class> deployArguments, List<ParameterSpec> methodParameters) {
-        super(contractName, deployArguments, methodParameters);
-        this.contractName = contractName;
-        this.deployArguments = deployArguments;
+            final Class contractName,
+            final List<Class> deployArguments,
+            final List<ParameterSpec> methodParameters) {
+        super(contractName, deployArguments);
         this.methodParameters = methodParameters;
     }
 

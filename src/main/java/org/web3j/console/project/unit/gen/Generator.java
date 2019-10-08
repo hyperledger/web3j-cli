@@ -14,33 +14,49 @@ package org.web3j.console.project.unit.gen;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
+
+import static java.io.File.*;
+import static org.web3j.utils.Collection.tail;
 
 public class Generator {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        String pathToProject =
-                "/home/alexander/Documents/dev/temp/Test/build/generated/source/web3j/main/java/org/com/generated/contracts/Greeter.java";
-        CompilerClassLoader compilerClassLoader =
-                new CompilerClassLoader(
-                        new File("/home/alexander/Documents/dev/otherClasses"),
-                        new File(
-                                        "/home/alexander/Documents/dev/generated/Test/build/generated/source/web3j/main/java/org/com/generated/contracts")
-                                .toURI()
-                                .toURL());
-        ClassLoader cl =
-                new URLClassLoader(
-                        new URL[] {new File("/home/alexander/Documents/dev/otherClasses").toURL()});
-        Class test = cl.loadClass("org.com.generated.contracts.Greeter");
-        File[] generatedContracts = new File(pathToProject).listFiles();
-        assert generatedContracts != null;
+    public static void main(String[] args) throws IOException {
+        args = tail(args);
+        File pathToJavaContracts =
+                new File(
+                        args[0]
+                                + separator
+                                + "build"
+                                + separator
+                                + "generated"
+                                + separator
+                                + "source"
+                                + separator
+                                + "web3j"
+                                + separator
+                                + "main"
+                                + separator
+                                + "java");
+        ClassProviderUntiles classProviderUntiles = new ClassProviderUntiles(pathToJavaContracts);
 
-        new ContractTestClassGenerator(test)
-                .writeClass(new File("/home/alexander/Documents/dev/otherClasses/generated"));
-    }
-
-    private static Class getClassFromFile(File javaFile) throws Exception {
-        return null;
+        String[] finalArgs = args;
+        classProviderUntiles
+                .getClasses()
+                .forEach(
+                        c -> {
+                            try {
+                                new TestClassProvider(
+                                                c,
+                                                c.getCanonicalName()
+                                                        .substring(
+                                                                0,
+                                                                c.getCanonicalName()
+                                                                        .lastIndexOf(".")),
+                                                finalArgs[0])
+                                        .writeClass();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
     }
 }

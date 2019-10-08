@@ -28,12 +28,16 @@ import org.web3j.protocol.Web3j;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 
-class ContractTestClassGenerator {
+class TestClassProvider {
     private final Class className;
+    private final String packageName;
     private final List<String> supportedMethods = Arrays.asList("deploy", "transferFrom");
+    private final String projectName;
 
-    ContractTestClassGenerator(Class className) {
+    TestClassProvider(final Class className, final String packageName, final String projectName) {
         this.className = className;
+        this.packageName = packageName;
+        this.projectName = projectName;
     }
 
     private List<Method> extractRequiredMethods() {
@@ -48,7 +52,7 @@ class ContractTestClassGenerator {
         return validMethods;
     }
 
-    private List<MethodSpec> generateMethodSpecsForEachTest(List<Method> listOfValidMethods) {
+    private List<MethodSpec> generateMethodSpecsForEachTest(final List<Method> listOfValidMethods) {
         List<MethodSpec> listOfMethodSpecs = new ArrayList<>();
         listOfValidMethods.forEach(
                 method ->
@@ -57,24 +61,31 @@ class ContractTestClassGenerator {
         return listOfMethodSpecs;
     }
 
-    void writeClass(File destination) throws IOException {
+    void writeClass() throws IOException {
         TypeSpec testClass =
                 TypeSpec.classBuilder(className.getSimpleName() + "Test")
                         .addMethods(generateMethodSpecsForEachTest(extractRequiredMethods()))
                         .addAnnotation(EVMTest.class)
                         .build();
 
-        JavaFile javaFile = JavaFile.builder(className.getPackage().getName(), testClass).build();
+        JavaFile javaFile = JavaFile.builder(packageName, testClass).build();
         javaFile.writeTo(System.out);
-        System.out.printf("Generated");
-        // javaFile.writeTo(destination);
+        javaFile.writeTo(
+                new File(
+                        projectName
+                                + File.separator
+                                + "src"
+                                + File.separator
+                                + "test"
+                                + File.separator
+                                + "solidity"));
     }
 
-    private boolean isSupported(Method method) {
+    private boolean isSupported(final Method method) {
         return supportedMethods.contains(method.getName());
     }
 
-    private boolean parametersAreMatching(Method method) {
+    private boolean parametersAreMatching(final Method method) {
         if (method.getName().equals("deploy")) {
             return Arrays.asList(method.getParameterTypes()).contains(Web3j.class)
                     && Arrays.asList(method.getParameterTypes()).contains(TransactionManager.class)

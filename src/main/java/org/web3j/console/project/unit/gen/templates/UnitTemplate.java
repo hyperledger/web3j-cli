@@ -17,28 +17,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
 
 public abstract class UnitTemplate {
-    private List<Class> deployArguments;
-    private List<ParameterSpec> methodParameters;
-    private Class contractName;
+    private final List<Class> deployArguments;
+    private final Class contractName;
 
-    public UnitTemplate(
-            Class contractName, List<Class> deployArguments, List<ParameterSpec> methodParameters) {
+    UnitTemplate(final Class contractName, final List<Class> deployArguments) {
         this.contractName = contractName;
         this.deployArguments = deployArguments;
-        this.methodParameters = methodParameters;
     }
 
     public abstract MethodSpec generate();
 
-    protected Object[] convertTypeNameToLowerCase() {
+    private Object[] convertTypeNameToLowerCase() {
         return deployArguments.stream().map(this::test).toArray();
     }
 
-    protected String generatePattern() {
+    String generatePattern() {
         List<String> generated = new ArrayList<>();
         for (Class type : deployArguments) {
             if (type.equals(String.class)) {
@@ -52,7 +48,7 @@ public abstract class UnitTemplate {
         return String.join(",", generated);
     }
 
-    protected Object[] staticElements() {
+    private Object[] staticElements() {
         return new Object[] {
             contractName, contractName.getSimpleName().toLowerCase(), contractName
         };

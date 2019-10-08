@@ -35,7 +35,7 @@ public class UnitTestProcessor {
         this.tClass = tClass;
     }
 
-    public MethodSpec getMethodSpec() {
+    MethodSpec getMethodSpec() {
         if (method.getName().equals("deploy")) {
             return new DeployTemplate(
                             tClass,

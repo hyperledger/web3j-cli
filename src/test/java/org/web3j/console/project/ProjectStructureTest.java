@@ -133,13 +133,49 @@ public class ProjectStructureTest {
 
     @Test
     public void getRootUserDirSubfolder() {
-        ProjectStructure projectStructure = new ProjectStructure("~" + File.separator + "a" + File.separator + "b" + File.separator + "c", "test.test", "Test");
-        assertEquals(projectStructure.getRoot(), System.getProperty("user.home") + File.separator + "a" + File.separator + "b" + File.separator + "c");
+        ProjectStructure projectStructure =
+                new ProjectStructure(
+                        "~" + File.separator + "a" + File.separator + "b" + File.separator + "c",
+                        "test.test",
+                        "Test");
+        assertEquals(
+                projectStructure.getRoot(),
+                System.getProperty("user.home")
+                        + File.separator
+                        + "a"
+                        + File.separator
+                        + "b"
+                        + File.separator
+                        + "c");
     }
 
     @Test
     public void getRootSpecialTildeCase() {
-        ProjectStructure projectStructure = new ProjectStructure(File.separator + "root" + File.separator + "~" + File.separator + "a" + File.separator + "b" + File.separator + "c", "test.test", "Test");
-        assertEquals(projectStructure.getRoot(), File.separator + "root" + File.separator + "~" + File.separator + "a" + File.separator + "b" + File.separator + "c");
+        ProjectStructure projectStructure =
+                new ProjectStructure(
+                        File.separator
+                                + "root"
+                                + File.separator
+                                + "~"
+                                + File.separator
+                                + "a"
+                                + File.separator
+                                + "b"
+                                + File.separator
+                                + "c",
+                        "test.test",
+                        "Test");
+        assertEquals(
+                projectStructure.getRoot(),
+                File.separator
+                        + "root"
+                        + File.separator
+                        + "~"
+                        + File.separator
+                        + "a"
+                        + File.separator
+                        + "b"
+                        + File.separator
+                        + "c");
     }
 }

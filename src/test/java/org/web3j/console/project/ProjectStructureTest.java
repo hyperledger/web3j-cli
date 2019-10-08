@@ -124,4 +124,22 @@ public class ProjectStructureTest {
 
         assertEquals(wrapperPath, projectStructure.getWrapperPath());
     }
+
+    @Test
+    public void getRootUserDir() {
+        ProjectStructure projectStructure = new ProjectStructure("~", "test.test", "Test");
+        assertEquals(projectStructure.getRoot(), System.getProperty("user.home"));
+    }
+
+    @Test
+    public void getRootUserDirSubfolder() {
+        ProjectStructure projectStructure = new ProjectStructure("~" + File.separator + "a" + File.separator + "b" + File.separator + "c", "test.test", "Test");
+        assertEquals(projectStructure.getRoot(), System.getProperty("user.home") + File.separator + "a" + File.separator + "b" + File.separator + "c");
+    }
+
+    @Test
+    public void getRootSpecialTildeCase() {
+        ProjectStructure projectStructure = new ProjectStructure(File.separator + "root" + File.separator + "~" + File.separator + "a" + File.separator + "b" + File.separator + "c", "test.test", "Test");
+        assertEquals(projectStructure.getRoot(), File.separator + "root" + File.separator + "~" + File.separator + "a" + File.separator + "b" + File.separator + "c");
+    }
 }

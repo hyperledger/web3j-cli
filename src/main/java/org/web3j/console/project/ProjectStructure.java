@@ -26,11 +26,11 @@ public class ProjectStructure {
     private final String projectRoot;
 
     ProjectStructure(final String root, final String packageName, final String projectName) {
-        this.root = root;
+        this.root = generateRoot(root);
         this.packageName = packageName;
         final String formattedPackageName = formatPackageName(packageName);
         this.projectName = projectName;
-        this.projectRoot = root + File.separator + projectName;
+        this.projectRoot = this.root + File.separator + projectName;
         this.mainPath = generatePath(this.projectRoot, "src", "main", "java", formattedPackageName);
         this.solidityPath = generatePath(this.projectRoot, "src", "main", "solidity");
         this.testPath = generatePath(this.projectRoot, "src", "test", "java", formattedPackageName);
@@ -67,6 +67,16 @@ public class ProjectStructure {
 
     final String getWrapperPath() {
         return wrapperPath;
+    }
+
+    private String generateRoot(final String path) {
+        if (path.equals("~")) {
+            return System.getProperty("user.home");
+        } else if (path.startsWith("~" + File.separator)) {
+            return System.getProperty("user.home") + path.substring(1);
+        }
+
+        return path;
     }
 
     private String generatePath(final String... a) {

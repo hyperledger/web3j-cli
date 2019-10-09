@@ -20,42 +20,33 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
 
 public class ProjectVisitor extends SimpleFileVisitor<Path> {
+    private final String source;
     private final String destination;
-    private String temp;
 
-    public ProjectVisitor(final String destination) {
+    public ProjectVisitor(final String source, final String destination) {
+        this.source = source;
         this.destination = destination;
-        this.temp = destination;
-    }
-
-    @Override
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-        Objects.requireNonNull(dir);
-        Objects.requireNonNull(attrs);
-        temp = getFile(dir);
-        return FileVisitResult.CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+        String filePath = path.toFile().getCanonicalPath();
+        String sourcePath = new File(source).getCanonicalPath();
 
-        Files.copy(
-                path,
-                new File(temp + File.separator + path.getFileName()).toPath(),
-                StandardCopyOption.REPLACE_EXISTING);
+        if (!filePath.startsWith(sourcePath)) {
+            throw new IOException("Unsupported source location: " + filePath);
+        }
+
+        File destFile =
+                new File(destination + File.separator + filePath.substring(sourcePath.length()));
+
+        if (!destFile.getParentFile().exists() && !destFile.getParentFile().mkdirs()) {
+            throw new IOException("Unable to create folder: " + destFile.getParent());
+        }
+
+        Files.copy(path, destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         return FileVisitResult.CONTINUE;
-    }
-
-    private String getFile(final Path path) {
-        return createDirectoryFromPath(path).getAbsolutePath();
-    }
-
-    private File createDirectoryFromPath(Path path) {
-        File directory = new File(temp + File.separator + path.getFileName());
-        directory.mkdirs();
-        return directory;
     }
 }

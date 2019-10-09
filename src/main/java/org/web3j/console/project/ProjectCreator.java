@@ -18,6 +18,8 @@ import java.util.List;
 
 import picocli.CommandLine;
 
+import org.web3j.console.project.utills.InputVerifier;
+
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.utils.Collection.tail;
@@ -44,7 +46,11 @@ public class ProjectCreator {
                         .loadGradleJar("gradle-wrapper.jar")
                         .loadSolidityGreeter("Greeter.sol")
                         .withPackageNameReplacement(s -> s.replace("<package_name>", packageName))
-                        .withProjectNameReplacement(s -> s.replace("<project_name>", projectName))
+                        .withProjectNameReplacement(
+                                s ->
+                                        s.replace(
+                                                "<project_name>",
+                                                InputVerifier.capitalizeFirstLetter(projectName)))
                         .build();
     }
 
@@ -82,7 +88,6 @@ public class ProjectCreator {
                             + projectStructure.getProjectName()
                             + " at location: "
                             + projectStructure.getProjectRoot());
-
         } catch (final Exception e) {
             exitError(e);
         }

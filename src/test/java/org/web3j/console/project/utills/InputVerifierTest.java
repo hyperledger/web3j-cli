@@ -14,6 +14,7 @@ package org.web3j.console.project.utills;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,5 +56,10 @@ public class InputVerifierTest {
     @Test
     public void packageNameIsNotValidTest() {
         assertFalse(InputVerifier.packageNameIsValid("1.com"));
+    }
+
+    @Test
+    public void firstLetterIsCapitalizedTest() {
+        assertEquals("ClassName", InputVerifier.capitalizeFirstLetter("className"));
     }
 }

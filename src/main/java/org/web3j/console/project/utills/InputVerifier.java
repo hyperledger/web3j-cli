@@ -43,4 +43,12 @@ public class InputVerifier {
         }
         return true;
     }
+
+    public static String capitalizeFirstLetter(String input) {
+
+        if (Character.isUpperCase(input.charAt(0))) {
+            return input;
+        }
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
 }

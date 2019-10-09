@@ -19,6 +19,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.web3j.console.project.utills.InputVerifier;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectTest {
@@ -39,7 +41,11 @@ public class ProjectTest {
                         .loadGradleJar("gradle-wrapper.jar")
                         .loadSolidityGreeter("Greeter.sol")
                         .withPackageNameReplacement(s -> s.replace("<package_name>", "test"))
-                        .withProjectNameReplacement(s -> s.replace("<project_name>", "test"))
+                        .withProjectNameReplacement(
+                                s ->
+                                        s.replace(
+                                                "<project_name>",
+                                                InputVerifier.capitalizeFirstLetter("test")))
                         .build();
         Project.builder()
                 .withTemplateProvider(templateProviderNew)
@@ -60,7 +66,7 @@ public class ProjectTest {
     @Test
     public void fileCreationTest() {
         final boolean mainJavaClass =
-                new File(projectStructure.getMainPath() + File.separator + "test.java").exists();
+                new File(projectStructure.getMainPath() + File.separator + "Test.java").exists();
         final boolean greeterContract =
                 new File(projectStructure.getSolidityPath() + File.separator + "Greeter.sol")
                         .exists();

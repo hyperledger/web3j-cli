@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.web3j.console.project.utills.InputVerifier;
+
 import static org.web3j.codegen.Console.exitError;
 
 public class Project {
@@ -89,7 +91,8 @@ public class Project {
                 final ProjectWriter projectWriter = new ProjectWriter();
                 projectWriter.writeResourceFile(
                         templateProvider.getMainJavaClass(),
-                        projectStructure.getProjectName() + ".java",
+                        InputVerifier.capitalizeFirstLetter(
+                                projectStructure.getProjectName() + ".java"),
                         projectStructure.getMainPath());
                 projectWriter.writeResourceFile(
                         templateProvider.getGradleBuild(),

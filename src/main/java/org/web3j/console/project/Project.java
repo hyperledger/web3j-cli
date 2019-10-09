@@ -14,7 +14,6 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import static org.web3j.codegen.Console.exitError;
 
@@ -80,7 +79,7 @@ public class Project {
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .start()
-                    .waitFor(10, TimeUnit.SECONDS);
+                    .waitFor();
         }
 
         public Project build() {

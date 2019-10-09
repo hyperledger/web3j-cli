@@ -16,9 +16,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.testcontainers.shaded.com.google.common.io.Files;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.utills.ClassExecutor;
@@ -31,6 +33,8 @@ public class GeneratorTest extends ClassExecutor {
 
     File temp = Files.createTempDir();
 
+    @TempDir
+    static Path tempDir;
 
     @Test
     public void testThatUnitClassWasGenerated() throws IOException, InterruptedException {
@@ -76,7 +80,7 @@ public class GeneratorTest extends ClassExecutor {
                                         + "org"
                                         + File.separator
                                         + "com"
-                                        +
+                                        + File.separator
                                         + "Greeter.java").exists()
         );
     }

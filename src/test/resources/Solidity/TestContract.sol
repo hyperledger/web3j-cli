@@ -13,7 +13,7 @@ contract Mortal {
     function kill() public { if (msg.sender == owner) selfdestruct(owner); }
 }
 
-contract Test1 is Mortal {
+contract TestContract is Mortal {
     /* define variable greeting of the type string */
     string greeting;
 

@@ -16,32 +16,28 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.testcontainers.shaded.com.google.common.io.Files;
+
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.utills.ClassExecutor;
 
+import static java.io.File.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 public class GeneratorTest extends ClassExecutor {
-
-
-    File temp = Files.createTempDir();
-
-    @TempDir
-    static Path tempDir;
+    @TempDir static File temp;
 
     @Test
-    public void testThatUnitClassWasGenerated() throws IOException, InterruptedException {
+    public void testThatUnitClassWasGenerated()
+            throws IOException, InterruptedException, ClassNotFoundException {
         final String[] args = {"new"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
-                        ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
                         .start();
         BufferedWriter writer =
                 new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
@@ -54,34 +50,29 @@ public class GeneratorTest extends ClassExecutor {
         writer.close();
         process.waitFor();
 
-        String[] genArgs = {"generate", temp + File.separator + "Test"};
+        String[] genArgs = {"generate", temp + separator + "Test"};
         Generator.main(genArgs);
-        System.out.println(Arrays.toString(new File(temp
-                + File.separator
-                + "Test"
-                + File.separator
-                + "src"
-                + File.separator
-                + "test"
-                + File.separator
-                + "solidity").list()));
         assertTrue(
                 new File(
-                        temp
-                                        + File.separator
+                                temp
+                                        + separator
                                         + "Test"
-                                        + File.separator
+                                        + separator
                                         + "src"
-                                        + File.separator
+                                        + separator
                                         + "test"
-                                        + File.separator
+                                        + separator
                                         + "solidity"
-                                        + File.separator
+                                        + separator
                                         + "org"
-                                        + File.separator
+                                        + separator
                                         + "com"
-                                        + File.separator
-                                        + "Greeter.java").exists()
-        );
+                                        + separator
+                                        + "generated"
+                                        + separator
+                                        + "contracts"
+                                        + separator
+                                        + "GreeterTest.java")
+                        .exists());
     }
 }

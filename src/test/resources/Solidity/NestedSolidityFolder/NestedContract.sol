@@ -13,7 +13,7 @@ contract Mortal {
     function kill() public { if (msg.sender == owner) selfdestruct(owner); }
 }
 
-contract DeepGreeter is Mortal {
+contract NestedContract is Mortal {
     /* define variable greeting of the type string */
     string greeting;
 

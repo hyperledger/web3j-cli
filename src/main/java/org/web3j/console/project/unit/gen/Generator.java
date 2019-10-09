@@ -20,7 +20,7 @@ import static org.web3j.utils.Collection.tail;
 
 public class Generator {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         args = tail(args);
         File pathToJavaContracts =
                 new File(
@@ -37,10 +37,10 @@ public class Generator {
                                 + "main"
                                 + separator
                                 + "java");
-        ClassProviderUntiles classProviderUntiles = new ClassProviderUntiles(pathToJavaContracts);
+        ClassProvider classProvider = new ClassProvider(pathToJavaContracts);
 
         String[] finalArgs = args;
-        classProviderUntiles
+        classProvider
                 .getClasses()
                 .forEach(
                         c -> {

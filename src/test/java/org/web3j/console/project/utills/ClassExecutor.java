@@ -13,14 +13,12 @@
 package org.web3j.console.project.utills;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClassExecutor {
     public ProcessBuilder executeClassAsSubProcessAndReturnProcess(
-            Class classToExecute, List<String> jvmArgs, List<String> args)
-            throws IOException, InterruptedException {
+            Class classToExecute, List<String> jvmArgs, List<String> args) {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         String classPath = System.getProperty("java.class.path");

@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class ClassProviderUntiles {
+class ClassProvider {
     private final File pathToWalk;
 
-    ClassProviderUntiles(final File pathToWalk) {
+    ClassProvider(final File pathToWalk) {
         this.pathToWalk = pathToWalk;
     }
 
-    private List<String> getClassPath() {
+    private List<String> getFormattedClassPath() {
         List<String> classPath = new ArrayList<>();
         try (Stream<Path> walk = Files.walk(Paths.get(pathToWalk.toURI()))) {
 
@@ -59,26 +59,22 @@ class ClassProviderUntiles {
     private CompilerClassLoader compileClasses() throws IOException {
         URL[] classPathURL = new URL[] {pathToWalk.toURI().toURL()};
         Path outputDirectory = Files.createTempDirectory("tmp");
+
         return new CompilerClassLoader(outputDirectory.toFile(), classPathURL);
     }
 
-    private List<Class> loadClassesToList(final CompilerClassLoader compilerClassLoader) {
+    private List<Class> loadClassesToList(final CompilerClassLoader compilerClassLoader)
+            throws ClassNotFoundException {
         List<String> formattedClassPath = new ArrayList<>();
         List<Class> classList = new ArrayList<>();
-        getClassPath().forEach(s -> formattedClassPath.add(s.replace("/", ".")));
-        formattedClassPath.forEach(
-                s -> {
-                    try {
-                        classList.add(
-                                compilerClassLoader.loadClass(s.replace(File.separator, ".")));
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                });
+        getFormattedClassPath().forEach(s -> formattedClassPath.add(s.replace("/", ".")));
+        for (String s : formattedClassPath) {
+            classList.add(compilerClassLoader.loadClass(s.replace(File.separator, ".")));
+        }
         return classList;
     }
 
-    public final List<Class> getClasses() throws IOException {
+    final List<Class> getClasses() throws IOException, ClassNotFoundException {
         return loadClassesToList(compileClasses());
     }
 }

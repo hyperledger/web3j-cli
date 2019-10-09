@@ -10,7 +10,7 @@ plugins {
 repositories {
     maven {
         url 'http://dl.bintray.com/web3j/maven'
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url "https://dl.bintray.com/ethereum/maven" }
     }
     jcenter()
@@ -34,11 +34,19 @@ dependencies {
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
-            "org.web3j:hosted-providers:$web3jVersion"
+            "org.web3j:hosted-providers:$web3jVersion",
+            "org.junit.jupiter:junit-jupiter-engine:5.5.2"
 
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
-    compile "org.web3j:web3j-unit:4.6.0-SNAPSHOT"
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
+    implementation ("org.web3j:web3j-unit:4.6.0-SNAPSHOT"){
+
+        exclude group:'org.junit.jupiter'
+    }
+    implementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
+    testImplementation  "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+
+
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
 }
 

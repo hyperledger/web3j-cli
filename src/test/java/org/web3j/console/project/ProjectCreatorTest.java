@@ -77,8 +77,7 @@ public class ProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
-    public void testWhenInteractiveAndArgumentsAreCorrect()
-            throws IOException, InterruptedException {
+    public void testWhenInteractiveAndArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {"new"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(

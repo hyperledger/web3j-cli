@@ -24,7 +24,7 @@ ext {
 
     web3jVersion = '4.4.0'
     logbackVersion = '1.2.3'
-    junitVersion = '5.+'
+    junitVersion = '5.5.2'
     mockitoVersion = "3.+"
 }
 dependencies {

@@ -19,7 +19,6 @@ repositories {
 ext {
     web3jVersion = "4.+"
     slf4jVersion = "1.7.+"
-    junitVersion = '5.+'
     mockitoVersion = "3.+"
 }
 
@@ -39,8 +38,8 @@ dependencies {
 
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
     compile "org.web3j:web3j-unit:4.6.0-SNAPSHOT"
-    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
-            "org.mockito:mockito-core:$mockitoVersion"
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
 }
 
 spotless {

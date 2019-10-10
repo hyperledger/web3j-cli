@@ -28,6 +28,8 @@ import org.web3j.protocol.Web3j;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 
+import static java.io.File.separator;
+
 class TestClassProvider {
     private final Class className;
     private final String packageName;
@@ -69,15 +71,14 @@ class TestClassProvider {
                         .build();
 
         JavaFile javaFile = JavaFile.builder(packageName, testClass).build();
-        javaFile.writeTo(System.out);
         javaFile.writeTo(
                 new File(
                         projectName
-                                + File.separator
+                                + separator
                                 + "src"
-                                + File.separator
+                                + separator
                                 + "test"
-                                + File.separator
+                                + separator
                                 + "solidity"));
     }
 

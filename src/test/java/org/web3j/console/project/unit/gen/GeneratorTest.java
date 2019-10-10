@@ -12,51 +12,41 @@
  */
 package org.web3j.console.project.unit.gen;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.console.project.ProjectCreator;
-import org.web3j.console.project.utills.ClassExecutor;
-
-import static java.io.File.*;
+import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GeneratorTest extends ClassExecutor {
-    @TempDir static File temp;
+public class GeneratorTest extends Setup {
 
     @Test
-    public void testThatUnitClassWasGenerated()
-            throws IOException, InterruptedException, ClassNotFoundException {
-        final String[] args = {"new"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("Test", 0, "Test".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(temp.getPath(), 0, temp.getPath().length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-
-        String[] genArgs = {"generate", temp + separator + "Test"};
-        Generator.main(genArgs);
+    public void testThatUnitClassWasGenerated() {
+        System.out.println(
+                Arrays.toString(
+                        new File(
+                                        temp
+                                                + separator
+                                                + "test"
+                                                + separator
+                                                + "src"
+                                                + separator
+                                                + "test"
+                                                + separator
+                                                + "solidity"
+                                                + separator
+                                                + "org"
+                                                + separator
+                                                + "com"
+                                                + separator)
+                                .listFiles()));
         assertTrue(
                 new File(
                                 temp
                                         + separator
-                                        + "Test"
+                                        + "test"
                                         + separator
                                         + "src"
                                         + separator
@@ -72,7 +62,7 @@ public class GeneratorTest extends ClassExecutor {
                                         + separator
                                         + "contracts"
                                         + separator
-                                        + "GreeterTest.java")
+                                        + "TestContract2Test.java")
                         .exists());
     }
 }

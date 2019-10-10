@@ -12,49 +12,18 @@
  */
 package org.web3j.console.project.unit.gen;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import org.web3j.console.project.ProjectImporter;
-import org.web3j.console.project.utills.ClassExecutor;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ClassProviderTest extends ClassExecutor {
-    @TempDir static File temp;
-
-    @BeforeAll
-    public static void setUp() throws IOException, InterruptedException {
-        String formattedPath = "src/test/resources/Solidity".replaceAll("/", File.separator);
-        final String[] args = {"import"};
-        Process process =
-                new ClassExecutor()
-                        .executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("test", 0, "test".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(formattedPath, 0, formattedPath.length());
-        writer.newLine();
-        writer.write(temp.getPath(), 0, temp.getPath().length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-    }
+public class ClassProviderTest extends Setup {
 
     @Test
     public void getClassesWhenSuccessfulTest() throws IOException, ClassNotFoundException {
@@ -97,5 +66,29 @@ public class ClassProviderTest extends ClassExecutor {
                                 + separator);
         ClassProvider classProvider = new ClassProvider(pathToProject);
         assertThrows(ClassNotFoundException.class, () -> classProvider.getClasses());
+    }
+
+    @Test
+    public void formatClassPathTest() throws IOException, ClassNotFoundException {
+        File pathToProject =
+                new File(
+                        temp
+                                + separator
+                                + "test"
+                                + separator
+                                + "build"
+                                + separator
+                                + "generated"
+                                + separator
+                                + "source"
+                                + separator
+                                + "web3j"
+                                + separator
+                                + "main"
+                                + separator
+                                + "java");
+        ClassProvider classProvider = new ClassProvider(pathToProject);
+        List<Class> listOfClasses = classProvider.getClasses();
+        assertTrue(listOfClasses.get(0).getCanonicalName().contains("org.com"));
     }
 }

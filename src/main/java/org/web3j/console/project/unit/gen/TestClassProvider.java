@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.lang.model.element.Modifier;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -29,6 +30,7 @@ import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 
 import static java.io.File.separator;
+import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
 class TestClassProvider {
     private final Class className;
@@ -57,9 +59,9 @@ class TestClassProvider {
     private List<MethodSpec> generateMethodSpecsForEachTest(final List<Method> listOfValidMethods) {
         List<MethodSpec> listOfMethodSpecs = new ArrayList<>();
         listOfValidMethods.forEach(
-                method ->
-                        listOfMethodSpecs.add(
-                                new UnitTestProcessor(method, className).getMethodSpec()));
+                method -> {
+                    listOfMethodSpecs.add(new UnitTestProcessor(method, className).getMethodSpec());
+                });
         return listOfMethodSpecs;
     }
 
@@ -68,9 +70,11 @@ class TestClassProvider {
                 TypeSpec.classBuilder(className.getSimpleName() + "Test")
                         .addMethods(generateMethodSpecsForEachTest(extractRequiredMethods()))
                         .addAnnotation(EVMTest.class)
+                        .addField(className, toCamelCase(className), Modifier.STATIC)
                         .build();
 
         JavaFile javaFile = JavaFile.builder(packageName, testClass).build();
+        javaFile.writeTo(System.out);
         javaFile.writeTo(
                 new File(
                         projectName

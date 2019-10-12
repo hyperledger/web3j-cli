@@ -13,6 +13,8 @@
 package org.web3j.console.project.unit.gen;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,11 +22,13 @@ import java.util.List;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 
-import org.web3j.console.project.unit.gen.templates.DeployTemplate;
-import org.web3j.console.project.unit.gen.templates.TransferFromTemplate;
+import org.web3j.console.project.unit.gen.templates.Deploy;
+import org.web3j.console.project.unit.gen.templates.TransferFrom;
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+
+import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
 public class UnitTestProcessor {
     private final Method method;
@@ -37,14 +41,16 @@ public class UnitTestProcessor {
 
     MethodSpec getMethodSpec() {
         if (method.getName().equals("deploy")) {
-            return new DeployTemplate(
+            return new Deploy(
                             tClass,
+                            getMethodReturnType(method),
                             Arrays.asList(method.getParameterTypes()),
                             defaultParameterSpecsForEachUnitTest())
                     .generate();
         } else {
-            return new TransferFromTemplate(
+            return new TransferFrom(
                             tClass,
+                            getMethodReturnType(method),
                             Arrays.asList(method.getParameterTypes()),
                             defaultParameterSpecsForEachUnitTest())
                     .generate();
@@ -53,11 +59,25 @@ public class UnitTestProcessor {
 
     private List<ParameterSpec> defaultParameterSpecsForEachUnitTest() {
         List<ParameterSpec> listOfArguments = new ArrayList<>();
-        listOfArguments.add(ParameterSpec.builder(Web3j.class, "web3j").build());
+        listOfArguments.add(ParameterSpec.builder(Web3j.class, toCamelCase(Web3j.class)).build());
         listOfArguments.add(
-                ParameterSpec.builder(TransactionManager.class, "transactionmanager").build());
+                ParameterSpec.builder(
+                                TransactionManager.class, toCamelCase(TransactionManager.class))
+                        .build());
         listOfArguments.add(
-                ParameterSpec.builder(ContractGasProvider.class, "contractgasprovider").build());
+                ParameterSpec.builder(
+                                ContractGasProvider.class, toCamelCase(ContractGasProvider.class))
+                        .build());
         return listOfArguments;
+    }
+
+    private Type getMethodReturnType(Method method) {
+        Type genericType = method.getGenericReturnType();
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            return parameterizedType.getActualTypeArguments()[0];
+        } else {
+            return genericType;
+        }
     }
 }

@@ -12,29 +12,25 @@
  */
 package org.web3j.console.project.unit.gen.templates;
 
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.squareup.javapoet.MethodSpec;
-import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
+import com.squareup.javapoet.ParameterSpec;
 
-public abstract class UnitTemplate {
-    private final List<Class> deployArguments;
-    private final Class contractName;
+import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-    UnitTemplate(final Class contractName, final List<Class> deployArguments) {
-        this.contractName = contractName;
-        this.deployArguments = deployArguments;
-    }
+public abstract class Template {
+    List<Class> deployArguments;
+    Class contractName;
+    Type returnType;
+    List<ParameterSpec> methodParameters;
 
-    public abstract MethodSpec generate();
+    Template() {}
 
-    private Object[] convertTypeNameToLowerCase() {
-        return deployArguments.stream().map(this::test).toArray();
-    }
-
-    String generatePattern() {
+    protected String customParameters() {
         List<String> generated = new ArrayList<>();
         for (Class type : deployArguments) {
             if (type.equals(String.class)) {
@@ -48,23 +44,21 @@ public abstract class UnitTemplate {
         return String.join(",", generated);
     }
 
-    private Object[] staticElements() {
-        return new Object[] {
-            contractName, contractName.getSimpleName().toLowerCase(), contractName
-        };
-    }
-
-    protected Object[] joined() {
-        return ArrayUtils.addAll(staticElements(), convertTypeNameToLowerCase());
-    }
-
-    protected Object test(Class classToCheck) {
+    private Object getTypesAsList(Class classToCheck) {
         if (classToCheck.equals(String.class)) {
             return "REPLACE_ME";
         } else if (classToCheck.equals(BigInteger.class)) {
             return BigInteger.class;
         } else {
-            return classToCheck.getSimpleName().toLowerCase();
+            return toCamelCase(classToCheck);
         }
     }
+
+    protected Object[] dynamicArguments() {
+        return deployArguments.stream().map(this::getTypesAsList).toArray();
+    }
+
+    public abstract MethodSpec generate();
+
+    abstract Object[] arguments();
 }

@@ -12,35 +12,52 @@
  */
 package org.web3j.console.project.unit.gen.templates;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import javax.lang.model.element.Modifier;
 
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
 
-public class TransferFromTemplate extends UnitTemplate {
+import static org.web3j.console.project.utills.NameUtils.returnTypeAsLiteral;
+import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-    private final List<ParameterSpec> methodParameters;
+public class Deploy extends Template {
 
-    public TransferFromTemplate(
+    public Deploy(
             final Class contractName,
+            final Type returnType,
             final List<Class> deployArguments,
             final List<ParameterSpec> methodParameters) {
-        super(contractName, deployArguments);
+        this.contractName = contractName;
+        this.returnType = returnType;
+        this.deployArguments = deployArguments;
         this.methodParameters = methodParameters;
     }
 
     @Override
     public MethodSpec generate() {
-        return MethodSpec.methodBuilder("testTransferFrom")
-                .addAnnotation(Test.class)
+        return MethodSpec.methodBuilder("testDeploy")
+                .addAnnotation(BeforeAll.class)
+                .addModifiers(Modifier.STATIC)
                 .addModifiers(Modifier.PUBLIC)
                 .addException(Exception.class)
                 .returns(TypeName.VOID)
                 .addParameters(methodParameters)
-                .addStatement("$T $L = $T.transferFrom(" + generatePattern() + ").send()", joined())
+                .addStatement("$L = $L.deploy(" + customParameters() + ").send()", arguments())
                 .build();
+    }
+
+    @Override
+    Object[] arguments() {
+        return ArrayUtils.addAll(
+                new Object[] {
+                    toCamelCase(returnTypeAsLiteral(returnType)),
+                    toCamelCase(contractName.getSimpleName())
+                },
+                dynamicArguments());
     }
 }

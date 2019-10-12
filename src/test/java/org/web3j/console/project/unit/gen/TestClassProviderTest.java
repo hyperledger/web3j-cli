@@ -54,7 +54,7 @@ public class TestClassProviderTest extends Setup {
                 new BufferedReader(new FileReader(classAsFile))
                         .lines()
                         .collect(Collectors.joining("\n"));
-        assertTrue(classAsString.contains("public void testDeploy"));
+        assertTrue(classAsString.contains(" testDeploy"));
     }
 
     @Test
@@ -65,10 +65,11 @@ public class TestClassProviderTest extends Setup {
                         .lines()
                         .collect(Collectors.joining("\n"));
         String deployTemplate =
-                " @Test\n"
-                        + "  public void testDeploy(Web3j web3j, TransactionManager transactionmanager, ContractGasProvider contractgasprovider) throws Exception {\n"
-                        + "    TestContract2 testcontract2 = TestContract2.deploy(web3j ,transactionmanager ,contractgasprovider ,\"REPLACE_ME\" ).send();\n"
-                        + "  }";
+                " @BeforeAll\n"
+                        + "  public static void testDeploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) throws Exception {\n"
+                        + "    testContract2 = testContract2.deploy(web3j ,transactionManager ,contractGasProvider ,\"REPLACE_ME\" ).send();\n"
+                        + "  }\n"
+                        + "}";
         assertTrue(classAsString.contains(deployTemplate));
     }
 

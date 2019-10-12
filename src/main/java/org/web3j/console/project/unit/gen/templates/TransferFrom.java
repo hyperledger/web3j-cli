@@ -12,6 +12,7 @@
  */
 package org.web3j.console.project.unit.gen.templates;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import javax.lang.model.element.Modifier;
 
@@ -20,25 +21,44 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import org.junit.jupiter.api.Test;
 
-public class DeployTemplate extends UnitTemplate {
-    private final List<ParameterSpec> methodParameters;
+import static org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils.addAll;
+import static org.web3j.console.project.utills.NameUtils.returnTypeAsLiteral;
+import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-    public DeployTemplate(
+public class TransferFrom extends Template {
+
+    public TransferFrom(
             final Class contractName,
+            final Type returnType,
             final List<Class> deployArguments,
             final List<ParameterSpec> methodParameters) {
-        super(contractName, deployArguments);
+        this.contractName = contractName;
+        this.returnType = returnType;
+        this.deployArguments = deployArguments;
         this.methodParameters = methodParameters;
     }
 
+    @Override
     public MethodSpec generate() {
-        return MethodSpec.methodBuilder("testDeploy")
+        return MethodSpec.methodBuilder("testTransferFrom")
                 .addAnnotation(Test.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addException(Exception.class)
                 .returns(TypeName.VOID)
-                .addParameters(methodParameters)
-                .addStatement("$T $L = $T.deploy(" + generatePattern() + ").send()", joined())
+                .addStatement(
+                        "$T $L = $L.transferFrom(" + customParameters() + ").send()", arguments())
                 .build();
+    }
+
+    @Override
+    Object[] arguments() {
+
+        return addAll(
+                new Object[] {
+                    returnType,
+                    toCamelCase(returnTypeAsLiteral(returnType)),
+                    contractName.getSimpleName().toLowerCase()
+                },
+                dynamicArguments());
     }
 }

@@ -74,7 +74,6 @@ class TestClassProvider {
                         .build();
 
         JavaFile javaFile = JavaFile.builder(packageName, testClass).build();
-        javaFile.writeTo(System.out);
         javaFile.writeTo(
                 new File(
                         projectName

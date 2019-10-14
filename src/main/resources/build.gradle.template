@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.web3j' version '4.4.0'
+    id "com.github.johnrengelman.shadow" version "5.1.0"
 
 }
 

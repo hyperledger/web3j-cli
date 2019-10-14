@@ -18,7 +18,7 @@ jobs:
   - stage: build master
     script:
     - ./gradlew spotlessCheck check jacocoTestReport
-    if: branch = master
+    if: branch = master OR type = pull_request
   - stage: release github
     if: branch =~ /release/
     script: "./gradlew check distZip distTar -Pversion=${TRAVIS_BRANCH#"release/"} && ./scripts/github-release.sh"

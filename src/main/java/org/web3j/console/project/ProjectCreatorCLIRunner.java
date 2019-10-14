@@ -26,11 +26,11 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
 @Command(name = COMMAND_NEW, mixinStandardHelpOptions = true, version = "4.0", sortOptions = false)
 public class ProjectCreatorCLIRunner implements Runnable {
     @Option(
-            names = {"-o", "--outputDir"},
+            names = {"-o", "--output-dir"},
             description = "destination base directory.",
             required = false,
             showDefaultValue = ALWAYS)
-    String root = System.getProperty("user.dir");
+    String outputDir = System.getProperty("user.dir");
 
     @Option(
             names = {"-p", "--package"},
@@ -39,7 +39,7 @@ public class ProjectCreatorCLIRunner implements Runnable {
     String packageName;
 
     @Option(
-            names = {"-n", "--project name"},
+            names = {"-n", "--project-name"},
             description = "project name.",
             required = true)
     String projectName;
@@ -50,7 +50,7 @@ public class ProjectCreatorCLIRunner implements Runnable {
                 && InputVerifier.classNameIsValid(projectName)
                 && InputVerifier.packageNameIsValid(packageName)) {
             try {
-                new ProjectCreator(root, packageName, projectName).generate();
+                new ProjectCreator(outputDir, packageName, projectName).generate();
             } catch (final IOException e) {
                 exitError(e);
             }

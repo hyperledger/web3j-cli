@@ -53,7 +53,7 @@ public class ProjectCreatorTest extends ClassExecutor {
         new CommandLine(projectCreatorCLIRunner).parseArgs(args);
         assert projectCreatorCLIRunner.packageName.equals("org.com");
         assert projectCreatorCLIRunner.projectName.equals("Test");
-        assert projectCreatorCLIRunner.root.equals(tempDirPath);
+        assert projectCreatorCLIRunner.outputDir.equals(tempDirPath);
     }
 
     @Test

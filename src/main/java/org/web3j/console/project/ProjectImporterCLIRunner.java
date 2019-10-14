@@ -12,18 +12,19 @@
  */
 package org.web3j.console.project;
 
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.web3j.console.project.utills.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
 
-@CommandLine.Command(name = COMMAND_IMPORT)
+@Command(name = COMMAND_IMPORT)
 public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
 
-    @CommandLine.Option(
-            names = {"-s", "--solidity path"},
+    @Option(
+            names = {"-s", "--solidity-path"},
             description = "path to solidity file/folder",
             required = true)
     String solidityImportPath;
@@ -34,7 +35,8 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
                 && InputVerifier.classNameIsValid(projectName)
                 && InputVerifier.packageNameIsValid(packageName)) {
             try {
-                new ProjectImporter(root, packageName, projectName, solidityImportPath).generate();
+                new ProjectImporter(outputDir, packageName, projectName, solidityImportPath)
+                        .generate();
             } catch (final Exception e) {
                 exitError(e);
             }

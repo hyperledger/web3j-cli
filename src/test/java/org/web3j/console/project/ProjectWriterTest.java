@@ -64,8 +64,6 @@ public class ProjectWriterTest {
                                         + File.separator
                                         + "tempSolidityDestination"
                                         + File.separator
-                                        + "tempSolidityDir"
-                                        + File.separator
                                         + "Greeter.sol")
                         .exists());
     }

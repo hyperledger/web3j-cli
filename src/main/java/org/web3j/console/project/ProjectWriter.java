@@ -40,9 +40,12 @@ class ProjectWriter {
                 StandardCopyOption.REPLACE_EXISTING);
     }
 
-    final void importSolidityProject(final File file, final String destination) throws IOException {
-        if (file != null && file.exists()) {
-            Files.walkFileTree(file.toPath(), new ProjectVisitor(destination));
+    final void importSolidityProject(final File solidityImportPath, final String destination)
+            throws IOException {
+        if (solidityImportPath != null && solidityImportPath.exists()) {
+            Files.walkFileTree(
+                    solidityImportPath.toPath(),
+                    new ProjectVisitor(solidityImportPath.getAbsolutePath(), destination));
         }
     }
 }

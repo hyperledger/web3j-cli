@@ -22,7 +22,12 @@ import java.util.List;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 
+import org.web3j.console.project.unit.gen.templates.BalanceOf;
 import org.web3j.console.project.unit.gen.templates.Deploy;
+import org.web3j.console.project.unit.gen.templates.GenericTemplate;
+import org.web3j.console.project.unit.gen.templates.Load;
+import org.web3j.console.project.unit.gen.templates.TotalSupply;
+import org.web3j.console.project.unit.gen.templates.Transfer;
 import org.web3j.console.project.unit.gen.templates.TransferFrom;
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.TransactionManager;
@@ -30,11 +35,11 @@ import org.web3j.tx.gas.ContractGasProvider;
 
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-public class UnitTestProcessor {
+public class UnitTestGenerator {
     private final Method method;
     private final Class tClass;
 
-    UnitTestProcessor(final Method method, final Class tClass) {
+    UnitTestGenerator(final Method method, final Class tClass) {
         this.method = method;
         this.tClass = tClass;
     }
@@ -47,12 +52,49 @@ public class UnitTestProcessor {
                             Arrays.asList(method.getParameterTypes()),
                             defaultParameterSpecsForEachUnitTest())
                     .generate();
-        } else {
+        } else if (method.getName().equals("transferFrom")) {
             return new TransferFrom(
                             tClass,
                             getMethodReturnType(method),
                             Arrays.asList(method.getParameterTypes()),
                             defaultParameterSpecsForEachUnitTest())
+                    .generate();
+        } else if (method.getName().equals("load")) {
+            return new Load(
+                            tClass,
+                            getMethodReturnType(method),
+                            Arrays.asList(method.getParameterTypes()),
+                            defaultParameterSpecsForEachUnitTest())
+                    .generate();
+        } else if (method.getName().equals("balanceOf")) {
+
+            return new BalanceOf(
+                            tClass,
+                            getMethodReturnType(method),
+                            Arrays.asList(method.getParameterTypes()),
+                            defaultParameterSpecsForEachUnitTest())
+                    .generate();
+        } else if (method.getName().equals("transfer")) {
+            return new Transfer(
+                            tClass,
+                            getMethodReturnType(method),
+                            Arrays.asList(method.getParameterTypes()),
+                            defaultParameterSpecsForEachUnitTest())
+                    .generate();
+        } else if (method.getName().equals("totalSupply")) {
+            return new TotalSupply(
+                            tClass,
+                            getMethodReturnType(method),
+                            Arrays.asList(method.getParameterTypes()),
+                            defaultParameterSpecsForEachUnitTest())
+                    .generate();
+        } else {
+            return new GenericTemplate(
+                            tClass,
+                            getMethodReturnType(method),
+                            Arrays.asList(method.getParameterTypes()),
+                            defaultParameterSpecsForEachUnitTest(),
+                            method.getName())
                     .generate();
         }
     }

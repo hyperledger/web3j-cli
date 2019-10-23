@@ -43,6 +43,7 @@ public class Deploy extends Template {
         return MethodSpec.methodBuilder("testDeploy")
                 .addAnnotation(BeforeAll.class)
                 .addModifiers(Modifier.STATIC)
+                .addStatement("// Make sure to change the placeholder arguments.")
                 .addModifiers(Modifier.PUBLIC)
                 .addException(Exception.class)
                 .returns(TypeName.VOID)
@@ -55,7 +56,7 @@ public class Deploy extends Template {
     Object[] arguments() {
         return ArrayUtils.addAll(
                 new Object[] {
-                    toCamelCase(returnTypeAsLiteral(returnType)),
+                    toCamelCase(returnTypeAsLiteral(returnType, false)),
                     toCamelCase(contractName.getSimpleName())
                 },
                 dynamicArguments());

@@ -20,14 +20,13 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
 
-import static org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils.addAll;
 import static org.web3j.console.project.utills.NameUtils.returnTypeAsLiteral;
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-public class TransferFrom extends Template {
-
-    public TransferFrom(
+public class Load extends Template {
+    public Load(
             final Class contractName,
             final Type returnType,
             final List<Class> deployArguments,
@@ -40,26 +39,20 @@ public class TransferFrom extends Template {
 
     @Override
     public MethodSpec generate() {
-        return MethodSpec.methodBuilder("testTransferFrom")
+        return MethodSpec.methodBuilder("testLoad")
                 .addAnnotation(Test.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addException(Exception.class)
-                .addStatement("//Please use a valid address")
                 .returns(TypeName.VOID)
-                .addStatement(
-                        "$T $L = $L.transferFrom(" + customParameters() + ").send()", arguments())
+                .addParameters(methodParameters)
+                .addStatement("// Make sure to change the placeholder arguments.")
+                .addStatement("$L = $T.load(" + customParameters() + ")", arguments())
                 .build();
     }
 
     @Override
     Object[] arguments() {
-
-        return addAll(
-                new Object[] {
-                    returnType,
-                    toCamelCase(returnTypeAsLiteral(returnType, false)),
-                    contractName.getSimpleName().toLowerCase()
-                },
+        return ArrayUtils.addAll(
+                new Object[] {toCamelCase(returnTypeAsLiteral(returnType, false)), returnType},
                 dynamicArguments());
     }
 }

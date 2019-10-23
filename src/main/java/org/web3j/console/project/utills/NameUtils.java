@@ -20,11 +20,19 @@ public class NameUtils {
                 + aClass.getSimpleName().substring(1);
     }
 
-    public static String returnTypeAsLiteral(Type type) {
-        return type.getTypeName().substring(type.getTypeName().lastIndexOf(".") + 1);
+    public static String returnTypeAsLiteral(Type type, boolean extend) {
+        String formattedString =
+                type.getTypeName().substring(type.getTypeName().lastIndexOf(".") + 1);
+        return extend
+                ? formattedString.replaceAll("[^a-zA-Z0-9]", "") + "Var"
+                : formattedString.replaceAll("[^a-zA-Z0-9]", "");
     }
 
     public static String toCamelCase(String aString) {
         return Character.toLowerCase(aString.charAt(0)) + aString.substring(1);
+    }
+
+    public static String capitalizeFirstLetter(String aString) {
+        return aString.substring(0, 1).toUpperCase() + aString.substring(1);
     }
 }

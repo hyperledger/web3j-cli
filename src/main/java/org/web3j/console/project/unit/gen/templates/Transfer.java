@@ -25,9 +25,9 @@ import static org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils.addAl
 import static org.web3j.console.project.utills.NameUtils.returnTypeAsLiteral;
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-public class TransferFrom extends Template {
+public class Transfer extends Template {
 
-    public TransferFrom(
+    public Transfer(
             final Class contractName,
             final Type returnType,
             final List<Class> deployArguments,
@@ -40,14 +40,13 @@ public class TransferFrom extends Template {
 
     @Override
     public MethodSpec generate() {
-        return MethodSpec.methodBuilder("testTransferFrom")
+        return MethodSpec.methodBuilder("testTransfer")
                 .addAnnotation(Test.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addException(Exception.class)
                 .addStatement("//Please use a valid address")
                 .returns(TypeName.VOID)
-                .addStatement(
-                        "$T $L = $L.transferFrom(" + customParameters() + ").send()", arguments())
+                .addStatement("$T $L = $L.transfer(" + customParameters() + ").send()", arguments())
                 .build();
     }
 

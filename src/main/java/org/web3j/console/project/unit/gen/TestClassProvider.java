@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 
 import com.squareup.javapoet.JavaFile;
@@ -35,7 +36,8 @@ import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 class TestClassProvider {
     private final Class className;
     private final String packageName;
-    private final List<String> supportedMethods = Arrays.asList("deploy", "transferFrom");
+    private final List<String> supportedMethods =
+            Arrays.asList("deploy", "transferFrom", "load", "totalSupply", "balanceOf", "transfer");
     private final String projectName;
 
     TestClassProvider(final Class className, final String packageName, final String projectName) {
@@ -45,22 +47,16 @@ class TestClassProvider {
     }
 
     private List<Method> extractRequiredMethods() {
-        List<Method> validMethods = new ArrayList<>();
-        Method[] classMethods = className.getMethods();
-        for (Method method : classMethods) {
-            if (isSupported(method) && parametersAreMatching(method)) {
-                validMethods.add(method);
-            }
-        }
-
-        return validMethods;
+        return Arrays.stream(className.getDeclaredMethods())
+                .filter(m -> !m.isSynthetic() && parametersAreMatching(m))
+                .collect(Collectors.toList());
     }
 
     private List<MethodSpec> generateMethodSpecsForEachTest(final List<Method> listOfValidMethods) {
         List<MethodSpec> listOfMethodSpecs = new ArrayList<>();
         listOfValidMethods.forEach(
                 method -> {
-                    listOfMethodSpecs.add(new UnitTestProcessor(method, className).getMethodSpec());
+                    listOfMethodSpecs.add(new UnitTestGenerator(method, className).getMethodSpec());
                 });
         return listOfMethodSpecs;
     }
@@ -90,7 +86,7 @@ class TestClassProvider {
     }
 
     private boolean parametersAreMatching(final Method method) {
-        if (method.getName().equals("deploy")) {
+        if (method.getName().equals("deploy") || method.getName().equals("load")) {
             return Arrays.asList(method.getParameterTypes()).contains(Web3j.class)
                     && Arrays.asList(method.getParameterTypes()).contains(TransactionManager.class)
                     && Arrays.asList(method.getParameterTypes())

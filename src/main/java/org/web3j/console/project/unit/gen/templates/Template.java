@@ -20,6 +20,8 @@ import java.util.List;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 
+import org.web3j.tuples.Tuple;
+
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
 public abstract class Template {
@@ -34,28 +36,40 @@ public abstract class Template {
         List<String> generated = new ArrayList<>();
         for (Class type : deployArguments) {
             if (type.equals(String.class)) {
-                generated.add("$S ");
+                generated.add("$S");
             } else if (type.equals(BigInteger.class)) {
                 generated.add("$T.ONE");
+            } else if (type.equals(List.class)) {
+                generated.add("new $T<>()");
+            } else if (type.equals(Tuple.class)) {
+                generated.add("new $T<>()");
+            } else if (type.equals(byte.class)) {
+                generated.add("new $T[]{}");
             } else {
-                generated.add("$L ");
+                generated.add("$L");
             }
         }
         return String.join(",", generated);
     }
 
-    private Object getTypesAsList(Class classToCheck) {
+    private Object getDefaultArgumentValues(Class classToCheck) {
         if (classToCheck.equals(String.class)) {
             return "REPLACE_ME";
         } else if (classToCheck.equals(BigInteger.class)) {
             return BigInteger.class;
+        } else if (classToCheck.equals(List.class)) {
+            return ArrayList.class;
+        } else if (classToCheck.equals(Tuple.class)) {
+            return Tuple.class;
+        } else if (classToCheck.equals(byte.class)) {
+            return byte.class;
         } else {
             return toCamelCase(classToCheck);
         }
     }
 
     protected Object[] dynamicArguments() {
-        return deployArguments.stream().map(this::getTypesAsList).toArray();
+        return deployArguments.stream().map(this::getDefaultArgumentValues).toArray();
     }
 
     public abstract MethodSpec generate();

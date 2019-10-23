@@ -20,46 +20,62 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
 
-import static org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils.addAll;
+import static org.web3j.console.project.utills.NameUtils.capitalizeFirstLetter;
 import static org.web3j.console.project.utills.NameUtils.returnTypeAsLiteral;
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-public class TransferFrom extends Template {
+public class GenericTemplate extends Template {
+    private final String methodName;
 
-    public TransferFrom(
+    public GenericTemplate(
             final Class contractName,
             final Type returnType,
             final List<Class> deployArguments,
-            final List<ParameterSpec> methodParameters) {
+            final List<ParameterSpec> methodParameters,
+            String methodName) {
         this.contractName = contractName;
         this.returnType = returnType;
         this.deployArguments = deployArguments;
         this.methodParameters = methodParameters;
+        this.methodName = methodName;
     }
 
     @Override
     public MethodSpec generate() {
-        return MethodSpec.methodBuilder("testTransferFrom")
+
+        return MethodSpec.methodBuilder("test" + capitalizeFirstLetter(methodName))
                 .addAnnotation(Test.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addException(Exception.class)
-                .addStatement("//Please use a valid address")
                 .returns(TypeName.VOID)
+                .addStatement("// Make sure to change the placeholder arguments.")
                 .addStatement(
-                        "$T $L = $L.transferFrom(" + customParameters() + ").send()", arguments())
+                        "$T $L = $L." + methodName + "(" + customParameters() + ").send()",
+                        arguments())
                 .build();
     }
 
     @Override
     Object[] arguments() {
+        if (returnType.getTypeName().equals(contractName.getTypeName())) {
+            return ArrayUtils.addAll(
+                    new Object[] {
+                        returnType,
+                        toCamelCase(returnTypeAsLiteral(returnType, false)),
+                        toCamelCase(contractName)
+                    },
+                    dynamicArguments());
 
-        return addAll(
-                new Object[] {
-                    returnType,
-                    toCamelCase(returnTypeAsLiteral(returnType, false)),
-                    contractName.getSimpleName().toLowerCase()
-                },
-                dynamicArguments());
+        } else {
+            return ArrayUtils.addAll(
+                    new Object[] {
+                        returnType,
+                        toCamelCase(returnTypeAsLiteral(returnType, true)),
+                        toCamelCase(contractName)
+                    },
+                    dynamicArguments());
+        }
     }
 }

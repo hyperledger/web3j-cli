@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import static java.io.File.separator;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestClassProviderTest extends Setup {
@@ -65,11 +64,11 @@ public class TestClassProviderTest extends Setup {
                         .lines()
                         .collect(Collectors.joining("\n"));
         String deployTemplate =
-                " @BeforeAll\n"
+                "@BeforeAll\n"
                         + "  public static void testDeploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) throws Exception {\n"
-                        + "    testContract2 = testContract2.deploy(web3j ,transactionManager ,contractGasProvider ,\"REPLACE_ME\" ).send();\n"
-                        + "  }\n"
-                        + "}";
+                        + "    // Make sure to change the placeholder arguments.;\n"
+                        + "    testContract2 = testContract2.deploy(web3j,transactionManager,contractGasProvider,\"REPLACE_ME\").send();\n"
+                        + "  }";
         assertTrue(classAsString.contains(deployTemplate));
     }
 
@@ -79,7 +78,6 @@ public class TestClassProviderTest extends Setup {
                 new BufferedReader(new FileReader(classAsFile))
                         .lines()
                         .collect(Collectors.joining("\n"));
-
-        assertFalse(classAsString.contains("public void testNewGreeting"));
+        assertTrue(classAsString.contains("public void testNewGreeting"));
     }
 }

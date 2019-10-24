@@ -14,14 +14,19 @@ package org.web3j.console.project.unit.gen;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.web3j.codegen.Console;
 
 class ClassProvider {
     private final File pathToWalk;
@@ -40,7 +45,8 @@ class ClassProvider {
                             .collect(Collectors.toList());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Console.exitError(
+                    "Looks like there is a problem with the classpath. Please use Web3j CLI to generate your project.");
         }
 
         return formatClassPath(classPath);
@@ -56,25 +62,40 @@ class ClassProvider {
                 .collect(Collectors.toList());
     }
 
-    private CompilerClassLoader compileClasses() throws IOException {
+    private CompilerClassLoader compileClasses() throws MalformedURLException {
         URL[] classPathURL = new URL[] {pathToWalk.toURI().toURL()};
-        Path outputDirectory = Files.createTempDirectory("tmp");
+        Path outputDirectory = null;
+        try {
+            outputDirectory = Files.createTempDirectory("tmp");
+        } catch (IOException e) {
+            Console.exitError(
+                    "Could not create temporary directory to store classes to be loaded.");
+        }
 
-        return new CompilerClassLoader(outputDirectory.toFile(), classPathURL);
+        return new CompilerClassLoader(
+                Objects.requireNonNull(outputDirectory).toFile(), classPathURL);
     }
 
-    private List<Class> loadClassesToList(final CompilerClassLoader compilerClassLoader)
-            throws ClassNotFoundException {
+    private List<Class> loadClassesToList(final CompilerClassLoader compilerClassLoader) {
         List<String> formattedClassPath = new ArrayList<>();
         List<Class> classList = new ArrayList<>();
         getFormattedClassPath().forEach(s -> formattedClassPath.add(s.replace("/", ".")));
         for (String s : formattedClassPath) {
-            classList.add(compilerClassLoader.loadClass(s.replace(File.separator, ".")));
+            try {
+                classList.add(compilerClassLoader.loadClass(s.replace(File.separator, ".")));
+            } catch (ClassNotFoundException e) {
+                Console.exitError("Could not load " + e.getMessage() + " class");
+            }
         }
         return classList;
     }
 
-    final List<Class> getClasses() throws IOException, ClassNotFoundException {
-        return loadClassesToList(compileClasses());
+    final List<Class> getClasses() {
+        try {
+            return loadClassesToList(compileClasses());
+        } catch (MalformedURLException e) {
+            Console.exitError("Could not get the URL of the files.");
+        }
+        return Collections.emptyList();
     }
 }

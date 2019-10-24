@@ -15,13 +15,19 @@ package org.web3j.console.project.unit.gen;
 import java.io.File;
 import java.io.IOException;
 
-import static java.io.File.*;
+import org.web3j.codegen.Console;
+
+import static java.io.File.separator;
 import static org.web3j.utils.Collection.tail;
 
 public class Generator {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) {
         args = tail(args);
+        if (args.length == 0) {
+            Console.exitError("generate <project_directory>");
+        }
+
         File pathToJavaContracts =
                 new File(
                         args[0]
@@ -55,8 +61,10 @@ public class Generator {
                                                 finalArgs[0])
                                         .writeClass();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                Console.exitError("Can't find project");
                             }
                         });
+        Console.exitSuccess(
+                "Unit tests were successfully generated under the test/solidity directory");
     }
 }

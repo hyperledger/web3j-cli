@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -48,7 +49,11 @@ class TestClassProvider {
 
     private List<Method> extractRequiredMethods() {
         return Arrays.stream(className.getDeclaredMethods())
-                .filter(m -> !m.isSynthetic() && parametersAreMatching(m))
+                .filter(
+                        m ->
+                                !m.isSynthetic()
+                                        && parametersAreMatching(m)
+                                        && !m.getName().toLowerCase().contains("event"))
                 .collect(Collectors.toList());
     }
 
@@ -62,10 +67,22 @@ class TestClassProvider {
     }
 
     void writeClass() throws IOException {
+        FieldSpec addressOne =
+                FieldSpec.builder(String.class, "myAddress")
+                        .addModifiers(Modifier.STATIC)
+                        .initializer("$S", "0xfe3b557e8fb62b89f4916b721be55ceb828dbd73")
+                        .build();
+        FieldSpec addressTwo =
+                FieldSpec.builder(String.class, "addressToTestAgainst")
+                        .addModifiers(Modifier.STATIC)
+                        .initializer("$S", "0x42699a7612a82f1d9c36148af9c77354759b210b")
+                        .build();
         TypeSpec testClass =
                 TypeSpec.classBuilder(className.getSimpleName() + "Test")
                         .addMethods(generateMethodSpecsForEachTest(extractRequiredMethods()))
                         .addAnnotation(EVMTest.class)
+                        .addField(addressOne)
+                        .addField(addressTwo)
                         .addField(className, toCamelCase(className), Modifier.STATIC)
                         .build();
 

@@ -43,8 +43,8 @@ public abstract class Template {
                 generated.add("new $T<>()");
             } else if (type.equals(Tuple.class)) {
                 generated.add("new $T<>()");
-            } else if (type.equals(byte.class)) {
-                generated.add("new $T[]{}");
+            } else if (type.equals(byte[].class)) {
+                generated.add("new $T{}");
             } else {
                 generated.add("$L");
             }
@@ -61,8 +61,8 @@ public abstract class Template {
             return ArrayList.class;
         } else if (classToCheck.equals(Tuple.class)) {
             return Tuple.class;
-        } else if (classToCheck.equals(byte.class)) {
-            return byte.class;
+        } else if (classToCheck.equals(byte[].class)) {
+            return byte[].class;
         } else {
             return toCamelCase(classToCheck);
         }

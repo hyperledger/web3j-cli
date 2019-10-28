@@ -83,7 +83,7 @@ class TestClassProvider {
                         .addAnnotation(EVMTest.class)
                         .addField(addressOne)
                         .addField(addressTwo)
-                        .addField(className, toCamelCase(className), Modifier.STATIC)
+                        .addField(className, toCamelCase(className), Modifier.PRIVATE)
                         .build();
 
         JavaFile javaFile = JavaFile.builder(packageName, testClass).build();

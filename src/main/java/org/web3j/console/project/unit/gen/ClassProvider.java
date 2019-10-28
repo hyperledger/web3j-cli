@@ -29,41 +29,23 @@ import java.util.stream.Stream;
 import org.web3j.codegen.Console;
 
 class ClassProvider {
-    private final File pathToWalk;
+    private final File pathToJavaFiles;
 
-    ClassProvider(final File pathToWalk) {
-        this.pathToWalk = pathToWalk;
+    ClassProvider(final File pathToJavaFiles) {
+        this.pathToJavaFiles = pathToJavaFiles;
     }
 
-    private List<String> getFormattedClassPath() {
-        List<String> classPath = new ArrayList<>();
-        try (Stream<Path> walk = Files.walk(Paths.get(pathToWalk.toURI()))) {
-
-            classPath =
-                    walk.filter(Files::isRegularFile)
-                            .map(Path::toString)
-                            .collect(Collectors.toList());
-
-        } catch (IOException e) {
-            Console.exitError(
-                    "Looks like there is a problem with the classpath. Please use Web3j CLI to generate your project.");
+    final List<Class> getClasses() {
+        try {
+            return loadClassesToList(compileClasses());
+        } catch (MalformedURLException e) {
+            Console.exitError("Could not get the URL of the files.");
         }
-
-        return formatClassPath(classPath);
-    }
-
-    private List<String> formatClassPath(final List<String> listOfUrl) {
-        return listOfUrl.stream()
-                .map(
-                        s ->
-                                s.substring(
-                                        s.indexOf("java" + File.separator) + 5,
-                                        s.lastIndexOf(".java")))
-                .collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
     private CompilerClassLoader compileClasses() throws MalformedURLException {
-        URL[] classPathURL = new URL[] {pathToWalk.toURI().toURL()};
+        URL[] classPathURL = new URL[] {pathToJavaFiles.toURI().toURL()};
         Path outputDirectory = null;
         try {
             outputDirectory = Files.createTempDirectory("tmp");
@@ -79,7 +61,8 @@ class ClassProvider {
     private List<Class> loadClassesToList(final CompilerClassLoader compilerClassLoader) {
         List<String> formattedClassPath = new ArrayList<>();
         List<Class> classList = new ArrayList<>();
-        getFormattedClassPath().forEach(s -> formattedClassPath.add(s.replace("/", ".")));
+        getFormattedClassPath()
+                .forEach(s -> formattedClassPath.add(s.replace(File.separator, ".")));
         for (String s : formattedClassPath) {
             try {
                 classList.add(compilerClassLoader.loadClass(s.replace(File.separator, ".")));
@@ -90,12 +73,28 @@ class ClassProvider {
         return classList;
     }
 
-    final List<Class> getClasses() {
-        try {
-            return loadClassesToList(compileClasses());
-        } catch (MalformedURLException e) {
-            Console.exitError("Could not get the URL of the files.");
+    private List<String> getFormattedClassPath() {
+        List<String> classPath = new ArrayList<>();
+        try (Stream<Path> walk = Files.walk(Paths.get(pathToJavaFiles.toURI()))) {
+
+            classPath =
+                    walk.filter(Files::isRegularFile)
+                            .map(Path::toString)
+                            .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            Console.exitError(
+                    "Looks like there is a problem with the classpath. Please use Web3j CLI to generate your project.");
         }
-        return Collections.emptyList();
+        return getClassPathFromURL(classPath);
+    }
+
+    private List<String> getClassPathFromURL(final List<String> listOfUrl) {
+        int length = pathToJavaFiles.getAbsolutePath().length();
+        List<String> formattedClassPath = new ArrayList<>();
+        for (String s : listOfUrl) {
+            formattedClassPath.add(s.substring(length + 1, s.lastIndexOf(".java")));
+        }
+        return formattedClassPath;
     }
 }

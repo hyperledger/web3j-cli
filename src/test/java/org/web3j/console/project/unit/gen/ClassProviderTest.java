@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ClassProviderTest extends Setup {
 
     @Test
-    public void getClassesWhenSuccessfulTest() throws IOException, ClassNotFoundException {
+    public void getClassesWhenSuccessfulTest() {
         File pathToProject =
                 new File(
                         temp

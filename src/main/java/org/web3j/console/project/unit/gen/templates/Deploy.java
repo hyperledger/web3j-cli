@@ -19,7 +19,7 @@ import javax.lang.model.element.Modifier;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.shaded.org.apache.commons.lang.ArrayUtils;
 
 import static org.web3j.console.project.utills.NameUtils.returnTypeAsLiteral;
@@ -41,24 +41,20 @@ public class Deploy extends Template {
     @Override
     public MethodSpec generate() {
         return MethodSpec.methodBuilder("testDeploy")
-                .addAnnotation(BeforeAll.class)
-                .addModifiers(Modifier.STATIC)
+                .addAnnotation(BeforeEach.class)
                 .addStatement("// Make sure to change the placeholder arguments.")
                 .addModifiers(Modifier.PUBLIC)
                 .addException(Exception.class)
                 .returns(TypeName.VOID)
                 .addParameters(methodParameters)
-                .addStatement("$L = $L.deploy(" + customParameters() + ").send()", arguments())
+                .addStatement("$L = $T.deploy(" + customParameters() + ").send()", arguments())
                 .build();
     }
 
     @Override
     Object[] arguments() {
         return ArrayUtils.addAll(
-                new Object[] {
-                    toCamelCase(returnTypeAsLiteral(returnType, false)),
-                    toCamelCase(contractName.getSimpleName())
-                },
+                new Object[] {toCamelCase(returnTypeAsLiteral(returnType, false)), contractName},
                 dynamicArguments());
     }
 }

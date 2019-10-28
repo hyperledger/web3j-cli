@@ -27,22 +27,27 @@ public class Generator {
         if (args.length == 0) {
             Console.exitError("generate <project_directory>");
         }
+        File pathToJavaContracts;
+        if (args.length == 1) {
+            pathToJavaContracts =
+                    new File(
+                            args[0]
+                                    + separator
+                                    + "build"
+                                    + separator
+                                    + "generated"
+                                    + separator
+                                    + "source"
+                                    + separator
+                                    + "web3j"
+                                    + separator
+                                    + "main"
+                                    + separator
+                                    + "java");
+        } else {
+            pathToJavaContracts = new File(System.getProperty("user.dir") + separator + args[1]);
+        }
 
-        File pathToJavaContracts =
-                new File(
-                        args[0]
-                                + separator
-                                + "build"
-                                + separator
-                                + "generated"
-                                + separator
-                                + "source"
-                                + separator
-                                + "web3j"
-                                + separator
-                                + "main"
-                                + separator
-                                + "java");
         ClassProvider classProvider = new ClassProvider(pathToJavaContracts);
 
         String[] finalArgs = args;

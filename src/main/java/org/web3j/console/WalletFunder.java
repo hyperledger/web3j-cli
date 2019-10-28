@@ -12,26 +12,24 @@
  */
 package org.web3j.console;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import org.web3j.utils.Numeric;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.IntStream;
+import org.web3j.utils.Numeric;
 
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.crypto.Hash.sha256;
 
-/**
- * Simple class for creating a wallet file.
- */
+/** Simple class for creating a wallet file. */
 public class WalletFunder {
 
     private static final String BASE_URL = "http://localhost:8000";
@@ -58,22 +56,29 @@ public class WalletFunder {
     private static boolean loading = true;
 
     private static synchronized void loading(String msg) {
-        Thread th = new Thread(() -> {
-            String anim= "|/―\\";
-            try {
-                System.out.write("\r|".getBytes());
-                int current = 0;
-                while(loading) {
-                    current++;
-                    String data = "\r" + "[ " + anim.charAt(current % anim.length()) + " ] " + msg;
-                    System.out.write(data.getBytes());
-                    Thread.sleep(500);
-                }
-                System.out.write("\n".getBytes());
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+        Thread th =
+                new Thread(
+                        () -> {
+                            String anim = "|/―\\";
+                            try {
+                                System.out.write("\r|".getBytes());
+                                int current = 0;
+                                while (loading) {
+                                    current++;
+                                    String data =
+                                            "\r"
+                                                    + "[ "
+                                                    + anim.charAt(current % anim.length())
+                                                    + " ] "
+                                                    + msg;
+                                    System.out.write(data.getBytes());
+                                    Thread.sleep(500);
+                                }
+                                System.out.write("\n".getBytes());
+                            } catch (IOException | InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        });
         th.start();
     }
 
@@ -93,24 +98,36 @@ public class WalletFunder {
         AtomicInteger intResult = new AtomicInteger(0);
         loading("Performing proof of work to validate your request");
 
-        IntStream.range(0, Integer.MAX_VALUE).parallel().forEach(i -> {
-            if (found.get()) return;
-            String potentialHash = Numeric.toHexString(sha256((i + config.seed).getBytes(StandardCharsets.UTF_8))).substring(2);
-            if (potentialHash.startsWith("0".repeat(config.difficulty))) {
-                found.set(true);
-                intResult.set(i);
-            }
-        });
+        IntStream.range(0, Integer.MAX_VALUE)
+                .parallel()
+                .forEach(
+                        i -> {
+                            if (found.get()) return;
+                            String potentialHash =
+                                    Numeric.toHexString(
+                                                    sha256(
+                                                            (i + config.seed)
+                                                                    .getBytes(
+                                                                            StandardCharsets
+                                                                                    .UTF_8)))
+                                            .substring(2);
+                            if (potentialHash.startsWith("0".repeat(config.difficulty))) {
+                                found.set(true);
+                                intResult.set(i);
+                            }
+                        });
 
         loading = false;
-        RequestBody fundingBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("address", walletAddress)
-                .addFormDataPart("seed", config.seed)
-                .addFormDataPart("nonce", String.valueOf(intResult.get()))
-                .build();
+        RequestBody fundingBody =
+                new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("address", walletAddress)
+                        .addFormDataPart("seed", config.seed)
+                        .addFormDataPart("nonce", String.valueOf(intResult.get()))
+                        .build();
 
-        Request sendEtherRequest = new okhttp3.Request.Builder().url(BASE_URL + "/send").post(fundingBody).build();
+        Request sendEtherRequest =
+                new okhttp3.Request.Builder().url(BASE_URL + "/send").post(fundingBody).build();
 
         String sendResponse = client.newCall(sendEtherRequest).execute().body().string();
 
@@ -118,9 +135,7 @@ public class WalletFunder {
 
         return result.result;
     }
-
 }
-
 
 class WalletFunderConfig {
     public int difficulty;

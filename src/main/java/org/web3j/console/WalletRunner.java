@@ -18,13 +18,14 @@ import static org.web3j.utils.Collection.tail;
 
 /** Class for managing our wallet command line utilities. */
 public class WalletRunner {
-    private static final String USAGE = "wallet create|update|send|fromkey";
+    private static final String USAGE = "wallet create|update|send|fromkey|fund";
 
     public static void run(String[] args) {
         main(args);
     }
 
     public static void main(String[] args) {
+
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
@@ -40,6 +41,9 @@ public class WalletRunner {
                     break;
                 case "fromkey":
                     KeyImporter.main(tail(args));
+                    break;
+                case "fund":
+                    WalletFunder.main(tail(args));
                     break;
                 default:
                     Console.exitError(USAGE);

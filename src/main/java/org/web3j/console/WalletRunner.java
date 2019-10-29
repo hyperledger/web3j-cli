@@ -25,7 +25,6 @@ public class WalletRunner {
     }
 
     public static void main(String[] args) {
-
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {

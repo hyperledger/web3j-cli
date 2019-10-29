@@ -24,6 +24,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+import okhttp3.Response;
 import org.web3j.utils.Numeric;
 
 import static org.web3j.codegen.Console.exitError;
@@ -32,7 +33,7 @@ import static org.web3j.crypto.Hash.sha256;
 /** Simple class for creating a wallet file. */
 public class WalletFunder {
 
-    private static final String BASE_URL = "http://localhost:8000";
+    private static final String BASE_URL = "https://rinkeby.faucet.epirus.web3labs.com";
     private static final String USAGE = "fund <destination-address>";
 
     public static void main(String[] args) {
@@ -41,7 +42,7 @@ public class WalletFunder {
         }
 
         try {
-            String transactionHash = fundWallet(args[0]);
+            String transactionHash = fundWallet(args[0], args.length == 3 ? args[2] : null);
             System.out.println(
                     String.format(
                             "Your Rinkeby wallet was successfully funded. You can view the associated transaction here: https://rinkeby.explorer.epirus.web3labs.com/transactions/%s",
@@ -82,54 +83,80 @@ public class WalletFunder {
         th.start();
     }
 
-    private static String fundWallet(String walletAddress) throws Exception {
+    private static String fundWallet(String walletAddress, String token) throws Exception {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
-
         System.out.println("Sending funding request...");
-        Request getSeedRequest =
-                new okhttp3.Request.Builder().url(BASE_URL + "/seed/0.2").get().build();
+        Request sendEtherRequest;
 
-        String configResponse = client.newCall(getSeedRequest).execute().body().string();
+        if (token != null) {
+            RequestBody fundingBody =
+                    new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("address", walletAddress)
+                            .build();
 
-        WalletFunderConfig config = mapper.readValue(configResponse, WalletFunderConfig.class);
+            sendEtherRequest =
+                    new okhttp3.Request.Builder()
+                            .url(BASE_URL + "/send/" + token)
+                            .post(fundingBody)
+                            .build();
+        } else {
+            Request getSeedRequest =
+                    new okhttp3.Request.Builder().url(BASE_URL + "/seed/0.2").get().build();
+            Response configRawResponse = client.newCall(getSeedRequest).execute();
 
-        AtomicBoolean found = new AtomicBoolean(false);
-        AtomicInteger intResult = new AtomicInteger(0);
-        loading("Performing proof of work to validate your request");
+            if (configRawResponse.code() != 200) {
+                exitError("An HTTP request failed with code: " + configRawResponse.code());
+            }
 
-        IntStream.range(0, Integer.MAX_VALUE)
-                .parallel()
-                .forEach(
-                        i -> {
-                            if (found.get()) return;
-                            String potentialHash =
-                                    Numeric.toHexString(
-                                                    sha256(
-                                                            (i + config.seed)
-                                                                    .getBytes(
-                                                                            StandardCharsets
-                                                                                    .UTF_8)))
-                                            .substring(2);
-                            if (potentialHash.startsWith("0".repeat(config.difficulty))) {
-                                found.set(true);
-                                intResult.set(i);
-                            }
-                        });
+            String configResponse = configRawResponse.body().string();
 
-        loading = false;
-        RequestBody fundingBody =
-                new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("address", walletAddress)
-                        .addFormDataPart("seed", config.seed)
-                        .addFormDataPart("nonce", String.valueOf(intResult.get()))
-                        .build();
+            WalletFunderConfig config = mapper.readValue(configResponse, WalletFunderConfig.class);
 
-        Request sendEtherRequest =
-                new okhttp3.Request.Builder().url(BASE_URL + "/send").post(fundingBody).build();
+            AtomicBoolean found = new AtomicBoolean(false);
+            AtomicInteger intResult = new AtomicInteger(0);
+            loading("Performing proof of work to validate your request");
 
-        String sendResponse = client.newCall(sendEtherRequest).execute().body().string();
+            IntStream.range(0, Integer.MAX_VALUE)
+                    .parallel()
+                    .forEach(
+                            i -> {
+                                if (found.get()) return;
+                                String potentialHash =
+                                        Numeric.toHexString(
+                                                        sha256(
+                                                                (i + config.seed)
+                                                                        .getBytes(
+                                                                                StandardCharsets
+                                                                                        .UTF_8)))
+                                                .substring(2);
+                                if (potentialHash.startsWith("0".repeat(config.difficulty))) {
+                                    found.set(true);
+                                    intResult.set(i);
+                                }
+                            });
+
+            loading = false;
+            RequestBody fundingBody =
+                    new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("address", walletAddress)
+                            .addFormDataPart("seed", config.seed)
+                            .addFormDataPart("nonce", String.valueOf(intResult.get()))
+                            .build();
+
+            sendEtherRequest =
+                    new okhttp3.Request.Builder().url(BASE_URL + "/send").post(fundingBody).build();
+        }
+
+        Response sendRawResponse = client.newCall(sendEtherRequest).execute();
+
+        if (sendRawResponse.code() != 200) {
+            exitError("An HTTP request failed with code: " + sendRawResponse.code());
+        }
+
+        String sendResponse = sendRawResponse.body().string();
 
         WalletFunderResult result = mapper.readValue(sendResponse, WalletFunderResult.class);
 

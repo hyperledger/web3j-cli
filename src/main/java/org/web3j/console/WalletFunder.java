@@ -23,8 +23,8 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-
 import okhttp3.Response;
+
 import org.web3j.utils.Numeric;
 
 import static org.web3j.codegen.Console.exitError;
@@ -36,17 +36,24 @@ public class WalletFunder {
     private static final String BASE_URL = "https://rinkeby.faucet.epirus.web3labs.com";
     private static final String USAGE = "fund <destination-address>";
 
-    public static void main(String[] args) {
+    public static void main(IODevice console, String[] args) {
         if (args.length != 1 && args.length != 3) {
             exitError(USAGE);
         }
 
         try {
+            String fund =
+                    console.readLine(
+                            "This command will fund the specified wallet on the Rinkeby testnet. Do you wish to continue? [Y/n]: ");
+            if (!fund.toUpperCase().equals("Y")) {
+                exitError("Operation was cancelled by user.");
+            }
             String transactionHash = fundWallet(args[0], args.length == 3 ? args[2] : null);
             System.out.println(
                     String.format(
-                            "Your Rinkeby wallet was successfully funded. You can view the associated transaction here: https://rinkeby.explorer.epirus.web3labs.com/transactions/%s",
+                            "Your Rinkeby wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://rinkeby.explorer.epirus.web3labs.com/transactions/%s",
                             transactionHash));
+            System.exit(0);
         } catch (Exception e) {
             System.err.println("The fund operation failed with the following exception:");
             e.printStackTrace();
@@ -67,11 +74,9 @@ public class WalletFunder {
                                 while (loading) {
                                     current++;
                                     String data =
-                                            "\r"
-                                                    + "[ "
-                                                    + anim.charAt(current % anim.length())
-                                                    + " ] "
-                                                    + msg;
+                                            String.format(
+                                                    "\r[ %s ] %s",
+                                                    anim.charAt(current % anim.length()), msg);
                                     System.out.write(data.getBytes());
                                     Thread.sleep(500);
                                 }
@@ -98,12 +103,15 @@ public class WalletFunder {
 
             sendEtherRequest =
                     new okhttp3.Request.Builder()
-                            .url(BASE_URL + "/send/" + token)
+                            .url(String.format("%s/send/%s", BASE_URL, token))
                             .post(fundingBody)
                             .build();
         } else {
             Request getSeedRequest =
-                    new okhttp3.Request.Builder().url(BASE_URL + "/seed/0.2").get().build();
+                    new okhttp3.Request.Builder()
+                            .url(String.format("%s/seed/0.2", BASE_URL))
+                            .get()
+                            .build();
             Response configRawResponse = client.newCall(getSeedRequest).execute();
 
             if (configRawResponse.code() != 200) {
@@ -147,13 +155,17 @@ public class WalletFunder {
                             .build();
 
             sendEtherRequest =
-                    new okhttp3.Request.Builder().url(BASE_URL + "/send").post(fundingBody).build();
+                    new okhttp3.Request.Builder()
+                            .url(String.format("%s/send", BASE_URL))
+                            .post(fundingBody)
+                            .build();
         }
 
         Response sendRawResponse = client.newCall(sendEtherRequest).execute();
 
         if (sendRawResponse.code() != 200) {
-            exitError("An HTTP request failed with code: " + sendRawResponse.code());
+            exitError(
+                    String.format("An HTTP request failed with code: %d", sendRawResponse.code()));
         }
 
         String sendResponse = sendRawResponse.body().string();

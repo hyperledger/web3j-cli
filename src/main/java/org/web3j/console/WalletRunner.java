@@ -42,7 +42,7 @@ public class WalletRunner {
                     KeyImporter.main(tail(args));
                     break;
                 case "fund":
-                    WalletFunder.main(tail(args));
+                    WalletFunder.main(new ConsoleDevice(), tail(args));
                     break;
                 default:
                     Console.exitError(USAGE);

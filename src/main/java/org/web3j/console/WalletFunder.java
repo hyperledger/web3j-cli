@@ -45,7 +45,7 @@ public class WalletFunder {
             String fund =
                     console.readLine(
                             "This command will fund the specified wallet on the Rinkeby testnet. Do you wish to continue? [Y/n]: ");
-            if (!fund.toUpperCase().equals("Y")) {
+            if (fund.toUpperCase().equals("N")) {
                 exitError("Operation was cancelled by user.");
             }
             String transactionHash = fundWallet(args[0], args.length == 3 ? args[2] : null);
@@ -139,7 +139,9 @@ public class WalletFunder {
                                                                                 StandardCharsets
                                                                                         .UTF_8)))
                                                 .substring(2);
-                                if (potentialHash.startsWith("0".repeat(config.difficulty))) {
+                                if (potentialHash.startsWith(
+                                        new String(new char[config.difficulty])
+                                                .replace("\0", "0"))) {
                                     found.set(true);
                                     intResult.set(i);
                                 }

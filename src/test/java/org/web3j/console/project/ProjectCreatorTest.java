@@ -22,6 +22,7 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ import picocli.CommandLine;
 import org.web3j.console.project.utills.ClassExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ProjectCreatorTest extends ClassExecutor {
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -98,16 +99,59 @@ public class ProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
+    public void testWhenInteractiveAndFirstInputIsInvalidClassName()
+            throws IOException, InterruptedException {
+        final String[] args = {"new"};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("#$%^%#$test", 0, "#$%^%#$test".length());
+        writer.newLine();
+        writer.write("test", 0, "test".length());
+        writer.newLine();
+        writer.write("org.com", 0, "org.com".length());
+        writer.newLine();
+        writer.write(tempDirPath, 0, tempDirPath.length());
+        writer.newLine();
+        writer.close();
+        process.waitFor();
+        assertEquals(0, process.exitValue());
+    }
+
+    @Test
+    public void testWhenInteractiveAndFirstInputIsInvalidPackageName()
+            throws IOException, InterruptedException {
+        final String[] args = {"new"};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("test", 0, "test".length());
+        writer.newLine();
+        writer.write("@#@$%@%@$#@org.com", 0, "@#@$%@%@$#@org.com".length());
+        writer.newLine();
+        writer.write("org.com", 0, "org.com".length());
+        writer.newLine();
+        writer.write(tempDirPath, 0, tempDirPath.length());
+        writer.newLine();
+        writer.close();
+        process.waitFor();
+        assertEquals(0, process.exitValue());
+    }
+
+    @Test
     public void testWhenInteractiveAndArgumentsAreEmpty() {
         final String input = " \n \n \n";
         inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
 
         final String[] args = {"new"};
-        ProjectCreator.main(args);
-        assertTrue(
-                outContent
-                        .toString()
-                        .contains("Please make sure the required parameters are not empty."));
+
+        assertThrows(NoSuchElementException.class, () -> ProjectCreator.main(args));
     }
 }

@@ -46,14 +46,24 @@ public class ProjectCreatorCLIRunner implements Runnable {
 
     @Override
     public void run() {
-        if (InputVerifier.requiredArgsAreNotEmpty(projectName, packageName)
-                && InputVerifier.classNameIsValid(projectName)
-                && InputVerifier.packageNameIsValid(packageName)) {
-            try {
-                new ProjectCreator(outputDir, packageName, projectName).generate();
-            } catch (final IOException e) {
-                exitError(e);
+
+        if (InputVerifier.requiredArgsAreNotEmpty(projectName, packageName)) {
+            if (InputVerifier.classNameIsValid(projectName)) {
+                if (InputVerifier.packageNameIsValid(packageName)) {
+                    try {
+                        new ProjectCreator(outputDir, packageName, projectName).generate();
+                    } catch (final IOException e) {
+                        exitError(e);
+                    }
+                } else {
+                    exitError(packageName + " is not a valid package name.");
+                }
+            } else {
+                exitError(projectName + " is not a valid name.");
             }
+
+        } else {
+            exitError("Please make sure the required parameters are not empty.");
         }
     }
 }

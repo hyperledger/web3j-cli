@@ -12,18 +12,19 @@
  */
 package org.web3j.console.project;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,17 +35,15 @@ import org.web3j.console.project.utills.ClassExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectImporterTest extends ClassExecutor {
-    private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+
     private InputStream inputStream;
     private String tempDirPath;
 
     @BeforeEach
     public void setUpStreams(@TempDir Path temp) {
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
         tempDirPath = temp.toString();
     }
 
@@ -78,21 +77,29 @@ public class ProjectImporterTest extends ClassExecutor {
         final String[] args = {
             "-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + formattedSolidityTestProject
         };
-        int exitCode =
+        Process ps =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
-                        .inheritIO()
-                        .start()
-                        .waitFor();
+                        .start();
+        BufferedReader in = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+        String exitMessage = in.lines().collect(Collectors.joining());
+        int exitCode = ps.waitFor();
+        assertTrue(exitMessage.contains("Project created with name: Test at location: "));
         assertEquals(0, exitCode);
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
         final String[] args = {"import", "-p= ", "-n= ", "-s= "};
-        ProjectImporter.main(args);
-        assertEquals(
-                outContent.toString(), "Please make sure the required parameters are not empty.\n");
+        Process ps =
+                executeClassAsSubProcessAndReturnProcess(
+                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
+                        .start();
+        BufferedReader in = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
+        String exitMessage = in.lines().collect(Collectors.joining());
+        int exitCode = ps.waitFor();
+        assertEquals("Please make sure the required parameters are not empty.", exitMessage);
+        assertEquals(1, exitCode);
     }
 
     @Test
@@ -101,12 +108,12 @@ public class ProjectImporterTest extends ClassExecutor {
         String formattedPath =
                 "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
         final String[] args = {"import"};
-        Process process =
+        Process ps =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
                         .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps.getOutputStream()));
         writer.write("test", 0, "test".length());
         writer.newLine();
         writer.write("org.com", 0, "org.com".length());
@@ -116,8 +123,11 @@ public class ProjectImporterTest extends ClassExecutor {
         writer.write(tempDirPath, 0, tempDirPath.length());
         writer.newLine();
         writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
+        BufferedReader in = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+        String exitMessage = in.lines().collect(Collectors.joining());
+        ps.waitFor();
+        assertTrue(exitMessage.contains("Project created with name: test at location: "));
+        assertEquals(0, ps.exitValue());
     }
 
     @Test
@@ -126,12 +136,11 @@ public class ProjectImporterTest extends ClassExecutor {
         String formattedPath =
                 "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
         final String[] args = {"import"};
-        Process process =
+        Process ps =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
                         .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps.getOutputStream()));
         writer.write("#$%^%#$test", 0, "#$%^%#$test".length());
         writer.newLine();
         writer.write("test", 0, "test".length());
@@ -143,8 +152,11 @@ public class ProjectImporterTest extends ClassExecutor {
         writer.write(tempDirPath, 0, tempDirPath.length());
         writer.newLine();
         writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
+        BufferedReader in = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+        String exitMessage = in.lines().collect(Collectors.joining());
+        ps.waitFor();
+        assertTrue(exitMessage.contains("#$%^%#$test is a not valid name."));
+        assertEquals(0, ps.exitValue());
     }
 
     @Test
@@ -153,12 +165,11 @@ public class ProjectImporterTest extends ClassExecutor {
         String formattedPath =
                 "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
         final String[] args = {"import"};
-        Process process =
+        Process ps =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
                         .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps.getOutputStream()));
         writer.write("test", 0, "test".length());
         writer.newLine();
         writer.write("@#@$%@%@$#@org.com", 0, "@#@$%@%@$#@org.com".length());
@@ -170,8 +181,11 @@ public class ProjectImporterTest extends ClassExecutor {
         writer.write(tempDirPath, 0, tempDirPath.length());
         writer.newLine();
         writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
+        BufferedReader in = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+        String exitMessage = in.lines().collect(Collectors.joining());
+        ps.waitFor();
+        assertTrue(exitMessage.contains("@#@$%@%@$#@org.com is not a valid package name."));
+        assertEquals(0, ps.exitValue());
     }
 
     @Test
@@ -180,7 +194,6 @@ public class ProjectImporterTest extends ClassExecutor {
         inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
         final String[] args = {"import"};
-
         assertThrows(NoSuchElementException.class, () -> ProjectImporter.main(args));
     }
 }

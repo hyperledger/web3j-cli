@@ -31,15 +31,24 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
 
     @Override
     public void run() {
-        if (InputVerifier.requiredArgsAreNotEmpty(projectName, packageName, solidityImportPath)
-                && InputVerifier.classNameIsValid(projectName)
-                && InputVerifier.packageNameIsValid(packageName)) {
-            try {
-                new ProjectImporter(outputDir, packageName, projectName, solidityImportPath)
-                        .generate();
-            } catch (final Exception e) {
-                exitError(e);
+        if (InputVerifier.requiredArgsAreNotEmpty(projectName, packageName, solidityImportPath)) {
+            if (InputVerifier.classNameIsValid(projectName)) {
+                if (InputVerifier.packageNameIsValid(packageName)) {
+                    try {
+                        new ProjectImporter(outputDir, packageName, projectName, solidityImportPath)
+                                .generate();
+                    } catch (final Exception e) {
+                        exitError(e);
+                    }
+                } else {
+                    exitError(packageName + " is not a valid package name.");
+                }
+            } else {
+                exitError(projectName + " is not a valid name.");
             }
+
+        } else {
+            exitError("Please make sure the required parameters are not empty.");
         }
     }
 }

@@ -39,6 +39,7 @@ class InteractiveOptions {
         print("Please enter the project name (Required Field):");
         String projectName = getUserInput();
         while (!InputVerifier.classNameIsValid(projectName)) {
+            System.out.println(projectName + " is a not valid name.");
             projectName = getUserInput();
         }
         return projectName;
@@ -48,13 +49,14 @@ class InteractiveOptions {
         print("Please enter the package name for your project (Required Field): ");
         String packageName = getUserInput();
         while (!InputVerifier.packageNameIsValid(packageName)) {
+            System.out.println(packageName + " is not a valid package name.");
             packageName = getUserInput();
         }
         return packageName;
     }
 
     protected final Optional<String> getProjectDestination() {
-        print("Please enter the destination of your project (current by default): ");
+        print("Please enter the destination of your project (Current by default): ");
         final String projectDest = getUserInput();
         return projectDest.isEmpty() ? Optional.empty() : Optional.of(projectDest);
     }

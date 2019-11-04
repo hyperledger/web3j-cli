@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ClassProviderTest extends Setup {
 
     @Test
-    public void getClassesWhenSuccessfulTest() {
+    public void getClassesWhenSuccessfulTest() throws IOException, ClassNotFoundException {
         File pathToProject =
                 new File(
                         temp
@@ -65,7 +65,7 @@ public class ClassProviderTest extends Setup {
                                 + "web3j"
                                 + separator);
         ClassProvider classProvider = new ClassProvider(pathToProject);
-        assertThrows(ClassNotFoundException.class, () -> classProvider.getClasses());
+        assertThrows(ClassNotFoundException.class, classProvider::getClasses);
     }
 
     @Test

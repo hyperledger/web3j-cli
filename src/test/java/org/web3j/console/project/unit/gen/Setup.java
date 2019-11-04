@@ -31,7 +31,7 @@ public class Setup extends ClassExecutor {
     @TempDir static File temp;
 
     @BeforeAll
-    public static void setUp() throws IOException, InterruptedException, ClassNotFoundException {
+    public static void setUp() throws IOException, InterruptedException {
         String formattedPath = "src/test/resources/Solidity".replaceAll("/", separator);
         final String[] args = {"import"};
         Process process =
@@ -52,6 +52,13 @@ public class Setup extends ClassExecutor {
         writer.close();
         process.waitFor();
         String[] generateArgs = {"generate", temp + separator + "test"};
-        Generator.main(generateArgs);
+        Process generateProcess =
+                new ClassExecutor()
+                        .executeClassAsSubProcessAndReturnProcess(
+                                Generator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(generateArgs))
+                        .start();
+        generateProcess.waitFor();
     }
 }

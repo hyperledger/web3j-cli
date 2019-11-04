@@ -23,7 +23,6 @@ public class ClassExecutor {
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         String classPath = System.getProperty("java.class.path");
         String className = classToExecute.getName();
-
         List<String> command = new ArrayList<>();
         command.add(javaBin);
         command.addAll(jvmArgs);

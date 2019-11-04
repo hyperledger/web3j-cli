@@ -13,11 +13,19 @@
 package org.web3j.console.project.unit.gen;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Collections;
 
+import kotlin.text.Charsets;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
+
+import org.web3j.console.project.utills.ClassExecutor;
 
 import static java.io.File.separator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeneratorTest extends Setup {
@@ -64,5 +72,40 @@ public class GeneratorTest extends Setup {
                                         + separator
                                         + "TestContract2Test.java")
                         .exists());
+    }
+
+    @Test
+    public void testThatMessageIsThrownWhenProjectNameIsInvalid()
+            throws IOException, InterruptedException {
+        String[] generateArgs = {"generate", temp + separator + "badFile"};
+        Process generateProcess =
+                new ClassExecutor()
+                        .executeClassAsSubProcessAndReturnProcess(
+                                Generator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(generateArgs))
+                        .start();
+        generateProcess.waitFor();
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(generateProcess.getErrorStream(), writer, Charsets.UTF_8);
+        assertEquals(
+                "Looks like there is a problem with the classpath. Please use Web3j CLI to generate your project.\n",
+                writer.toString());
+    }
+
+    @Test
+    public void testWhenGenerateArgumentIsEmpty() throws IOException, InterruptedException {
+        String[] generateArgs = {"generate"};
+        Process generateProcess =
+                new ClassExecutor()
+                        .executeClassAsSubProcessAndReturnProcess(
+                                Generator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(generateArgs))
+                        .start();
+        generateProcess.waitFor();
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(generateProcess.getErrorStream(), writer, Charsets.UTF_8);
+        assertEquals("generate <project_directory>\n", writer.toString());
     }
 }

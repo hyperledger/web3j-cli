@@ -22,14 +22,14 @@ import static org.web3j.utils.Collection.tail;
 
 public class Generator {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         args = tail(args);
         if (args.length == 0) {
             Console.exitError("generate <project_directory>");
         }
-        File pathToJavaContracts;
+        File pathToJavaFiles;
         if (args.length == 1) {
-            pathToJavaContracts =
+            pathToJavaFiles =
                     new File(
                             args[0]
                                     + separator
@@ -45,10 +45,10 @@ public class Generator {
                                     + separator
                                     + "java");
         } else {
-            pathToJavaContracts = new File(System.getProperty("user.dir") + separator + args[1]);
+            pathToJavaFiles = new File(args[1]);
         }
 
-        ClassProvider classProvider = new ClassProvider(pathToJavaContracts);
+        ClassProvider classProvider = new ClassProvider(pathToJavaFiles);
 
         String[] finalArgs = args;
         classProvider
@@ -69,7 +69,5 @@ public class Generator {
                                 Console.exitError("Can't find project");
                             }
                         });
-        Console.exitSuccess(
-                "Unit tests were successfully generated under the test/solidity directory");
     }
 }

@@ -23,8 +23,8 @@ import org.junit.jupiter.api.Test;
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestClassProviderTest extends Setup {
-    File classAsFile =
+public class MethodGenerationTest extends Setup {
+    private File classAsFile =
             new File(
                     temp
                             + separator
@@ -64,10 +64,10 @@ public class TestClassProviderTest extends Setup {
                         .lines()
                         .collect(Collectors.joining("\n"));
         String deployTemplate =
-                "@BeforeAll\n"
-                        + "  public static void testDeploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) throws Exception {\n"
+                "@BeforeEach\n"
+                        + "  public void testDeploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) throws Exception {\n"
                         + "    // Make sure to change the placeholder arguments.;\n"
-                        + "    testContract2 = testContract2.deploy(web3j,transactionManager,contractGasProvider,\"REPLACE_ME\").send();\n"
+                        + "    testContract2 = TestContract2.deploy(web3j,transactionManager,contractGasProvider,\"REPLACE_ME\").send();\n"
                         + "  }";
         assertTrue(classAsString.contains(deployTemplate));
     }

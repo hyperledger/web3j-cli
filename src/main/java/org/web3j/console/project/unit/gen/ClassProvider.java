@@ -14,19 +14,15 @@ package org.web3j.console.project.unit.gen;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.web3j.codegen.Console;
 
 class ClassProvider {
     private final File pathToJavaFiles;
@@ -35,62 +31,38 @@ class ClassProvider {
         this.pathToJavaFiles = pathToJavaFiles;
     }
 
-    final List<Class> getClasses() {
-        try {
-            return loadClassesToList(compileClasses());
-        } catch (MalformedURLException e) {
-            Console.exitError("Could not get the URL of the files.");
-        }
-        return Collections.emptyList();
+    final List<Class> getClasses() throws IOException, ClassNotFoundException {
+        return loadClassesToList(compileClasses());
     }
 
-    private CompilerClassLoader compileClasses() throws MalformedURLException {
+    private CompilerClassLoader compileClasses() throws IOException {
         URL[] classPathURL = new URL[] {pathToJavaFiles.toURI().toURL()};
-        Path outputDirectory = null;
-        try {
-            outputDirectory = Files.createTempDirectory("tmp");
-        } catch (IOException e) {
-            Console.exitError(
-                    "Could not create temporary directory to store classes to be loaded.");
-        }
-
+        Path outputDirectory = Files.createTempDirectory("tmp");
         return new CompilerClassLoader(
                 Objects.requireNonNull(outputDirectory).toFile(), classPathURL);
     }
 
-    private List<Class> loadClassesToList(final CompilerClassLoader compilerClassLoader) {
+    private List<Class> loadClassesToList(final CompilerClassLoader compilerClassLoader)
+            throws ClassNotFoundException, IOException {
         List<String> formattedClassPath = new ArrayList<>();
         List<Class> classList = new ArrayList<>();
         getFormattedClassPath()
                 .forEach(s -> formattedClassPath.add(s.replace(File.separator, ".")));
         for (String s : formattedClassPath) {
-            try {
-                classList.add(compilerClassLoader.loadClass(s.replace(File.separator, ".")));
-            } catch (ClassNotFoundException e) {
-                Console.exitError("Could not load " + e.getMessage() + " class");
-            }
+
+            classList.add(compilerClassLoader.loadClass(s.replace(File.separator, ".")));
         }
         return classList;
     }
 
-    private List<String> getFormattedClassPath() {
-        List<String> classPath = new ArrayList<>();
-        try (Stream<Path> walk = Files.walk(Paths.get(pathToJavaFiles.toURI()))) {
-
-            classPath =
-                    walk.filter(Files::isRegularFile)
-                            .map(Path::toString)
-                            .collect(Collectors.toList());
-
-        } catch (IOException e) {
-            Console.exitError(
-                    "Looks like there is a problem with the classpath. Please use Web3j CLI to generate your project.");
-        }
-        return getClassPathFromURL(classPath);
+    private List<String> getFormattedClassPath() throws IOException {
+        Stream<Path> walk = Files.walk(Paths.get(pathToJavaFiles.toURI()));
+        return getClassPathFromURL(
+                walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList()));
     }
 
-    private List<String> getClassPathFromURL(final List<String> listOfUrl) {
-        int length = pathToJavaFiles.getAbsolutePath().length();
+    private List<String> getClassPathFromURL(final List<String> listOfUrl) throws IOException {
+        int length = pathToJavaFiles.getCanonicalPath().length();
         List<String> formattedClassPath = new ArrayList<>();
         for (String s : listOfUrl) {
             formattedClassPath.add(s.substring(length + 1, s.lastIndexOf(".java")));

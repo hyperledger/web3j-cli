@@ -47,7 +47,7 @@ public class Setup extends ClassExecutor {
         writer.newLine();
         writer.write(formattedPath, 0, formattedPath.length());
         writer.newLine();
-        writer.write(temp.getPath(), 0, temp.getPath().length());
+        writer.write(temp.getCanonicalPath(), 0, temp.getCanonicalPath().length());
         writer.newLine();
         writer.close();
         process.waitFor();
@@ -60,6 +60,5 @@ public class Setup extends ClassExecutor {
                                 Arrays.asList(generateArgs))
                         .start();
         generateProcess.waitFor();
-        System.out.println("Setup Called");
     }
 }

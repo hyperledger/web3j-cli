@@ -79,9 +79,8 @@ public class ClassGeneratorTest extends Setup {
 
     @Test
     public void testThatExceptionIsThrownWhenAClassIsNotWritten() {
-        Class nonExistingClass = null;
         TestClassGenerator testClassGenerator =
-                new TestClassGenerator(nonExistingClass, "org.com", temp + separator + "test");
+                new TestClassGenerator(null, "org.com", temp + separator + "test");
         assertThrows(NullPointerException.class, testClassGenerator::writeClass);
     }
 

@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClassGeneratorTest extends Setup {
-
 
     @BeforeEach
     public void init() throws IOException, ClassNotFoundException {
@@ -50,7 +50,8 @@ public class ClassGeneratorTest extends Setup {
         ClassProvider classProvider = new ClassProvider(pathToProject);
 
         TestClassGenerator testClassGenerator =
-                new TestClassGenerator(classProvider.getClasses().get(0), "org.com", temp + separator + "test");
+                new TestClassGenerator(
+                        classProvider.getClasses().get(0), "org.com", temp + separator + "test");
         testClassGenerator.writeClass();
     }
 
@@ -58,21 +59,21 @@ public class ClassGeneratorTest extends Setup {
     public void testThatTheClassWasSuccessfullyWritten() {
         assertTrue(
                 new File(
-                        temp
-                                + separator
-                                + "test"
-                                + separator
-                                + "src"
-                                + separator
-                                + "test"
-                                + separator
-                                + "solidity"
-                                + separator
-                                + "org"
-                                + separator
-                                + "com"
-                                + separator
-                                + "TestContract2Test.java")
+                                temp
+                                        + separator
+                                        + "test"
+                                        + separator
+                                        + "src"
+                                        + separator
+                                        + "test"
+                                        + separator
+                                        + "solidity"
+                                        + separator
+                                        + "org"
+                                        + separator
+                                        + "com"
+                                        + separator
+                                        + "TestContract2Test.java")
                         .exists());
     }
 

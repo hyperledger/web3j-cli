@@ -13,43 +13,18 @@
 package org.web3j.console.project.unit.gen;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collections;
+import java.nio.file.NoSuchFileException;
 
-import kotlin.text.Charsets;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
-
-import org.web3j.console.project.utills.ClassExecutor;
 
 import static java.io.File.separator;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeneratorTest extends Setup {
 
     @Test
     public void testThatUnitClassWasGenerated() {
-        System.out.println(
-                Arrays.toString(
-                        new File(
-                                        temp
-                                                + separator
-                                                + "test"
-                                                + separator
-                                                + "src"
-                                                + separator
-                                                + "test"
-                                                + separator
-                                                + "solidity"
-                                                + separator
-                                                + "org"
-                                                + separator
-                                                + "com"
-                                                + separator)
-                                .listFiles()));
         assertTrue(
                 new File(
                                 temp
@@ -75,37 +50,14 @@ public class GeneratorTest extends Setup {
     }
 
     @Test
-    public void testThatMessageIsThrownWhenProjectNameIsInvalid()
-            throws IOException, InterruptedException {
+    public void testThatExceptionIsThrownWhenFileIsNotFound() {
         String[] generateArgs = {"generate", temp + separator + "badFile"};
-        Process generateProcess =
-                new ClassExecutor()
-                        .executeClassAsSubProcessAndReturnProcess(
-                                Generator.class,
-                                Collections.emptyList(),
-                                Arrays.asList(generateArgs))
-                        .start();
-        generateProcess.waitFor();
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(generateProcess.getErrorStream(), writer, Charsets.UTF_8);
-        assertEquals(
-                "Looks like there is a problem with the classpath. Please use Web3j CLI to generate your project.\n",
-                writer.toString());
+        assertThrows(NoSuchFileException.class, () -> Generator.main(generateArgs));
     }
 
     @Test
-    public void testWhenGenerateArgumentIsEmpty() throws IOException, InterruptedException {
+    public void testThatExceptionIsThrownWhenDirectoryIsNotGiven() {
         String[] generateArgs = {"generate"};
-        Process generateProcess =
-                new ClassExecutor()
-                        .executeClassAsSubProcessAndReturnProcess(
-                                Generator.class,
-                                Collections.emptyList(),
-                                Arrays.asList(generateArgs))
-                        .start();
-        generateProcess.waitFor();
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(generateProcess.getErrorStream(), writer, Charsets.UTF_8);
-        assertEquals("generate <project_directory>\n", writer.toString());
+        assertThrows(Exception.class, () -> Generator.main(generateArgs));
     }
 }

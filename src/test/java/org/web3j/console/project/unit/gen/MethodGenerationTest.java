@@ -18,13 +18,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MethodGenerationTest extends Setup {
-    private File classAsFile =
+    private static File classAsFile =
             new File(
                     temp
                             + separator
@@ -46,23 +47,18 @@ public class MethodGenerationTest extends Setup {
                             + separator
                             + "TestContract2Test.java");
 
-    @Test
-    public void testThatRequiredMethodsAreExtracted() throws FileNotFoundException {
+    private static String classAsString;
 
-        String classAsString =
+    @BeforeAll
+    public static void classToString() throws FileNotFoundException {
+        classAsString =
                 new BufferedReader(new FileReader(classAsFile))
                         .lines()
                         .collect(Collectors.joining("\n"));
-        assertTrue(classAsString.contains(" testDeploy"));
     }
 
     @Test
-    public void testThatDeployMethodWasGeneratedCorrectly() throws FileNotFoundException {
-
-        String classAsString =
-                new BufferedReader(new FileReader(classAsFile))
-                        .lines()
-                        .collect(Collectors.joining("\n"));
+    public void testThatDeployMethodWasGenerated() {
         String deployTemplate =
                 "@BeforeEach\n"
                         + "  public void testDeploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) throws Exception {\n"
@@ -73,11 +69,50 @@ public class MethodGenerationTest extends Setup {
     }
 
     @Test
-    public void testThatOnlySupportedMethodsWereGenerated() throws FileNotFoundException {
-        String classAsString =
-                new BufferedReader(new FileReader(classAsFile))
-                        .lines()
-                        .collect(Collectors.joining("\n"));
-        assertTrue(classAsString.contains("public void testNewGreeting"));
+    public void testThatLoadMethodWasGenerated() {
+
+        assertTrue(
+                classAsString.contains(
+                        "@Test\n"
+                                + "  public void testLoad(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {\n"
+                                + "    // Make sure to change the placeholder arguments.;\n"
+                                + "    testContract2 = TestContract2.load(\"REPLACE_ME\",web3j,transactionManager,contractGasProvider);\n"
+                                + "  }"));
+    }
+
+    @Test
+    public void testThatKillMethodWasGenerated() {
+
+        assertTrue(
+                classAsString.contains(
+                        "@Test\n"
+                                + "  public void testKill() throws Exception {\n"
+                                + "    // Make sure to change the placeholder arguments.;\n"
+                                + "    TransactionReceipt transactionReceiptVar = testContract2.kill().send();\n"
+                                + "  }"));
+    }
+
+    @Test
+    public void testThatNewGreetingMethodWasGenerated() {
+
+        assertTrue(
+                classAsString.contains(
+                        "@Test\n"
+                                + "  public void testNewGreeting() throws Exception {\n"
+                                + "    // Make sure to change the placeholder arguments.;\n"
+                                + "    TransactionReceipt transactionReceiptVar = testContract2.newGreeting(\"REPLACE_ME\").send();\n"
+                                + "  }"));
+    }
+
+    @Test
+    public void testThatGreetMethodWasGenerated() {
+
+        assertTrue(
+                classAsString.contains(
+                        "@Test\n"
+                                + "  public void testGreet() throws Exception {\n"
+                                + "    // Make sure to change the placeholder arguments.;\n"
+                                + "    String stringVar = testContract2.greet().send();\n"
+                                + "  }"));
     }
 }

@@ -19,7 +19,9 @@ import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
 
 import org.web3j.console.project.ProjectImporter;
@@ -28,7 +30,8 @@ import org.web3j.console.project.utills.ClassExecutor;
 import static java.io.File.*;
 
 public class Setup extends ClassExecutor {
-    @TempDir static File temp;
+    @TempDir
+    static File temp;
 
     @BeforeAll
     public static void setUp() throws IOException, InterruptedException {
@@ -60,5 +63,6 @@ public class Setup extends ClassExecutor {
                                 Arrays.asList(generateArgs))
                         .start();
         generateProcess.waitFor();
+        System.out.println("Setup Called");
     }
 }

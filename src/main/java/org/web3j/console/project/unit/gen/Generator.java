@@ -22,10 +22,10 @@ import static org.web3j.utils.Collection.tail;
 
 public class Generator {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws Exception {
         args = tail(args);
         if (args.length == 0) {
-            Console.exitError("generate <project_directory>");
+            throw new Exception("generate <project_directory>");
         }
         File pathToJavaFiles;
         if (args.length == 1) {
@@ -56,7 +56,7 @@ public class Generator {
                 .forEach(
                         c -> {
                             try {
-                                new TestClassProvider(
+                                new TestClassGenerator(
                                                 c,
                                                 c.getCanonicalName()
                                                         .substring(

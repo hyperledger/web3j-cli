@@ -34,21 +34,21 @@ import org.web3j.tx.gas.ContractGasProvider;
 import static java.io.File.separator;
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-class TestClassProvider {
-    private final Class className;
+class TestClassGenerator {
+    private final Class aClass;
     private final String packageName;
     private final List<String> supportedMethods =
             Arrays.asList("deploy", "transferFrom", "load", "totalSupply", "balanceOf", "transfer");
     private final String projectName;
 
-    TestClassProvider(final Class className, final String packageName, final String projectName) {
-        this.className = className;
+    TestClassGenerator(final Class aClass, final String packageName, final String projectName) {
+        this.aClass = aClass;
         this.packageName = packageName;
         this.projectName = projectName;
     }
 
     private List<Method> extractRequiredMethods() {
-        return Arrays.stream(className.getDeclaredMethods())
+        return Arrays.stream(aClass.getDeclaredMethods())
                 .filter(
                         m ->
                                 !m.isSynthetic()
@@ -61,7 +61,7 @@ class TestClassProvider {
         List<MethodSpec> listOfMethodSpecs = new ArrayList<>();
         listOfValidMethods.forEach(
                 method -> {
-                    listOfMethodSpecs.add(new UnitTestGenerator(method, className).getMethodSpec());
+                    listOfMethodSpecs.add(new UnitTestGenerator(method, aClass).getMethodSpec());
                 });
         return listOfMethodSpecs;
     }
@@ -78,12 +78,12 @@ class TestClassProvider {
                         .initializer("$S", "0x42699a7612a82f1d9c36148af9c77354759b210b")
                         .build();
         TypeSpec testClass =
-                TypeSpec.classBuilder(className.getSimpleName() + "Test")
+                TypeSpec.classBuilder(aClass.getSimpleName() + "Test")
                         .addMethods(generateMethodSpecsForEachTest(extractRequiredMethods()))
                         .addAnnotation(EVMTest.class)
                         .addField(addressOne)
                         .addField(addressTwo)
-                        .addField(className, toCamelCase(className), Modifier.PRIVATE)
+                        .addField(aClass, toCamelCase(aClass), Modifier.PRIVATE)
                         .build();
 
         JavaFile javaFile = JavaFile.builder(packageName, testClass).build();

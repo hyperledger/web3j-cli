@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.io.TempDir;
+import org.testcontainers.shaded.com.google.common.io.Files;
 
 import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.utills.ClassExecutor;
 
 public class Setup extends ClassExecutor {
-    @TempDir static File temp;
+    static File temp = Files.createTempDir();
 
     @BeforeAll
     public static void setUp() throws IOException, InterruptedException {

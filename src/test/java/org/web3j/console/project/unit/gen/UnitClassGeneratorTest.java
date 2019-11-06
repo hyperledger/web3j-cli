@@ -56,7 +56,7 @@ public class UnitClassGeneratorTest extends Setup {
     }
 
     @BeforeAll
-    public static void init() throws IOException, ClassNotFoundException {
+    public static void init() throws IOException, ClassNotFoundException, InterruptedException {
         File pathToProject =
                 new File(
                         temp

@@ -27,6 +27,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UnitClassGeneratorTest extends Setup {
+    private static String classAsString;
+    private static File classAsFile =
+            new File(
+                    temp
+                            + separator
+                            + "test"
+                            + separator
+                            + "src"
+                            + separator
+                            + "test"
+                            + separator
+                            + "solidity"
+                            + separator
+                            + "org"
+                            + separator
+                            + "com"
+                            + separator
+                            + "TestContract2Test.java");
 
     @BeforeAll
     public static void init() throws IOException, ClassNotFoundException {
@@ -48,15 +66,20 @@ public class UnitClassGeneratorTest extends Setup {
                                 + separator
                                 + "java");
         ClassProvider classProvider = new ClassProvider(pathToProject);
-
         UnitClassGenerator unitClassGenerator =
                 new UnitClassGenerator(
                         classProvider.getClasses().get(0), "org.com", temp + separator + "test");
         unitClassGenerator.writeClass();
+
+        classAsString =
+                new BufferedReader(new FileReader(classAsFile))
+                        .lines()
+                        .collect(Collectors.joining("\n"));
     }
 
     @Test
     public void testThatTheClassWasSuccessfullyWritten() {
+
         assertTrue(
                 new File(
                                 temp
@@ -86,28 +109,7 @@ public class UnitClassGeneratorTest extends Setup {
 
     @Test
     public void testThatClassWasGeneratedWithCorrectFields() throws FileNotFoundException {
-        File classAsFile =
-                new File(
-                        temp
-                                + separator
-                                + "test"
-                                + separator
-                                + "src"
-                                + separator
-                                + "test"
-                                + separator
-                                + "solidity"
-                                + separator
-                                + "org"
-                                + separator
-                                + "com"
-                                + separator
-                                + "TestContract2Test.java");
 
-        String classAsString =
-                new BufferedReader(new FileReader(classAsFile))
-                        .lines()
-                        .collect(Collectors.joining("\n"));
         assertTrue(
                 classAsString.contains(
                         "static String myAddress = \"0xfe3b557e8fb62b89f4916b721be55ceb828dbd73\";\n"));

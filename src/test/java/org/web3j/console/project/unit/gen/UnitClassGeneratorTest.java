@@ -46,13 +46,12 @@ public class UnitClassGeneratorTest extends Setup {
                             + "TestContract2Test.java");
 
     public static void listPath(File file) {
+        System.out.println(file.getAbsolutePath());
         if (file.isDirectory()) {
             File[] arrayOfFiles = file.listFiles();
             for (File individualFile : arrayOfFiles) {
                 listPath(individualFile);
             }
-        } else if (file.isFile()) {
-            System.out.println(file.getAbsolutePath());
         }
     }
 
@@ -79,7 +78,10 @@ public class UnitClassGeneratorTest extends Setup {
         new UnitClassGenerator(
                         classProvider.getClasses().get(0), "org.com", temp + separator + "test")
                 .writeClass();
+        System.out.println("Starting recursive function");
         listPath(temp);
+        System.out.println("Ending recursive function");
+
         classAsString =
                 new BufferedReader(new FileReader(classAsFile))
                         .lines()

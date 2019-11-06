@@ -19,7 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static java.io.File.separator;
@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UnitClassGeneratorTest extends Setup {
 
-    @BeforeEach
-    public void init() throws IOException, ClassNotFoundException {
+    @BeforeAll
+    public static void init() throws IOException, ClassNotFoundException {
         File pathToProject =
                 new File(
                         temp

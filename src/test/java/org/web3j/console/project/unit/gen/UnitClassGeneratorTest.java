@@ -18,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static java.io.File.separator;
@@ -54,7 +55,8 @@ public class UnitClassGeneratorTest extends Setup {
         }
     }
 
-    public void init() throws IOException, ClassNotFoundException {
+    @BeforeAll
+    public static void init() throws IOException, ClassNotFoundException {
         File pathToProject =
                 new File(
                         temp
@@ -87,9 +89,8 @@ public class UnitClassGeneratorTest extends Setup {
     }
 
     @Test
-    public void testThatTheClassWasSuccessfullyWritten()
-            throws IOException, ClassNotFoundException {
-        init();
+    public void testThatTheClassWasSuccessfullyWritten() {
+
         assertTrue(
                 new File(
                                 temp
@@ -111,18 +112,15 @@ public class UnitClassGeneratorTest extends Setup {
     }
 
     @Test
-    public void testThatExceptionIsThrownWhenAClassIsNotWritten()
-            throws IOException, ClassNotFoundException {
-        init();
+    public void testThatExceptionIsThrownWhenAClassIsNotWritten() {
         UnitClassGenerator unitClassGenerator =
                 new UnitClassGenerator(null, "org.com", temp + separator + "test");
         assertThrows(NullPointerException.class, unitClassGenerator::writeClass);
     }
 
     @Test
-    public void testThatClassWasGeneratedWithCorrectFields()
-            throws IOException, ClassNotFoundException {
-        init();
+    public void testThatClassWasGeneratedWithCorrectFields() {
+
         assertTrue(
                 classAsString.contains(
                         "static String myAddress = \"0xfe3b557e8fb62b89f4916b721be55ceb828dbd73\";\n"));

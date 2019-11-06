@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MethodGenerationTest extends Setup {
+public class UnitMethodGeneratorTest extends Setup {
     private static File classAsFile =
             new File(
                     temp

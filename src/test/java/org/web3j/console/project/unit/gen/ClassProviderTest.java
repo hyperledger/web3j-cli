@@ -53,7 +53,7 @@ public class ClassProviderTest extends Setup {
     public void testThatExceptionIsThrownWhenClassIsNotFound() {
         File pathToProject =
                 new File(
-                        temp
+                        temp.getPath()
                                 + separator
                                 + "test"
                                 + separator
@@ -65,8 +65,9 @@ public class ClassProviderTest extends Setup {
                                 + separator
                                 + "web3j"
                                 + separator);
-        ClassProvider classProvider = new ClassProvider(pathToProject);
-        assertThrows(ClassNotFoundException.class, classProvider::getClasses);
+
+        assertThrows(
+                ClassNotFoundException.class, () -> new ClassProvider(pathToProject).getClasses());
     }
 
     @Test

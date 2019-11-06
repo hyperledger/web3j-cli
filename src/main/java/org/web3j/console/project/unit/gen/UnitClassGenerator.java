@@ -34,14 +34,14 @@ import org.web3j.tx.gas.ContractGasProvider;
 import static java.io.File.separator;
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-class TestClassGenerator {
+class UnitClassGenerator {
     private final Class aClass;
     private final String packageName;
     private final List<String> supportedMethods =
             Arrays.asList("deploy", "transferFrom", "load", "totalSupply", "balanceOf", "transfer");
     private final String projectName;
 
-    TestClassGenerator(final Class aClass, final String packageName, final String projectName) {
+    UnitClassGenerator(final Class aClass, final String packageName, final String projectName) {
         this.aClass = aClass;
         this.packageName = packageName;
         this.projectName = projectName;
@@ -61,7 +61,7 @@ class TestClassGenerator {
         List<MethodSpec> listOfMethodSpecs = new ArrayList<>();
         listOfValidMethods.forEach(
                 method -> {
-                    listOfMethodSpecs.add(new UnitTestGenerator(method, aClass).getMethodSpec());
+                    listOfMethodSpecs.add(new UnitMethodGenerator(method, aClass).getMethodSpec());
                 });
         return listOfMethodSpecs;
     }

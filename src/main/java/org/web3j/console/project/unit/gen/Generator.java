@@ -56,7 +56,7 @@ public class Generator {
                 .forEach(
                         c -> {
                             try {
-                                new TestClassGenerator(
+                                new UnitClassGenerator(
                                                 c,
                                                 c.getCanonicalName()
                                                         .substring(

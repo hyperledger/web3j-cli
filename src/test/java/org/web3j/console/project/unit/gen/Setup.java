@@ -25,14 +25,12 @@ import org.junit.jupiter.api.io.TempDir;
 import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.utills.ClassExecutor;
 
-import static java.io.File.*;
-
 public class Setup extends ClassExecutor {
     @TempDir static File temp;
 
     @BeforeAll
     public static void setUp() throws IOException, InterruptedException {
-        String formattedPath = "src/test/resources/Solidity".replaceAll("/", separator);
+        String formattedPath = "src/test/resources/Solidity".replaceAll("/", File.separator);
         final String[] args = {"import"};
         Process process =
                 new ClassExecutor()
@@ -51,7 +49,7 @@ public class Setup extends ClassExecutor {
         writer.newLine();
         writer.close();
         process.waitFor();
-        String[] generateArgs = {"generate", temp + separator + "test"};
+        String[] generateArgs = {"generate", temp.getCanonicalPath() + File.separator + "test"};
         Process generateProcess =
                 new ClassExecutor()
                         .executeClassAsSubProcessAndReturnProcess(

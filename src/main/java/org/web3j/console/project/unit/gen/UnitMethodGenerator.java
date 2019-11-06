@@ -35,11 +35,11 @@ import org.web3j.tx.gas.ContractGasProvider;
 
 import static org.web3j.console.project.utills.NameUtils.toCamelCase;
 
-public class UnitTestGenerator {
+public class UnitMethodGenerator {
     private final Method method;
     private final Class tClass;
 
-    UnitTestGenerator(final Method method, final Class tClass) {
+    UnitMethodGenerator(final Method method, final Class tClass) {
         this.method = method;
         this.tClass = tClass;
     }

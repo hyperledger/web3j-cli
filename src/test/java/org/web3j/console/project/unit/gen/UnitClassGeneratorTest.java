@@ -26,7 +26,7 @@ import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ClassGeneratorTest extends Setup {
+public class UnitClassGeneratorTest extends Setup {
 
     @BeforeEach
     public void init() throws IOException, ClassNotFoundException {
@@ -49,10 +49,10 @@ public class ClassGeneratorTest extends Setup {
                                 + "java");
         ClassProvider classProvider = new ClassProvider(pathToProject);
 
-        TestClassGenerator testClassGenerator =
-                new TestClassGenerator(
+        UnitClassGenerator unitClassGenerator =
+                new UnitClassGenerator(
                         classProvider.getClasses().get(0), "org.com", temp + separator + "test");
-        testClassGenerator.writeClass();
+        unitClassGenerator.writeClass();
     }
 
     @Test
@@ -79,9 +79,9 @@ public class ClassGeneratorTest extends Setup {
 
     @Test
     public void testThatExceptionIsThrownWhenAClassIsNotWritten() {
-        TestClassGenerator testClassGenerator =
-                new TestClassGenerator(null, "org.com", temp + separator + "test");
-        assertThrows(NullPointerException.class, testClassGenerator::writeClass);
+        UnitClassGenerator unitClassGenerator =
+                new UnitClassGenerator(null, "org.com", temp + separator + "test");
+        assertThrows(NullPointerException.class, unitClassGenerator::writeClass);
     }
 
     @Test

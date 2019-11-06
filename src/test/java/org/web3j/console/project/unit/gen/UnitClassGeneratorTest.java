@@ -14,7 +14,6 @@ package org.web3j.console.project.unit.gen;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -46,6 +45,17 @@ public class UnitClassGeneratorTest extends Setup {
                             + separator
                             + "TestContract2Test.java");
 
+    public static void listPath(File file) {
+        if (file.isDirectory()) {
+            File[] arrayOfFiles = file.listFiles();
+            for (File individualFile : arrayOfFiles) {
+                listPath(individualFile);
+            }
+        } else if (file.isFile()) {
+            System.out.println(file.getAbsolutePath());
+        }
+    }
+
     @BeforeAll
     public static void init() throws IOException, ClassNotFoundException {
         File pathToProject =
@@ -66,11 +76,10 @@ public class UnitClassGeneratorTest extends Setup {
                                 + separator
                                 + "java");
         ClassProvider classProvider = new ClassProvider(pathToProject);
-        UnitClassGenerator unitClassGenerator =
-                new UnitClassGenerator(
-                        classProvider.getClasses().get(0), "org.com", temp + separator + "test");
-        unitClassGenerator.writeClass();
-
+        new UnitClassGenerator(
+                        classProvider.getClasses().get(0), "org.com", temp + separator + "test")
+                .writeClass();
+        listPath(temp);
         classAsString =
                 new BufferedReader(new FileReader(classAsFile))
                         .lines()
@@ -108,7 +117,7 @@ public class UnitClassGeneratorTest extends Setup {
     }
 
     @Test
-    public void testThatClassWasGeneratedWithCorrectFields() throws FileNotFoundException {
+    public void testThatClassWasGeneratedWithCorrectFields() {
 
         assertTrue(
                 classAsString.contains(

@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.web3j' version '4.4.0'
     id "com.github.johnrengelman.shadow" version "5.1.0"
+    id 'org.unbroken-dome.test-sets' version '2.2.1'
+
 
 }
 
@@ -30,4 +32,7 @@ dependencies {
             "ch.qos.logback:logback-core:$logbackVersion",
             "ch.qos.logback:logback-classic:$logbackVersion"
     testImplementation "junit:junit:$junitVersion"
+}
+testSets {
+    integrationTest
 }

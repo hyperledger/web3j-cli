@@ -17,6 +17,7 @@ import java.io.IOException;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import org.web3j.codegen.Console;
 import org.web3j.console.project.utills.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
@@ -46,24 +47,19 @@ public class ProjectCreatorCLIRunner implements Runnable {
 
     @Override
     public void run() {
-
-        if (InputVerifier.requiredArgsAreNotEmpty(projectName, packageName)) {
-            if (InputVerifier.classNameIsValid(projectName)) {
-                if (InputVerifier.packageNameIsValid(packageName)) {
-                    try {
-                        new ProjectCreator(outputDir, packageName, projectName).generate();
-                    } catch (final IOException e) {
-                        exitError(e);
-                    }
-                } else {
-                    exitError(packageName + " is not a valid package name.");
-                }
-            } else {
-                exitError(projectName + " is not a valid name.");
-            }
-
-        } else {
+        if (!InputVerifier.requiredArgsAreNotEmpty(projectName, packageName)) {
             exitError("Please make sure the required parameters are not empty.");
+        }
+        if (!InputVerifier.classNameIsValid(projectName)) {
+            exitError(projectName + " is not a valid name.");
+        }
+        if (!InputVerifier.packageNameIsValid(packageName)) {
+            exitError(packageName + " is not a valid package name.");
+        }
+        try {
+            new ProjectCreator(outputDir, packageName, projectName).generate();
+        } catch (IOException e) {
+            Console.exitError(e);
         }
     }
 }

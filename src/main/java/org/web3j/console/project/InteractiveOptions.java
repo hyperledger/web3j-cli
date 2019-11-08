@@ -19,6 +19,8 @@ import java.io.Writer;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.web3j.console.project.utills.InputVerifier;
+
 class InteractiveOptions {
 
     private final Scanner scanner;
@@ -34,13 +36,21 @@ class InteractiveOptions {
     }
 
     protected final String getProjectName() {
-        print("Please enter the project name (Required Field): ");
-        return getUserInput();
+        print("Please enter the project name (Required Field):");
+        String projectName = getUserInput();
+        while (!InputVerifier.classNameIsValid(projectName)) {
+            projectName = getUserInput();
+        }
+        return projectName;
     }
 
     protected final String getPackageName() {
         print("Please enter the package name for your project (Required Field): ");
-        return getUserInput();
+        String packageName = getUserInput();
+        while (!InputVerifier.packageNameIsValid(packageName)) {
+            packageName = getUserInput();
+        }
+        return packageName;
     }
 
     protected final Optional<String> getProjectDestination() {

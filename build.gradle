@@ -33,7 +33,12 @@ dependencies {
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
-            "org.web3j:hosted-providers:$web3jVersion"
+            "org.web3j:hosted-providers:$web3jVersion",
+            files('libs/smartcheck.jar'),
+            "javax.xml.bind:jaxb-api:2.2.11",
+            "com.sun.xml.bind:jaxb-core:2.2.11",
+            "com.sun.xml.bind:jaxb-impl:2.2.11",
+            "javax.activation:activation:1.1.1"
 
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
 

@@ -19,6 +19,7 @@ ext {
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
+    gsonVersion = "2.8.6"
 }
 
 test {
@@ -33,7 +34,8 @@ dependencies {
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
-            "org.web3j:hosted-providers:$web3jVersion"
+            "org.web3j:hosted-providers:$web3jVersion",
+            "com.google.code.gson:gson:$gsonVersion"
 
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
 

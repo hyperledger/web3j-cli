@@ -12,9 +12,21 @@
  */
 package org.web3j.console.update;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.web3j.console.config.CliConfig;
 
+import java.io.IOException;
+
 public class Updater {
+
+    private static final String BASE_URL = "http://localhost:8000";
+
 
     private CliConfig config;
 
@@ -32,8 +44,31 @@ public class Updater {
     }
 
     public void onlineUpdateCheck() {
-        //TODO: implement online update check
-        System.out.println(config.getClientId());
-        System.out.println(config.getVersion());
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody updateBody =
+                new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("os", CliConfig.determineOS().toString())
+                        .addFormDataPart("clientId", config.getClientId())
+                        .build();
+
+        Request updateCheckRequest =
+                new okhttp3.Request.Builder()
+                        .url(String.format("%s/api/v1/versioning/versions/", BASE_URL))
+                        .post(updateBody)
+                        .build();
+
+        try {
+            Response sendRawResponse = client.newCall(updateCheckRequest).execute();
+            if (sendRawResponse.code() == 200) {
+                JsonParser parser = new JsonParser();
+                JsonObject rootObj = parser.parse(sendRawResponse.body().string()).getAsJsonObject();
+                System.out.println(rootObj.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

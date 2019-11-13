@@ -51,6 +51,8 @@ public class Runner {
             new Thread(updater::onlineUpdateCheck).start();
         }
 
+
+        Thread.sleep(20000);
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
@@ -83,5 +85,7 @@ public class Runner {
                     Console.exitError(USAGE);
             }
         }
+
+
     }
 }

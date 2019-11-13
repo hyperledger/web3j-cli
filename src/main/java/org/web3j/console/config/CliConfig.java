@@ -23,20 +23,17 @@ import org.web3j.utils.Version;
 public class CliConfig {
     private static File web3jHome = new File(System.getProperty("user.home"), ".web3j");
 
-    public static CliConfig initializeDefaultConfig(File configFile) throws IOException {
+    private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
         if (!web3jHome.exists() && !web3jHome.mkdirs()) {
             throw new IOException("Failed to create Web3j home directory");
         }
-        CliConfig defaultCliConfig =
-                new CliConfig(Version.getVersion(), UUID.randomUUID().toString());
+        CliConfig defaultCliConfig = new CliConfig(UUID.randomUUID().toString(), false, null);
         String jsonToWrite = new Gson().toJson(defaultCliConfig);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
-        writer.write(jsonToWrite);
-        writer.close();
+        Files.writeString(configFile.toPath(), jsonToWrite);
         return defaultCliConfig;
     }
 
-    public static CliConfig getSavedConfig(File configFile) throws IOException {
+    private static CliConfig getSavedConfig(File configFile) throws IOException {
         String configContents = Files.readString(configFile.toPath());
         return new Gson().fromJson(configContents, CliConfig.class);
     }
@@ -50,12 +47,54 @@ public class CliConfig {
         }
     }
 
-    private String version;
+    public enum OS {
+        DARWIN,
+        FREEBSD,
+        OPENBSD,
+        LINUX,
+        SOLARIS,
+        WINDOWS,
+        AIX,
+        UNKNOWN;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
+
+    public static OS determineOS() {
+        String osName = System.getProperty("os.name").split(" ")[0];
+        if (osName.toLowerCase().startsWith("mac") || osName.toLowerCase().startsWith("darwin")) {
+            return OS.DARWIN;
+        } else if (osName.toLowerCase().startsWith("linux")) {
+            return OS.LINUX;
+        } else if (osName.toLowerCase().startsWith("sunos") || osName.toLowerCase().startsWith("solaris")) {
+            return OS.SOLARIS;
+        } else if (osName.toLowerCase().startsWith("aix")) {
+            return OS.AIX;
+        } else if (osName.toLowerCase().startsWith("openbsd")) {
+            return OS.OPENBSD;
+        } else if (osName.toLowerCase().startsWith("freebsd")) {
+            return OS.FREEBSD;
+        } else if (osName.toLowerCase().startsWith("windows")) {
+            return OS.WINDOWS;
+        } else {
+            return OS.UNKNOWN;
+        }
+    }
+
+
+    private transient final String version;
     private String clientId;
 
+    private CliConfig() throws IOException {
+        version = Version.getVersion();
+    }
+
     public CliConfig(
-            String version, String clientId, boolean updateAvailable, String updatePrompt) {
-        this.version = version;
+            String clientId, boolean updateAvailable, String updatePrompt) throws IOException {
+        version = Version.getVersion();
         this.clientId = clientId;
         this.updateAvailable = updateAvailable;
         this.updatePrompt = updatePrompt;
@@ -64,10 +103,6 @@ public class CliConfig {
     private boolean updateAvailable;
     private String updatePrompt;
 
-    public CliConfig(String version, String clientId) {
-        this.version = version;
-        this.clientId = clientId;
-    }
 
     public String getVersion() {
         return version;

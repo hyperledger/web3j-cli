@@ -8,14 +8,14 @@ plugins {
 }
 
 repositories {
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/releases/'
-    }
-    jcenter()
+    maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 ext {
-    web3jVersion = project.property('version') != 'unspecified' ? project.property('version') : "4.+"
+    web3jVersion = project.property('version')
+    picocli = '4.0.4'
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
@@ -33,7 +33,9 @@ dependencies {
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
-            "org.web3j:hosted-providers:$web3jVersion"
+            "org.web3j:hosted-providers:$web3jVersion",
+            "info.picocli:picocli:$picocli"
+
 
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
 

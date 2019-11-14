@@ -7,11 +7,9 @@ plugins {
     id "com.diffplug.gradle.spotless" version "3.24.3"
 }
 
-repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-}
+description 'web3j command line tools'
+mainClassName = 'org.web3j.console.Runner'
+applicationName = 'web3j-cli'
 
 ext {
     web3jVersion = project.property('version')
@@ -19,6 +17,18 @@ ext {
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
+}
+
+apply {
+    [
+            'jacoco',
+            'java',
+            'javadoc',
+            'repositories',
+            'spotless'
+    ].each {
+        from("$rootDir/gradle/$it/build.gradle")
+    }
 }
 
 test {
@@ -43,34 +53,3 @@ dependencies {
             "org.mockito:mockito-core:$mockitoVersion"
 }
 
-spotless {
-    java {
-        target fileTree('.') {
-            include '**/src/*/java/**/*.java'
-            exclude '**/.gradle/**'
-            exclude '**/generated/**'
-        }
-        removeUnusedImports()
-        googleJavaFormat("1.7").aosp()
-        importOrder 'java', '', 'org.web3j', '\\#'
-        trimTrailingWhitespace()
-        endWithNewline()
-        licenseHeaderFile "$rootDir/gradle/spotless.java.license"
-        paddedCell()
-    }
-    groovyGradle {
-        target '*.gradle'
-        greclipse().configFile(rootProject.file('gradle/formatter.properties'))
-        endWithNewline()
-        indentWithSpaces(4)
-        paddedCell()
-    }
-}
-
-jacocoTestReport {
-    reports { xml.enabled true }
-}
-
-description 'web3j command line tools'
-mainClassName = 'org.web3j.console.Runner'
-applicationName = 'web3j'

@@ -14,7 +14,9 @@ package org.web3j.console;
 
 import java.io.Console;
 
-/** System Console device wrapper. */
+/**
+ * System Console device wrapper.
+ */
 public class ConsoleDevice implements IODevice {
 
     private Console console = System.console();
@@ -25,8 +27,7 @@ public class ConsoleDevice implements IODevice {
     }
 
     @Override
-    public String readLine(String fmt, Object... args) {
-        return console.readLine(fmt, args);
+    public String readLine(String fmt, Object... args) { return console.readLine(fmt, args);
     }
 
     @Override

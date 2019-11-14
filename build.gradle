@@ -9,7 +9,7 @@ plugins {
 
 repositories {
     maven {
-        url 'http://dl.bintray.com/web3j/maven'
+        url 'https://oss.sonatype.org/content/repositories/releases/'
     }
     jcenter()
 }

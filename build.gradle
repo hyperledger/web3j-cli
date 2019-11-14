@@ -17,15 +17,16 @@ ext {
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
+    ktlintVersion = "0.31.0"
 }
 
 apply {
     [
-            'jacoco',
-            'java',
-            'javadoc',
-            'repositories',
-            'spotless'
+        'jacoco',
+        'java',
+        'javadoc',
+        'repositories',
+        'spotless'
     ].each {
         from("$rootDir/gradle/$it/build.gradle")
     }
@@ -52,4 +53,3 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion"
 }
-

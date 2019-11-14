@@ -12,6 +12,8 @@
  */
 package org.web3j.console.update;
 
+import java.io.IOException;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.MultipartBody;
@@ -19,14 +21,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.web3j.console.config.CliConfig;
 
-import java.io.IOException;
+import org.web3j.console.config.CliConfig;
+import org.web3j.utils.Version;
 
 public class Updater {
 
     private static final String BASE_URL = "http://localhost:8000";
-
 
     private CliConfig config;
 
@@ -63,12 +64,25 @@ public class Updater {
             Response sendRawResponse = client.newCall(updateCheckRequest).execute();
             if (sendRawResponse.code() == 200) {
                 JsonParser parser = new JsonParser();
-                JsonObject rootObj = parser.parse(sendRawResponse.body().string()).getAsJsonObject();
-                System.out.println(rootObj.toString());
+                JsonObject rootObj =
+                        parser.parse(sendRawResponse.body().string())
+                                .getAsJsonObject()
+                                .get("latest")
+                                .getAsJsonObject();
+                String currentVersion = rootObj.get("version").getAsString();
+                if (!currentVersion.equals(Version.getVersion())) {
+                    config.setUpdateAvailable(true);
+                    config.setUpdatePrompt(
+                            rootObj.get(
+                                            CliConfig.determineOS() == CliConfig.OS.WINDOWS
+                                                    ? "install_win"
+                                                    : "install_unix")
+                                    .getAsString());
+                    config.save();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -49,8 +49,12 @@ public class Runner {
         Updater updater = new Updater(config);
         if (!updater.updateCurrentlyAvailable()) {
             new Thread(updater::onlineUpdateCheck).start();
+        } else {
+            System.out.println(
+                    String.format(
+                            "A Web3j update is available; please run the following command to update: %s",
+                            config.getUpdatePrompt()));
         }
-
 
         Thread.sleep(20000);
         if (args.length < 1) {
@@ -85,7 +89,5 @@ public class Runner {
                     Console.exitError(USAGE);
             }
         }
-
-
     }
 }

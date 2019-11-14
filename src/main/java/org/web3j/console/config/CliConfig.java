@@ -22,6 +22,7 @@ import org.web3j.utils.Version;
 
 public class CliConfig {
     private static File web3jHome = new File(System.getProperty("user.home"), ".web3j");
+    private static File web3jConfigFile = new File(web3jHome, ".config");
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
         if (!web3jHome.exists() && !web3jHome.mkdirs()) {
@@ -39,7 +40,6 @@ public class CliConfig {
     }
 
     public static CliConfig getConfig() throws IOException {
-        File web3jConfigFile = new File(web3jHome, ".config");
         if (web3jConfigFile.exists()) {
             return getSavedConfig(web3jConfigFile);
         } else {
@@ -69,7 +69,8 @@ public class CliConfig {
             return OS.DARWIN;
         } else if (osName.toLowerCase().startsWith("linux")) {
             return OS.LINUX;
-        } else if (osName.toLowerCase().startsWith("sunos") || osName.toLowerCase().startsWith("solaris")) {
+        } else if (osName.toLowerCase().startsWith("sunos")
+                || osName.toLowerCase().startsWith("solaris")) {
             return OS.SOLARIS;
         } else if (osName.toLowerCase().startsWith("aix")) {
             return OS.AIX;
@@ -84,16 +85,15 @@ public class CliConfig {
         }
     }
 
-
-    private transient final String version;
+    private final transient String version;
     private String clientId;
 
     private CliConfig() throws IOException {
         version = Version.getVersion();
     }
 
-    public CliConfig(
-            String clientId, boolean updateAvailable, String updatePrompt) throws IOException {
+    public CliConfig(String clientId, boolean updateAvailable, String updatePrompt)
+            throws IOException {
         version = Version.getVersion();
         this.clientId = clientId;
         this.updateAvailable = updateAvailable;
@@ -102,7 +102,6 @@ public class CliConfig {
 
     private boolean updateAvailable;
     private String updatePrompt;
-
 
     public String getVersion() {
         return version;
@@ -126,5 +125,10 @@ public class CliConfig {
 
     public void setUpdatePrompt(String updatePrompt) {
         this.updatePrompt = updatePrompt;
+    }
+
+    public void save() throws IOException {
+        String jsonToWrite = new Gson().toJson(this);
+        Files.writeString(web3jConfigFile.toPath(), jsonToWrite);
     }
 }

@@ -35,13 +35,17 @@ Installation
 =====
 On Linux/macOS, in a terminal, run the following command:
 
-`curl -L get.web3j.io | sh`
+.. code-block:: bash
+
+	curl -L get.web3j.io | sh
 
 This script will not work if Web3j has been installed using Homebrew on macOS.
 
 On Windows, in PowerShell, run the following command:
 
-`Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))`
+.. code-block:: bash
+
+	Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))
    
 Docs
 =====

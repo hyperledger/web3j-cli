@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs LTD.
+ * Copyright 2019 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -12,10 +12,6 @@
  */
 package org.web3j.console;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.web3j.codegen.Console.exitError;
 
 public class ContractAuditor {
@@ -23,16 +19,13 @@ public class ContractAuditor {
     private static final String USAGE = "audit <file name>";
 
     public static void main(String[] args) {
-
         if (args.length != 1) {
             exitError(USAGE);
         }
         try {
-            List<String> originalArgs = new ArrayList<>();
-            originalArgs.add("-p");
-            originalArgs.addAll(Arrays.asList(args));
-            ru.smartdec.smartcheck.app.cli.Tool.main(originalArgs.toArray(new String[0]));
+            ru.smartdec.smartcheck.app.cli.Tool.main(new String[] {"-p", args[0]});
         } catch (Exception e) {
+            System.err.println("The audit operation failed with the following exception:");
             e.printStackTrace();
         }
     }

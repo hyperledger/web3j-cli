@@ -4,21 +4,40 @@ plugins {
     id "idea"
     id "jacoco"
     id "com.github.johnrengelman.shadow" version "5.1.0"
-    id "com.diffplug.gradle.spotless" version "3.24.3"
+    id "com.diffplug.gradle.spotless" version "3.25.0"
+    id "de.undercouch.download" version "4.0.0"
 }
 
-repositories {
-    maven {
-        url 'http://dl.bintray.com/web3j/maven'
-    }
-    jcenter()
-}
+description 'web3j command line tools'
+mainClassName = 'org.web3j.console.Runner'
+applicationName = 'web3j-cli'
 
 ext {
-    web3jVersion = project.property('version') != 'unspecified' ? project.property('version') : "4.+"
+    web3jVersion = project.property('version')
+    picocli = '4.0.4'
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
+    ktlintVersion = "0.31.0"
+}
+
+apply {
+    [
+        'jacoco',
+        'java',
+        'javadoc',
+        'repositories',
+        'spotless'
+    ].each { buildScript ->
+        download {
+            src "https://raw.githubusercontent.com/web3j/build-tools/master/gradle/$buildScript/build.gradle"
+            dest "$rootDir/gradle/$buildScript/build.gradle"
+            overwrite true
+            quiet true
+            onlyIfModified true
+        }
+        from("$rootDir/gradle/$buildScript/build.gradle")
+    }
 }
 
 test {
@@ -34,6 +53,7 @@ dependencies {
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
+            "info.picocli:picocli:$picocli",
             files('libs/smartcheck.jar'),
             "javax.xml.bind:jaxb-api:2.2.11",
             "com.sun.xml.bind:jaxb-core:2.2.11",
@@ -45,35 +65,3 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion"
 }
-
-spotless {
-    java {
-        target fileTree('.') {
-            include '**/src/*/java/**/*.java'
-            exclude '**/.gradle/**'
-            exclude '**/generated/**'
-        }
-        removeUnusedImports()
-        googleJavaFormat("1.7").aosp()
-        importOrder 'java', '', 'org.web3j', '\\#'
-        trimTrailingWhitespace()
-        endWithNewline()
-        licenseHeaderFile "$rootDir/gradle/spotless.java.license"
-        paddedCell()
-    }
-    groovyGradle {
-        target '*.gradle'
-        greclipse().configFile(rootProject.file('gradle/formatter.properties'))
-        endWithNewline()
-        indentWithSpaces(4)
-        paddedCell()
-    }
-}
-
-jacocoTestReport {
-    reports { xml.enabled true }
-}
-
-description 'web3j command line tools'
-mainClassName = 'org.web3j.console.Runner'
-applicationName = 'web3j'

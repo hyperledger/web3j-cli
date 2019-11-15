@@ -28,7 +28,14 @@ apply {
         'repositories',
         'spotless'
     ].each {
-        from("$rootDir/gradle/$it/build.gradle")
+        download {
+            src "https://raw.githubusercontent.com/web3j/build-tools/master/gradle/$buildScript/build.gradle"
+            dest "$rootDir/gradle/$buildScript/build.gradle"
+            overwrite true
+            quiet true
+            onlyIfModified true
+        }
+        from("$rootDir/gradle/$buildScript/build.gradle")
     }
 }
 

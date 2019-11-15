@@ -16,9 +16,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.web3j.codegen.Console.exitError;
+
 public class ContractAuditor {
 
+    private static final String USAGE = "audit <file name>";
+
     public static void main(String[] args) {
+
+        if (args.length != 1) {
+            exitError(USAGE);
+        }
         try {
             List<String> originalArgs = new ArrayList<>();
             originalArgs.add("-p");

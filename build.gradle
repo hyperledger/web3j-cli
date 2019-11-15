@@ -4,7 +4,8 @@ plugins {
     id "idea"
     id "jacoco"
     id "com.github.johnrengelman.shadow" version "5.1.0"
-    id "com.diffplug.gradle.spotless" version "3.24.3"
+    id "com.diffplug.gradle.spotless" version "3.25.0"
+    id "de.undercouch.download" version "4.0.0"
 }
 
 description 'web3j command line tools'
@@ -27,7 +28,7 @@ apply {
         'javadoc',
         'repositories',
         'spotless'
-    ].each {
+    ].each { buildScript ->
         download {
             src "https://raw.githubusercontent.com/web3j/build-tools/master/gradle/$buildScript/build.gradle"
             dest "$rootDir/gradle/$buildScript/build.gradle"

@@ -24,7 +24,8 @@ import com.google.gson.Gson;
 import org.web3j.utils.Version;
 
 public class CliConfig {
-    private static final Path web3jConfigPath = Paths.get(System.getProperty("user.home"), ".web3j", ".config");
+    private static final Path web3jConfigPath =
+            Paths.get(System.getProperty("user.home"), ".web3j", ".config");
     private static final String defaultServicesUrl = "http://localhost:8000";
 
     public static Path getWeb3jConfigPath() {

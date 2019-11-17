@@ -23,9 +23,9 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import org.web3j.console.config.CliConfig;
@@ -34,8 +34,7 @@ import org.web3j.utils.Version;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
@@ -57,8 +56,10 @@ public class UpdaterTest {
         wireMockServer.stop();
     }
 
-    @Test
-    void testUpdateCheckWorksSuccessfullyWhenUpdateAvailable() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"4.5.6", "4.5.7"})
+    void testUpdateCheckWorksSuccessfullyWhenUpdateAvailable(String version) throws Exception {
+
         CliConfig config =
                 mock(
                         CliConfig.class,
@@ -101,19 +102,24 @@ public class UpdaterTest {
                                         .withStatus(200)
                                         .withHeader("Content-Type", "application/json")
                                         .withBody(
-                                                "{\n"
-                                                        + "  \"latest\": {\n"
-                                                        + "    \"version\": \"4.5.7\",\n"
-                                                        + "    \"install_win\": \"curl -L get.web3j.io | sh\",\n"
-                                                        + "    \"install_unix\": \"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))\"\n"
-                                                        + "  }\n"
-                                                        + "}")));
+                                                String.format(
+                                                        "{\n"
+                                                                + "  \"latest\": {\n"
+                                                                + "    \"version\": \"%s\",\n"
+                                                                + "    \"install_win\": \"curl -L get.web3j.io | sh\",\n"
+                                                                + "    \"install_unix\": \"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))\"\n"
+                                                                + "  }\n"
+                                                                + "}",
+                                                        version))));
         updater.onlineUpdateCheck();
 
         verify(postRequestedFor(urlEqualTo("/api/v1/versioning/versions/")));
-        assertTrue(config.isUpdateAvailable());
+        // if the version parameter does not equal config.getVersion, isUpdateAvailable should
+        // return true, otherwise it should return false
+        assertEquals(!version.equals(config.getVersion()), config.isUpdateAvailable());
 
         CliConfig realConfigAfterUpdate = CliConfig.getConfig(tempWeb3jSettingsPath.toFile());
-        assertTrue(realConfigAfterUpdate.isUpdateAvailable());
+        assertEquals(
+                !version.equals(config.getVersion()), realConfigAfterUpdate.isUpdateAvailable());
     }
 }

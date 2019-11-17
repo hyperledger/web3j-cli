@@ -13,7 +13,10 @@
 package org.web3j.console.config;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import com.google.gson.Gson;
@@ -21,29 +24,36 @@ import com.google.gson.Gson;
 import org.web3j.utils.Version;
 
 public class CliConfig {
-    private static File web3jHome = new File(System.getProperty("user.home"), ".web3j");
-    private static File web3jConfigFile = new File(web3jHome, ".config");
+    private static final Path web3jConfigPath = Paths.get(System.getProperty("user.home"), ".web3j", ".config");
+    private static final String defaultServicesUrl = "http://localhost:8000";
+
+    public static Path getWeb3jConfigPath() {
+        return web3jConfigPath;
+    }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
+        File web3jHome = new File(configFile.getParent());
         if (!web3jHome.exists() && !web3jHome.mkdirs()) {
             throw new IOException("Failed to create Web3j home directory");
         }
-        CliConfig defaultCliConfig = new CliConfig(UUID.randomUUID().toString(), false, null);
-        String jsonToWrite = new Gson().toJson(defaultCliConfig);
-        Files.writeString(configFile.toPath(), jsonToWrite);
-        return defaultCliConfig;
+        return new CliConfig(
+                Version.getVersion(),
+                defaultServicesUrl,
+                UUID.randomUUID().toString(),
+                false,
+                null);
     }
 
     private static CliConfig getSavedConfig(File configFile) throws IOException {
-        String configContents = Files.readString(configFile.toPath());
+        String configContents = new String(Files.readAllBytes(configFile.toPath()));
         return new Gson().fromJson(configContents, CliConfig.class);
     }
 
-    public static CliConfig getConfig() throws IOException {
-        if (web3jConfigFile.exists()) {
-            return getSavedConfig(web3jConfigFile);
+    public static CliConfig getConfig(File configFile) throws IOException {
+        if (configFile.exists()) {
+            return getSavedConfig(configFile);
         } else {
-            return initializeDefaultConfig(web3jConfigFile);
+            return initializeDefaultConfig(configFile);
         }
     }
 
@@ -64,37 +74,38 @@ public class CliConfig {
     }
 
     public static OS determineOS() {
-        String osName = System.getProperty("os.name").split(" ")[0];
-        if (osName.toLowerCase().startsWith("mac") || osName.toLowerCase().startsWith("darwin")) {
+        String osName = System.getProperty("os.name").split(" ")[0].toLowerCase();
+        if (osName.startsWith("mac") || osName.startsWith("darwin")) {
             return OS.DARWIN;
-        } else if (osName.toLowerCase().startsWith("linux")) {
+        } else if (osName.startsWith("linux")) {
             return OS.LINUX;
-        } else if (osName.toLowerCase().startsWith("sunos")
-                || osName.toLowerCase().startsWith("solaris")) {
+        } else if (osName.startsWith("sunos") || osName.startsWith("solaris")) {
             return OS.SOLARIS;
-        } else if (osName.toLowerCase().startsWith("aix")) {
+        } else if (osName.startsWith("aix")) {
             return OS.AIX;
-        } else if (osName.toLowerCase().startsWith("openbsd")) {
+        } else if (osName.startsWith("openbsd")) {
             return OS.OPENBSD;
-        } else if (osName.toLowerCase().startsWith("freebsd")) {
+        } else if (osName.startsWith("freebsd")) {
             return OS.FREEBSD;
-        } else if (osName.toLowerCase().startsWith("windows")) {
+        } else if (osName.startsWith("windows")) {
             return OS.WINDOWS;
         } else {
             return OS.UNKNOWN;
         }
     }
 
-    private final transient String version;
+    private String version;
+    private String servicesUrl;
     private String clientId;
 
-    private CliConfig() throws IOException {
-        version = Version.getVersion();
-    }
-
-    public CliConfig(String clientId, boolean updateAvailable, String updatePrompt)
-            throws IOException {
-        version = Version.getVersion();
+    public CliConfig(
+            String version,
+            String servicesUrl,
+            String clientId,
+            boolean updateAvailable,
+            String updatePrompt) {
+        this.version = version;
+        this.servicesUrl = servicesUrl;
         this.clientId = clientId;
         this.updateAvailable = updateAvailable;
         this.updatePrompt = updatePrompt;
@@ -105,6 +116,10 @@ public class CliConfig {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getServicesUrl() {
+        return servicesUrl;
     }
 
     public String getClientId() {
@@ -129,6 +144,6 @@ public class CliConfig {
 
     public void save() throws IOException {
         String jsonToWrite = new Gson().toJson(this);
-        Files.writeString(web3jConfigFile.toPath(), jsonToWrite);
+        Files.write(web3jConfigPath, jsonToWrite.getBytes(Charset.defaultCharset()));
     }
 }

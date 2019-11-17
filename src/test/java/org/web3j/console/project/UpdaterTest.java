@@ -1,0 +1,119 @@
+/*
+ * Copyright 2019 Web3 Labs LTD.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+package org.web3j.console.project;
+
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.google.gson.Gson;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+
+import org.web3j.console.config.CliConfig;
+import org.web3j.console.update.Updater;
+import org.web3j.utils.Version;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+
+public class UpdaterTest {
+
+    private static Path tempWeb3jSettingsPath;
+    private WireMockServer wireMockServer;
+
+    @BeforeEach
+    void setup(@TempDir Path temp) {
+        tempWeb3jSettingsPath = Paths.get(temp.toString(), ".config");
+        wireMockServer = new WireMockServer(wireMockConfig().port(8081));
+        wireMockServer.start();
+        WireMock.configureFor("localhost", wireMockServer.port());
+    }
+
+    @AfterEach
+    void tearDown() {
+        wireMockServer.stop();
+    }
+
+    @Test
+    void testUpdateCheckWorksSuccessfullyWhenUpdateAvailable() throws Exception {
+        CliConfig config =
+                mock(
+                        CliConfig.class,
+                        Mockito.withSettings()
+                                .useConstructor(
+                                        Version.getVersion(),
+                                        "http://localhost:8081",
+                                        UUID.randomUUID().toString(),
+                                        false,
+                                        null)
+                                .defaultAnswer(Mockito.CALLS_REAL_METHODS));
+
+        doAnswer(
+                        invocation -> {
+                            String jsonToWrite =
+                                    new Gson()
+                                            .toJson(
+                                                    new CliConfig(
+                                                            config.getVersion(),
+                                                            config.getServicesUrl(),
+                                                            config.getClientId(),
+                                                            config.isUpdateAvailable(),
+                                                            config.getUpdatePrompt()));
+                            Files.write(
+                                    tempWeb3jSettingsPath,
+                                    jsonToWrite.getBytes(Charset.defaultCharset()));
+                            return null;
+                        })
+                .when(config)
+                .save();
+
+        assertFalse(config.isUpdateAvailable());
+
+        Updater updater = new Updater(config);
+
+        stubFor(
+                post(urlPathMatching("/api/v1/versioning/versions/"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withBody(
+                                                "{\n"
+                                                        + "  \"latest\": {\n"
+                                                        + "    \"version\": \"4.5.7\",\n"
+                                                        + "    \"install_win\": \"curl -L get.web3j.io | sh\",\n"
+                                                        + "    \"install_unix\": \"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))\"\n"
+                                                        + "  }\n"
+                                                        + "}")));
+        updater.onlineUpdateCheck();
+
+        verify(postRequestedFor(urlEqualTo("/api/v1/versioning/versions/")));
+        assertTrue(config.isUpdateAvailable());
+
+        CliConfig realConfigAfterUpdate = CliConfig.getConfig(tempWeb3jSettingsPath.toFile());
+        assertTrue(realConfigAfterUpdate.isUpdateAvailable());
+    }
+}

@@ -20,6 +20,7 @@ ext {
     junitVersion = '5.+'
     mockitoVersion = "3.+"
     gsonVersion = "2.8.6"
+    wireMockVersion = "2.25.1"
 }
 
 test {
@@ -40,7 +41,8 @@ dependencies {
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
-            "org.mockito:mockito-core:$mockitoVersion"
+            "org.mockito:mockito-core:$mockitoVersion",
+            "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
 }
 
 spotless {

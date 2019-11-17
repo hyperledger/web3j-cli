@@ -27,21 +27,17 @@ import org.web3j.utils.Version;
 
 public class Updater {
 
-    private static final String BASE_URL = "http://localhost:8000";
-
     private CliConfig config;
 
     public Updater(CliConfig config) {
         this.config = config;
     }
 
-    public boolean updateCurrentlyAvailable() {
+    public void promptIfUpdateAvailable() {
         if (config.isUpdateAvailable()) {
             System.out.println(
                     String.format("A new Web3j update is available: %s", config.getUpdatePrompt()));
-            return true;
         }
-        return false;
     }
 
     public void onlineUpdateCheck() {
@@ -56,16 +52,17 @@ public class Updater {
 
         Request updateCheckRequest =
                 new okhttp3.Request.Builder()
-                        .url(String.format("%s/api/v1/versioning/versions/", BASE_URL))
+                        .url(
+                                String.format(
+                                        "%s/api/v1/versioning/versions/", config.getServicesUrl()))
                         .post(updateBody)
                         .build();
 
         try {
             Response sendRawResponse = client.newCall(updateCheckRequest).execute();
             if (sendRawResponse.code() == 200) {
-                JsonParser parser = new JsonParser();
                 JsonObject rootObj =
-                        parser.parse(sendRawResponse.body().string())
+                        JsonParser.parseString(sendRawResponse.body().string())
                                 .getAsJsonObject()
                                 .get("latest")
                                 .getAsJsonObject();
@@ -81,8 +78,7 @@ public class Updater {
                     config.save();
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 }

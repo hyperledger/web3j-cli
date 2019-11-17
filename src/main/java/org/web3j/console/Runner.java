@@ -45,18 +45,11 @@ public class Runner {
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
 
-        CliConfig config = CliConfig.getConfig();
+        CliConfig config = CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile());
         Updater updater = new Updater(config);
-        if (!updater.updateCurrentlyAvailable()) {
-            new Thread(updater::onlineUpdateCheck).start();
-        } else {
-            System.out.println(
-                    String.format(
-                            "A Web3j update is available; please run the following command to update: %s",
-                            config.getUpdatePrompt()));
-        }
+        updater.promptIfUpdateAvailable();
+        new Thread(updater::onlineUpdateCheck).start();
 
-        Thread.sleep(20000);
         if (args.length < 1) {
             Console.exitError(USAGE);
         } else {
@@ -89,5 +82,7 @@ public class Runner {
                     Console.exitError(USAGE);
             }
         }
+
+        config.save();
     }
 }

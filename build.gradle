@@ -47,6 +47,10 @@ test {
     }
 }
 
+distZip {
+    archiveName "web3j-${project.version}.zip"
+}
+
 dependencies {
     implementation "org.web3j:codegen:$web3jVersion",
             "org.web3j:contracts:$web3jVersion",

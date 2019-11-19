@@ -38,7 +38,7 @@ API_JSON="{
 export RESULT=$(curl -H "Authorization: token ${GITHUB_PERSONAL_ACCESS_TOKEN}" --data "$API_JSON" -s https://api.github.com/repos/web3j/web3j-cli/releases)
 export UPLOAD_URL=$(echo ${RESULT} | jq -r ".upload_url")
 
-for FILE in `find ./build/distributions -type f -name "web3j-${VERSION}.zip"`;
+for FILE in `find ./build/distributions -type f -name "web3j-${VERSION}.*"`;
 do
   curl -H "Authorization: token ${GITHUB_PERSONAL_ACCESS_TOKEN}" -s "${UPLOAD_URL:0:-13}?name=$(basename -- $FILE)" -H "Content-Type: $(file -b --mime-type $FILE)" --data-binary @"${FILE}"
 done

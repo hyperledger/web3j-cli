@@ -10,7 +10,7 @@ plugins {
 
 description 'web3j command line tools'
 mainClassName = 'org.web3j.console.Runner'
-applicationName = 'web3j-cli'
+applicationName = 'web3j'
 
 ext {
     web3jVersion = project.property('version')

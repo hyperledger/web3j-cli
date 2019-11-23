@@ -68,7 +68,7 @@ public class UpdaterTest {
                                         Version.getVersion(),
                                         "http://localhost:8081",
                                         UUID.randomUUID().toString(),
-                                        false,
+                                        Version.getVersion(),
                                         null)
                                 .defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
@@ -81,7 +81,7 @@ public class UpdaterTest {
                                                             config.getVersion(),
                                                             config.getServicesUrl(),
                                                             config.getClientId(),
-                                                            config.isUpdateAvailable(),
+                                                            config.getLatestVersion(),
                                                             config.getUpdatePrompt()));
                             Files.write(
                                     tempWeb3jSettingsPath,
@@ -95,22 +95,24 @@ public class UpdaterTest {
 
         Updater updater = new Updater(config);
 
+        String validUpdateResponse =
+                String.format(
+                        "{\n"
+                                + "  \"latest\": {\n"
+                                + "    \"version\": \"%s\",\n"
+                                + "    \"install_unix\": \"curl -L get.web3j.io | sh\",\n"
+                                + "    \"install_win\": \"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))\"\n"
+                                + "  }\n"
+                                + "}",
+                        version);
+
         stubFor(
                 post(urlPathMatching("/api/v1/versioning/versions/"))
                         .willReturn(
                                 aResponse()
                                         .withStatus(200)
                                         .withHeader("Content-Type", "application/json")
-                                        .withBody(
-                                                String.format(
-                                                        "{\n"
-                                                                + "  \"latest\": {\n"
-                                                                + "    \"version\": \"%s\",\n"
-                                                                + "    \"install_win\": \"curl -L get.web3j.io | sh\",\n"
-                                                                + "    \"install_unix\": \"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/web3j/web3j-installer/master/installer.ps1'))\"\n"
-                                                                + "  }\n"
-                                                                + "}",
-                                                        version))));
+                                        .withBody(validUpdateResponse)));
         updater.onlineUpdateCheck();
 
         verify(postRequestedFor(urlEqualTo("/api/v1/versioning/versions/")));

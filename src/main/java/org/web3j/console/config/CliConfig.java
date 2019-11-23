@@ -41,7 +41,7 @@ public class CliConfig {
                 Version.getVersion(),
                 defaultServicesUrl,
                 UUID.randomUUID().toString(),
-                false,
+                Version.getVersion(),
                 null);
     }
 
@@ -56,6 +56,18 @@ public class CliConfig {
         } else {
             return initializeDefaultConfig(configFile);
         }
+    }
+
+    public String getLatestVersion() {
+        return latestVersion;
+    }
+
+    public void setLatestVersion(String latestVersion) {
+        this.latestVersion = latestVersion;
+    }
+
+    public boolean isUpdateAvailable() {
+        return !version.equals(latestVersion);
     }
 
     public enum OS {
@@ -98,22 +110,23 @@ public class CliConfig {
     private String version;
     private String servicesUrl;
     private String clientId;
+    private String latestVersion;
+    private String updatePrompt;
 
     public CliConfig(
             String version,
             String servicesUrl,
             String clientId,
-            boolean updateAvailable,
+            String latestVersion,
             String updatePrompt) {
         this.version = version;
         this.servicesUrl = servicesUrl;
         this.clientId = clientId;
-        this.updateAvailable = updateAvailable;
+        this.latestVersion = latestVersion;
         this.updatePrompt = updatePrompt;
     }
 
-    private boolean updateAvailable;
-    private String updatePrompt;
+
 
     public String getVersion() {
         return version;
@@ -125,14 +138,6 @@ public class CliConfig {
 
     public String getClientId() {
         return clientId;
-    }
-
-    public boolean isUpdateAvailable() {
-        return updateAvailable;
-    }
-
-    public void setUpdateAvailable(boolean updateAvailable) {
-        this.updateAvailable = updateAvailable;
     }
 
     public String getUpdatePrompt() {

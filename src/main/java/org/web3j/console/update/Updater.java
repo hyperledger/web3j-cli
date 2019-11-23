@@ -36,7 +36,9 @@ public class Updater {
     public void promptIfUpdateAvailable() {
         if (config.isUpdateAvailable()) {
             System.out.println(
-                    String.format("A new Web3j update is available: %s", config.getUpdatePrompt()));
+                    String.format(
+                            "A new Web3j update is available. To update, run: %s",
+                            config.getUpdatePrompt()));
         }
     }
 
@@ -66,9 +68,9 @@ public class Updater {
                                 .getAsJsonObject()
                                 .get("latest")
                                 .getAsJsonObject();
-                String currentVersion = rootObj.get("version").getAsString();
-                if (!currentVersion.equals(Version.getVersion())) {
-                    config.setUpdateAvailable(true);
+                String latestVersion = rootObj.get("version").getAsString();
+                if (!latestVersion.equals(Version.getVersion())) {
+                    config.setLatestVersion(latestVersion);
                     config.setUpdatePrompt(
                             rootObj.get(
                                             CliConfig.determineOS() == CliConfig.OS.WINDOWS

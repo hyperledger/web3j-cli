@@ -40,8 +40,6 @@ apply {
         }
         from("$rootDir/gradle/$buildScript/build.gradle")
     }
-    gsonVersion = "2.8.6"
-    wireMockVersion = "2.25.1"
 }
 
 test {

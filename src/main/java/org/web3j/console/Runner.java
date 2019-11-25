@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs LTD.
+ * Copyright 2019 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -29,7 +29,7 @@ import static org.web3j.utils.Collection.tail;
 /** Main entry point for running command line utilities. */
 public class Runner {
 
-    private static final String USAGE = "Usage: web3j version|wallet|solidity|new|import ...";
+    private static final String USAGE = "Usage: web3j version|wallet|solidity|new|import|audit ...";
 
     private static final String LOGO =
             "\n" // generated at http://patorjk.com/software/taag
@@ -77,7 +77,9 @@ public class Runner {
                                     + "Build timestamp: "
                                     + Version.getTimestamp());
                     break;
-
+                case "audit":
+                    ContractAuditor.main(tail(args));
+                    break;
                 default:
                     Console.exitError(USAGE);
             }

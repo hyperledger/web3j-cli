@@ -18,8 +18,8 @@ ext {
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
-    ktlintVersion = "0.31.0"
 }
+
 
 apply {
     [

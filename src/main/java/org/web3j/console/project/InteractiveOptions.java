@@ -92,6 +92,7 @@ class InteractiveOptions {
         System.out.println(text);
     }
 
+
     static boolean overrideExistingProject() {
         print("Looks like the project exists. Would you like to override it [y/N] ?");
         String userAnswer = getUserInput();

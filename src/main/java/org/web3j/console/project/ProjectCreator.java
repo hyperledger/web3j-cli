@@ -89,6 +89,7 @@ public class ProjectCreator {
             generateTests();
             onSuccess();
         } catch (final Exception e) {
+            e.printStackTrace();
             exitError(e);
         }
     }

@@ -12,34 +12,64 @@
  */
 package org.web3j.console.project;
 
+import java.io.File;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import org.web3j.console.project.utills.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
+import static org.web3j.console.project.InteractiveOptions.overrideExistingProject;
 import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
+import static org.web3j.console.project.utills.ProjectUtils.*;
+import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(name = COMMAND_IMPORT)
 public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
 
     @Option(
             names = {"-s", "--solidity-path"},
-            description = "path to solidity file/folder",
+            description = "Path to solidity file/folder",
             required = true)
     String solidityImportPath;
 
+    @Option(
+            names = {"-t", "--generate-unit-tests"},
+            description = "Generate unit tests for the contract wrappers",
+            required = false,
+            showDefaultValue = ALWAYS)
+    boolean generateTests = false;
+
     @Override
     public void run() {
-        if (InputVerifier.requiredArgsAreNotEmpty(projectName, packageName, solidityImportPath)
-                && InputVerifier.classNameIsValid(projectName)
-                && InputVerifier.packageNameIsValid(packageName)) {
-            try {
-                new ProjectImporter(outputDir, packageName, projectName, solidityImportPath)
-                        .generate();
-            } catch (final Exception e) {
-                exitError(e);
+        if (inputIsValid()) {
+            if (InputVerifier.projectExists(new File(projectName))) {
+                if (overrideExistingProject()) {
+                    deleteFolder(new File(projectName).toPath());
+                    createProject();
+                } else {
+                    exitError("Project creation was canceled.");
+                }
+            } else {
+                createProject();
             }
         }
+    }
+
+    private void createProject() {
+        try {
+            ProjectImporter projectImporter =
+                    new ProjectImporter(outputDir, packageName, projectName, solidityImportPath);
+            projectImporter.generate(generateTests);
+        } catch (final Exception e) {
+            exitError(e);
+        }
+    }
+
+    private boolean inputIsValid() {
+        return InputVerifier.requiredArgsAreNotEmpty(projectName, packageName, solidityImportPath)
+                && InputVerifier.classNameIsValid(projectName)
+                && InputVerifier.packageNameIsValid(packageName);
     }
 }

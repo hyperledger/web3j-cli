@@ -12,6 +12,7 @@
  */
 package org.web3j.console.project.utills;
 
+import java.io.File;
 import javax.lang.model.SourceVersion;
 
 public class InputVerifier {
@@ -50,5 +51,12 @@ public class InputVerifier {
             return input;
         }
         return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
+    public static boolean projectExists(File projectDir) {
+        if (projectDir.exists()) {
+            return true;
+        }
+        return false;
     }
 }

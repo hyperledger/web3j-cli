@@ -13,8 +13,8 @@
 package org.web3j.console.project;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -22,7 +22,6 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,8 +30,8 @@ import picocli.CommandLine;
 
 import org.web3j.console.project.utills.ClassExecutor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static java.io.File.separator;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ProjectCreatorTest extends ClassExecutor {
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -60,13 +59,40 @@ public class ProjectCreatorTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {"new", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
-        int extiCode =
+        int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
                         .inheritIO()
                         .start()
                         .waitFor();
-        assertEquals(0, extiCode);
+        assertEquals(0, exitCode);
+    }
+
+    @Test
+    public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
+        final String[] args = {"new", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final File pathToTests =
+                new File(
+                        String.join(
+                                separator,
+                                tempDirPath,
+                                "Test",
+                                "src",
+                                "test",
+                                "java",
+                                "org",
+                                "com",
+                                "generated",
+                                "contracts",
+                                "GreeterTest.java"));
+        int exitCode =
+                executeClassAsSubProcessAndReturnProcess(
+                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                        .inheritIO()
+                        .start()
+                        .waitFor();
+        assertEquals(0, exitCode);
+        assertTrue(pathToTests.exists());
     }
 
     @Test
@@ -142,16 +168,5 @@ public class ProjectCreatorTest extends ClassExecutor {
         writer.close();
         process.waitFor();
         assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void testWhenInteractiveAndArgumentsAreEmpty() {
-        final String input = " \n \n \n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        System.setIn(inputStream);
-
-        final String[] args = {"new"};
-
-        assertThrows(NoSuchElementException.class, () -> ProjectCreator.main(args));
     }
 }

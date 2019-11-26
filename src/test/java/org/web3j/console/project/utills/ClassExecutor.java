@@ -13,26 +13,33 @@
 package org.web3j.console.project.utills;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ClassExecutor {
     public ProcessBuilder executeClassAsSubProcessAndReturnProcess(
-            Class classToExecute, List<String> jvmArgs, List<String> args)
-            throws IOException, InterruptedException {
-        String javaHome = System.getProperty("java.home");
-        String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
-        String classPath = System.getProperty("java.class.path");
-        String className = classToExecute.getName();
+            Class classToExecute, List<String> jvmArgs, List<String> args) {
 
-        List<String> command = new ArrayList<>();
-        command.add(javaBin);
-        command.addAll(jvmArgs);
-        command.add("-cp");
-        command.add(classPath);
-        command.add(className);
-        command.addAll(args);
-        return new ProcessBuilder(command);
+        return new ProcessBuilder(
+                concatenate(
+                        Collections.singletonList(
+                                System.getProperty("java.home")
+                                        + File.separator
+                                        + "bin"
+                                        + File.separator
+                                        + "java"),
+                        jvmArgs,
+                        Collections.singletonList("-cp"),
+                        Collections.singletonList(System.getProperty("java.class.path")),
+                        Collections.singletonList(classToExecute.getName()),
+                        args));
+    }
+
+    @SafeVarargs
+    public static <T> List<T> concatenate(List<T>... lists) {
+        return Stream.of(lists).flatMap(Collection::stream).collect(Collectors.toList());
     }
 }

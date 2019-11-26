@@ -20,6 +20,7 @@ import picocli.CommandLine;
 
 import org.web3j.console.project.utills.InputVerifier;
 
+import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.utils.Collection.tail;
@@ -30,9 +31,11 @@ public class ProjectCreator {
 
     final ProjectStructure projectStructure;
     final TemplateProvider templateProvider;
+    private final String projectName;
 
     ProjectCreator(final String root, final String packageName, final String projectName)
             throws IOException {
+        this.projectName = projectName;
         this.projectStructure = new ProjectStructure(root, packageName, projectName);
         this.templateProvider =
                 new TemplateProvider.Builder()
@@ -57,13 +60,14 @@ public class ProjectCreator {
         if (args.length > 0 && args[0].equals(COMMAND_NEW)) {
             args = tail(args);
             if (args.length == 0) {
-                final InteractiveOptions options = new InteractiveOptions();
+                final String projectName;
                 final List<String> stringOptions = new ArrayList<>();
                 stringOptions.add("-n");
-                stringOptions.add(options.getProjectName());
+                projectName = InteractiveOptions.getProjectName();
+                stringOptions.add(projectName);
                 stringOptions.add("-p");
-                stringOptions.add(options.getPackageName());
-                options.getProjectDestination()
+                stringOptions.add(InteractiveOptions.getPackageName());
+                InteractiveOptions.getProjectDestination(projectName)
                         .ifPresent(
                                 projectDest -> {
                                     stringOptions.add("-o");
@@ -76,19 +80,43 @@ public class ProjectCreator {
         CommandLine.run(new ProjectCreatorCLIRunner(), args);
     }
 
-    void generate() {
+    void generate(boolean withTests) {
         try {
             Project.builder()
                     .withProjectStructure(projectStructure)
                     .withTemplateProvider(templateProvider)
                     .build();
-            exitSuccess(
-                    "Project created with name: "
-                            + projectStructure.getProjectName()
-                            + " at location: "
-                            + projectStructure.getProjectRoot());
+            generateTests();
+            onSuccess();
         } catch (final Exception e) {
+            e.printStackTrace();
             exitError(e);
         }
+    }
+
+    void generateTests() throws IOException {
+        String wrapperPath =
+                String.join(
+                        separator,
+                        projectStructure.getRoot(),
+                        projectName,
+                        "build",
+                        "generated",
+                        "source",
+                        "web3j",
+                        "main",
+                        "java");
+        String writePath =
+                String.join(
+                        separator, projectStructure.getRoot(), projectName, "src", "test", "java");
+        new UnitTestCreator(wrapperPath, writePath).generate();
+    }
+
+    void onSuccess() {
+        exitSuccess(
+                "Project created with name: "
+                        + projectStructure.getProjectName()
+                        + " at location: "
+                        + projectStructure.getProjectRoot());
     }
 }

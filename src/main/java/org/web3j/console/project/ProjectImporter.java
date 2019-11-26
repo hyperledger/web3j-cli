@@ -20,12 +20,15 @@ import java.util.List;
 import picocli.CommandLine;
 
 import static org.web3j.codegen.Console.exitError;
-import static org.web3j.codegen.Console.exitSuccess;
+import static org.web3j.console.project.InteractiveOptions.getPackageName;
+import static org.web3j.console.project.InteractiveOptions.getProjectDestination;
+import static org.web3j.console.project.InteractiveOptions.getProjectName;
+import static org.web3j.console.project.InteractiveOptions.getSolidityProjectPath;
+import static org.web3j.console.project.InteractiveOptions.userWantsTests;
 import static org.web3j.utils.Collection.tail;
 
 public class ProjectImporter extends ProjectCreator {
     public static final String COMMAND_IMPORT = "import";
-
     private final String solidityImportPath;
 
     public ProjectImporter(
@@ -42,28 +45,32 @@ public class ProjectImporter extends ProjectCreator {
         if (args.length > 0 && args[0].equals(COMMAND_IMPORT)) {
             args = tail(args);
             if (args.length == 0) {
-                final InteractiveImporter options = new InteractiveImporter();
+                final String projectName;
                 final List<String> stringOptions = new ArrayList<>();
                 stringOptions.add("-n");
-                stringOptions.add(options.getProjectName());
+                projectName = getProjectName();
+                stringOptions.add(projectName);
                 stringOptions.add("-p");
-                stringOptions.add(options.getPackageName());
+                stringOptions.add(getPackageName());
                 stringOptions.add("-s");
-                stringOptions.add(options.getSolidityProjectPath());
-                options.getProjectDestination()
+                stringOptions.add(getSolidityProjectPath());
+                getProjectDestination(projectName)
                         .ifPresent(
                                 projectDest -> {
                                     stringOptions.add("-o");
                                     stringOptions.add(projectDest);
                                 });
+                if (userWantsTests()) {
+                    stringOptions.add("-t");
+                }
+
                 args = stringOptions.toArray(new String[0]);
             }
         }
-
         CommandLine.run(new ProjectImporterCLIRunner(), args);
     }
 
-    void generate() {
+    void generate(boolean generateTests) {
         final File solidityFile = new File(solidityImportPath);
         try {
             Project.builder()
@@ -71,11 +78,10 @@ public class ProjectImporter extends ProjectCreator {
                     .withTemplateProvider(templateProvider)
                     .withSolidityFile(solidityFile)
                     .build();
-            exitSuccess(
-                    "Project created with name: "
-                            + projectStructure.getProjectName()
-                            + " at location: "
-                            + projectStructure.getProjectRoot());
+            if (generateTests) {
+                generateTests();
+            }
+            onSuccess();
         } catch (final Exception e) {
             exitError(e);
         }

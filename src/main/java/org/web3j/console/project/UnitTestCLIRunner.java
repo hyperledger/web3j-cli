@@ -19,20 +19,20 @@ import picocli.CommandLine;
 import org.web3j.codegen.Console;
 
 @CommandLine.Command(
-        name = "generate",
+        name = "generate-tests",
         mixinStandardHelpOptions = true,
         version = "4.0",
         sortOptions = false)
 public class UnitTestCLIRunner implements Runnable {
     @CommandLine.Option(
             names = {"-i", "--java-wrapper-directory"},
-            description = "the class path of your generated wrapper",
+            description = "The class path of your generated wrapper.",
             required = true)
     String javaWrapperDir;
 
     @CommandLine.Option(
             names = {"-o", "--output-directory"},
-            description = "the path where the unit tests will be generated",
+            description = "The path where the unit tests will be generated.",
             required = true)
     String unitTestOutputDir;
 

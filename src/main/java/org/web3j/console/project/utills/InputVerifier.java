@@ -54,9 +54,6 @@ public class InputVerifier {
     }
 
     public static boolean projectExists(File projectDir) {
-        if (projectDir.exists()) {
-            return true;
-        }
-        return false;
+        return projectDir.exists();
     }
 }

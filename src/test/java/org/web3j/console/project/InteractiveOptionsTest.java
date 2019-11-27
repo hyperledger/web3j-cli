@@ -12,7 +12,11 @@
  */
 package org.web3j.console.project;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;

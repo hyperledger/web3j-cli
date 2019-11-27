@@ -75,7 +75,7 @@ class InteractiveOptions {
     static boolean userWantsTests() {
         print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
-        return userAnswer.toLowerCase().equals("y");
+        return userAnswer.trim().toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 
     static String getSolidityProjectPath() {
@@ -93,7 +93,7 @@ class InteractiveOptions {
     }
 
     static boolean overrideExistingProject() {
-        print("Looks like the project exists. Would you like to override it [Y/n] ?");
+        print("Looks like the project exists. Would you like to override it [y/N] ?");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y");
     }

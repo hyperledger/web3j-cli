@@ -35,7 +35,7 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
     String solidityImportPath;
 
     @Option(
-            names = {"-t", "--generate-unit-tests"},
+            names = {"-t", "--generate-tests"},
             description = "Generate unit tests for the contract wrappers",
             required = false,
             showDefaultValue = ALWAYS)

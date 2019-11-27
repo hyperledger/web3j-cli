@@ -26,7 +26,7 @@ import org.web3j.codegen.unit.gen.UnitClassGenerator;
 import static org.web3j.utils.Collection.tail;
 
 public class UnitTestCreator {
-    public static final String COMMAND_GENERATE_TESTS = "generateTests";
+    public static final String COMMAND_GENERATE_TESTS = "generate-tests";
 
     private final String writePath;
     private final String wrapperPath;

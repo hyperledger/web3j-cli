@@ -31,7 +31,8 @@ import picocli.CommandLine;
 import org.web3j.console.project.utills.ClassExecutor;
 
 import static java.io.File.separator;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectCreatorTest extends ClassExecutor {
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();

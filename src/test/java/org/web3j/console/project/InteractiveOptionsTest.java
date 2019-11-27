@@ -12,7 +12,6 @@
  */
 package org.web3j.console.project;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

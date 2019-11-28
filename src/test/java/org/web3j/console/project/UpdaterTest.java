@@ -12,6 +12,13 @@
  */
 package org.web3j.console.project;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.gson.Gson;
@@ -22,16 +29,10 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
+
 import org.web3j.console.config.CliConfig;
 import org.web3j.console.update.Updater;
 import org.web3j.utils.Version;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -89,21 +90,21 @@ public class UpdaterTest {
                                 .defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
         doAnswer(
-                invocation -> {
-                    String jsonToWrite =
-                            new Gson()
-                                    .toJson(
-                                            new CliConfig(
-                                                    config.getVersion(),
-                                                    config.getServicesUrl(),
-                                                    config.getClientId(),
-                                                    config.getLatestVersion(),
-                                                    config.getUpdatePrompt()));
-                    Files.write(
-                            tempWeb3jSettingsPath,
-                            jsonToWrite.getBytes(Charset.defaultCharset()));
-                    return null;
-                })
+                        invocation -> {
+                            String jsonToWrite =
+                                    new Gson()
+                                            .toJson(
+                                                    new CliConfig(
+                                                            config.getVersion(),
+                                                            config.getServicesUrl(),
+                                                            config.getClientId(),
+                                                            config.getLatestVersion(),
+                                                            config.getUpdatePrompt()));
+                            Files.write(
+                                    tempWeb3jSettingsPath,
+                                    jsonToWrite.getBytes(Charset.defaultCharset()));
+                            return null;
+                        })
                 .when(config)
                 .save();
 

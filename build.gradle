@@ -18,10 +18,10 @@ ext {
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
-    ktlintVersion = "0.31.0"
     gsonVersion = "2.8.6"
     wireMockVersion = "2.25.1"
 }
+
 
 apply {
     [
@@ -40,6 +40,10 @@ apply {
         }
         from("$rootDir/gradle/$buildScript/build.gradle")
     }
+}
+
+repositories {
+    maven { url "https://dl.bintray.com/ethereum/maven/" }
 }
 
 test {

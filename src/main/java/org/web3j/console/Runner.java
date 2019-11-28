@@ -29,7 +29,7 @@ import static org.web3j.utils.Collection.tail;
 /** Main entry point for running command line utilities. */
 public class Runner {
 
-    private static final String USAGE = "Usage: web3j version|wallet|solidity|new|import|audit ...";
+    private static final String USAGE = "Usage: web3j version|wallet|solidity|new|import|generate-tests|audit ...";
 
     private static final String LOGO =
             "\n" // generated at http://patorjk.com/software/taag

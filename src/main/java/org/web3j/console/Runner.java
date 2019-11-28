@@ -48,7 +48,9 @@ public class Runner {
         CliConfig config = CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile());
         Updater updater = new Updater(config);
         updater.promptIfUpdateAvailable();
-        new Thread(updater::onlineUpdateCheck).start();
+        Thread updateThread = new Thread(updater::onlineUpdateCheck);
+        updateThread.setDaemon(true);
+        updateThread.start();
 
         if (args.length < 1) {
             Console.exitError(USAGE);

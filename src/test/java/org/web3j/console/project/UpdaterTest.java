@@ -12,36 +12,44 @@
  */
 package org.web3j.console.project;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.google.gson.Gson;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
+import org.web3j.console.config.CliConfig;
+import org.web3j.console.update.Updater;
+import org.web3j.utils.Version;
+
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.google.gson.Gson;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
-
-import org.web3j.console.config.CliConfig;
-import org.web3j.console.update.Updater;
-import org.web3j.utils.Version;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 public class UpdaterTest {
 
     private static Path tempWeb3jSettingsPath;
-    private WireMockServer wireMockServer;
+    private static WireMockServer wireMockServer;
 
     @BeforeEach
     void setup(@TempDir Path temp) {
@@ -59,7 +67,15 @@ public class UpdaterTest {
     @ParameterizedTest
     @ValueSource(strings = {"4.5.6", "4.5.7"})
     void testUpdateCheckWorksSuccessfullyWhenUpdateAvailable(String version) throws Exception {
+        testWorksWithVersion(version);
+    }
 
+    @Test
+    void testCurrentVersion() throws Exception {
+        testWorksWithVersion(Version.getVersion());
+    }
+
+    private void testWorksWithVersion(String version) throws IOException {
         CliConfig config =
                 mock(
                         CliConfig.class,
@@ -73,21 +89,21 @@ public class UpdaterTest {
                                 .defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
         doAnswer(
-                        invocation -> {
-                            String jsonToWrite =
-                                    new Gson()
-                                            .toJson(
-                                                    new CliConfig(
-                                                            config.getVersion(),
-                                                            config.getServicesUrl(),
-                                                            config.getClientId(),
-                                                            config.getLatestVersion(),
-                                                            config.getUpdatePrompt()));
-                            Files.write(
-                                    tempWeb3jSettingsPath,
-                                    jsonToWrite.getBytes(Charset.defaultCharset()));
-                            return null;
-                        })
+                invocation -> {
+                    String jsonToWrite =
+                            new Gson()
+                                    .toJson(
+                                            new CliConfig(
+                                                    config.getVersion(),
+                                                    config.getServicesUrl(),
+                                                    config.getClientId(),
+                                                    config.getLatestVersion(),
+                                                    config.getUpdatePrompt()));
+                    Files.write(
+                            tempWeb3jSettingsPath,
+                            jsonToWrite.getBytes(Charset.defaultCharset()));
+                    return null;
+                })
                 .when(config)
                 .save();
 
@@ -123,5 +139,6 @@ public class UpdaterTest {
         CliConfig realConfigAfterUpdate = CliConfig.getConfig(tempWeb3jSettingsPath.toFile());
         assertEquals(
                 !version.equals(config.getVersion()), realConfigAfterUpdate.isUpdateAvailable());
+        wireMockServer.stop();
     }
 }

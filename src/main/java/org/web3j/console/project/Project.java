@@ -104,7 +104,7 @@ public class Project {
                 if (solidityImportPath == null) {
                     projectWriter.writeResourceFile(
                             templateProvider.getSolidityProject(),
-                            "Greeter.sol",
+                            "HelloWorld.sol",
                             projectStructure.getSolidityPath());
                 } else {
                     projectWriter.importSolidityProject(

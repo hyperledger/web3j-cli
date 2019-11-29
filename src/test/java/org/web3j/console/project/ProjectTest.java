@@ -39,7 +39,7 @@ public class ProjectTest {
                         .loadGradleSettings("settings.gradle.template")
                         .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
                         .loadGradleJar("gradle-wrapper.jar")
-                        .loadSolidityGreeter("Greeter.sol")
+                        .loadSolidityGreeter("HelloWorld.sol")
                         .withPackageNameReplacement(s -> s.replace("<package_name>", "test"))
                         .withProjectNameReplacement(
                                 s ->
@@ -68,7 +68,7 @@ public class ProjectTest {
         final boolean mainJavaClass =
                 new File(projectStructure.getMainPath() + File.separator + "Test.java").exists();
         final boolean greeterContract =
-                new File(projectStructure.getSolidityPath() + File.separator + "Greeter.sol")
+                new File(projectStructure.getSolidityPath() + File.separator + "HelloWorld.sol")
                         .exists();
         final boolean gradleBuild =
                 new File(projectStructure.getProjectRoot() + File.separator + "build.gradle")

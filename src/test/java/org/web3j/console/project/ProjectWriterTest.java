@@ -37,8 +37,8 @@ public class ProjectWriterTest {
 
     @Test
     public void writeResourceFileTest() throws Exception {
-        projectWriter.writeResourceFile("Greeter.sol", "Greeter.sol", tempDirPath);
-        assertTrue(new File(tempDirPath + File.separator + "Greeter.sol").exists());
+        projectWriter.writeResourceFile("HelloWorld.sol", "HelloWorld.sol", tempDirPath);
+        assertTrue(new File(tempDirPath + File.separator + "HelloWorld.sol").exists());
     }
 
     @Test
@@ -54,7 +54,9 @@ public class ProjectWriterTest {
         final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
         file.mkdirs();
         projectWriter.writeResourceFile(
-                "Greeter.sol", "Greeter.sol", tempDirPath + File.separator + "tempSolidityDir");
+                "HelloWorld.sol",
+                "HelloWorld.sol",
+                tempDirPath + File.separator + "tempSolidityDir");
         projectWriter.importSolidityProject(
                 new File(tempDirPath + File.separator + "tempSolidityDir"),
                 tempDirPath + File.separator + "tempSolidityDestination");
@@ -64,7 +66,7 @@ public class ProjectWriterTest {
                                         + File.separator
                                         + "tempSolidityDestination"
                                         + File.separator
-                                        + "Greeter.sol")
+                                        + "HelloWorld.sol")
                         .exists());
     }
 }

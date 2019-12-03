@@ -85,7 +85,7 @@ public class ProjectCreatorTest extends ClassExecutor {
                                 "com",
                                 "generated",
                                 "contracts",
-                                "GreeterTest.java"));
+                                "HelloWorldTest.java"));
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))

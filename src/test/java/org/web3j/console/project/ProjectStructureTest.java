@@ -29,7 +29,11 @@ public class ProjectStructureTest {
     public void init(@TempDir Path temp) {
         tempDirPath = temp.toString();
         projectStructure = new ProjectStructure(tempDirPath, "test.test", "Test");
-        projectStructure.createDirectoryStructure();
+        projectStructure.createMainDirectory();
+        projectStructure.createTestDirectory();
+        projectStructure.createSolidityDirectory();
+        projectStructure.createWrapperDirectory();
+        projectStructure.createTestDirectory();
     }
 
     @Test

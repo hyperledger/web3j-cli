@@ -14,8 +14,14 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import org.web3j.console.project.utils.InputVerifier;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.WalletUtils;
+
 import org.web3j.console.project.utils.ProgressCounter;
 
 public class Project {
@@ -31,6 +37,8 @@ public class Project {
         private ProjectStructure projectStructure;
         private TemplateProvider templateProvider;
         private File solidityImportPath;
+        private boolean withWallet = false;
+        private String walletPassword;
 
         public Builder withSolidityFile(final File solidityImportPath) {
             this.solidityImportPath = solidityImportPath;
@@ -46,6 +54,12 @@ public class Project {
         public Builder withTemplateProvider(final TemplateProvider templateProvider) {
             this.templateProvider = templateProvider;
 
+            return this;
+        }
+
+        public Builder withWallet(String walletPassword) {
+            this.walletPassword = walletPassword;
+            this.withWallet = true;
             return this;
         }
 
@@ -85,8 +99,17 @@ public class Project {
                     .waitFor();
         }
 
-        public Project build() throws IOException, InterruptedException {
-            projectStructure.createDirectoryStructure();
+        public Project build() throws IOException, InterruptedException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+            projectStructure.createMainDirectory();
+            projectStructure.createTestDirectory();
+            projectStructure.createSolidityDirectory();
+            projectStructure.createWrapperDirectory();
+            if (withWallet) {
+                projectStructure.createWalletDirectory();
+                WalletUtils.generateNewWalletFile(
+                        walletPassword, new File(projectStructure.getWalletPath()));
+            }
+
             final ProjectWriter projectWriter = new ProjectWriter();
             projectWriter.writeResourceFile(
                     templateProvider.getMainJavaClass(),

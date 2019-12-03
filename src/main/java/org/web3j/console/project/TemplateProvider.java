@@ -87,9 +87,11 @@ public class TemplateProvider {
         private String gradlewBatScript;
         private String gradlewScript;
         private String solidityProject;
-        private String gradlewWraperJar;
+        private String gradlewWrapperJar;
         private Function<String, String> packageNameReplacement = s -> s;
         private Function<String, String> projectNameReplacement = s -> s;
+        private Function<String, String> privateKeyReplacement = s -> s;
+
 
         public Builder loadMainJavaClass(final String name) throws IOException {
             this.mainJavaClass = readFile(name);
@@ -133,7 +135,7 @@ public class TemplateProvider {
         }
 
         public Builder loadGradleJar(final String name) {
-            this.gradlewWraperJar = name;
+            this.gradlewWrapperJar = name;
             return this;
         }
 
@@ -149,16 +151,23 @@ public class TemplateProvider {
             return this;
         }
 
+        public Builder withPrivateKeyReplacement(
+                final Function<String, String> privateKeyReplacement) {
+            this.privateKeyReplacement = privateKeyReplacement;
+            return this;
+        }
+
         TemplateProvider build() {
             return new TemplateProvider(
-                    projectNameReplacement.apply(packageNameReplacement.apply(mainJavaClass)),
+                    projectNameReplacement.apply(packageNameReplacement.apply(privateKeyReplacement.apply(mainJavaClass))),
                     solidityProject,
                     packageNameReplacement.apply(gradleBuild),
                     projectNameReplacement.apply(gradleSettings),
                     gradlewWrapperSettings,
                     gradlewBatScript,
                     gradlewScript,
-                    gradlewWraperJar);
+                    gradlewWrapperJar
+            );
         }
 
         private String readFile(final String name) throws IOException {

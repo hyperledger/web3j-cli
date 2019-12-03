@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.web3j.console.project.utills.ProjectUtils;
 import picocli.CommandLine;
 
 import org.web3j.console.project.utils.InputVerifier;
@@ -30,11 +31,10 @@ import static org.web3j.utils.Collection.tail;
 public class ProjectCreator {
 
     public static final String COMMAND_NEW = "new";
-
-    private final ProjectStructure projectStructure;
-    private final TemplateProvider templateProvider;
+    private final String walletPassword = ProjectUtils.generateWalletPassword();
+    final ProjectStructure projectStructure;
+    final TemplateProvider templateProvider;
     private final String projectName;
-
     ProjectCreator(final String root, final String packageName, final String projectName)
             throws IOException {
         this.projectName = projectName;
@@ -55,6 +55,8 @@ public class ProjectCreator {
                                         s.replace(
                                                 "<project_name>",
                                                 InputVerifier.capitalizeFirstLetter(projectName)))
+                        .withPrivateKeyReplacement(
+                                s -> s.replace("<wallet_password_placeholder>", walletPassword))
                         .build();
     }
 
@@ -85,6 +87,7 @@ public class ProjectCreator {
     void generate() {
         generate(true, Optional.empty());
     }
+
 
     void generate(boolean withTests, Optional<File> solidityFile) {
         try {

@@ -1,7 +1,11 @@
 package <package_name>;
+
+
 public class <project_name> {
 
-    public static void main(String[] args) {
+    private static String walletPassword = "<wallet_password_placeholder>";
+
+    public static void main(String[]args){
 
     }
 }

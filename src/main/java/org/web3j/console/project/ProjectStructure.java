@@ -24,6 +24,7 @@ public class ProjectStructure {
     private final String wrapperPath;
     private final String root;
     private final String projectRoot;
+    private final String walletPath;
 
     ProjectStructure(final String root, final String packageName, final String projectName) {
         this.root = generateRoot(root);
@@ -34,6 +35,7 @@ public class ProjectStructure {
         this.mainPath = generatePath(this.projectRoot, "src", "main", "java", formattedPackageName);
         this.solidityPath = generatePath(this.projectRoot, "src", "main", "solidity");
         this.testPath = generatePath(this.projectRoot, "src", "test", "java", formattedPackageName);
+        this.walletPath = generatePath(this.projectRoot, "src", "test", "resources", "wallet");
         this.wrapperPath = generatePath(this.projectRoot, "gradle", "wrapper");
     }
 
@@ -59,6 +61,10 @@ public class ProjectStructure {
 
     final String getSolidityPath() {
         return solidityPath;
+    }
+
+    final String getWalletPath() {
+        return walletPath;
     }
 
     final String getMainPath() {
@@ -102,10 +108,23 @@ public class ProjectStructure {
         directory.mkdirs();
     }
 
-    void createDirectoryStructure() {
+    void createMainDirectory() {
         createDirectory(mainPath);
+    }
+
+    void createTestDirectory() {
         createDirectory(testPath);
+    }
+
+    void createSolidityDirectory() {
         createDirectory(solidityPath);
+    }
+
+    void createWrapperDirectory() {
         createDirectory(wrapperPath);
+    }
+
+    void createWalletDirectory() {
+        createDirectory(walletPath);
     }
 }

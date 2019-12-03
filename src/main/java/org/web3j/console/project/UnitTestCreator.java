@@ -12,15 +12,16 @@
  */
 package org.web3j.console.project;
 
-import org.web3j.codegen.Console;
-import org.web3j.codegen.unit.gen.ClassProvider;
-import org.web3j.codegen.unit.gen.UnitClassGenerator;
-import picocli.CommandLine;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import picocli.CommandLine;
+
+import org.web3j.codegen.Console;
+import org.web3j.codegen.unit.gen.ClassProvider;
+import org.web3j.codegen.unit.gen.UnitClassGenerator;
 
 import static org.web3j.utils.Collection.tail;
 

@@ -17,17 +17,20 @@ import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.ProjectImporter;
+import org.web3j.console.project.UnitTestCreator;
 import org.web3j.utils.Version;
 
 import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDITY;
 import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;
 import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
+import static org.web3j.console.project.UnitTestCreator.COMMAND_GENERATE_TESTS;
 import static org.web3j.utils.Collection.tail;
 
 /** Main entry point for running command line utilities. */
 public class Runner {
 
-    private static final String USAGE = "Usage: web3j version|wallet|solidity|new|import|audit ...";
+    private static final String USAGE =
+            "Usage: web3j version|wallet|solidity|new|import|generate-tests|audit ...";
 
     private static final String LOGO =
             "\n" // generated at http://patorjk.com/software/taag
@@ -72,6 +75,9 @@ public class Runner {
                     break;
                 case "audit":
                     ContractAuditor.main(tail(args));
+                    break;
+                case COMMAND_GENERATE_TESTS:
+                    UnitTestCreator.main(args);
                     break;
                 default:
                     Console.exitError(USAGE);

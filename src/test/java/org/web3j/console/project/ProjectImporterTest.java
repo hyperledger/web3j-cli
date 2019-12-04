@@ -13,17 +13,14 @@
 package org.web3j.console.project;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,14 +29,17 @@ import picocli.CommandLine;
 
 import org.web3j.console.project.utills.ClassExecutor;
 
+import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectImporterTest extends ClassExecutor {
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    private InputStream inputStream;
     private String tempDirPath;
+    private String formattedPath =
+            new File(String.join(separator, "src", "test", "resources", "Solidity"))
+                    .getAbsolutePath();
 
     @BeforeEach
     public void setUpStreams(@TempDir Path temp) {
@@ -61,22 +61,8 @@ public class ProjectImporterTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
 
-        final String formattedSolidityTestProject =
-                File.separator
-                        + "web3j"
-                        + File.separator
-                        + "console"
-                        + File.separator
-                        + "src"
-                        + File.separator
-                        + "test"
-                        + File.separator
-                        + "resources"
-                        + File.separator
-                        + "Solidity";
-
         final String[] args = {
-            "-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + formattedSolidityTestProject
+            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
@@ -98,8 +84,6 @@ public class ProjectImporterTest extends ClassExecutor {
     @Test
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException {
-        String formattedPath =
-                "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
         final String[] args = {"import"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
@@ -115,16 +99,55 @@ public class ProjectImporterTest extends ClassExecutor {
         writer.newLine();
         writer.write(tempDirPath, 0, tempDirPath.length());
         writer.newLine();
+        writer.write("n", 0, "n".length());
+        writer.newLine();
         writer.close();
         process.waitFor();
         assertEquals(0, process.exitValue());
     }
 
     @Test
+    public void verifyWhenInteractiveThatTestsHaveBeenGenerated()
+            throws IOException, InterruptedException {
+        String pathToTests =
+                String.join(
+                        separator,
+                        tempDirPath,
+                        "test",
+                        "src",
+                        "test",
+                        "java",
+                        "org",
+                        "com",
+                        "generated",
+                        "contracts",
+                        "Test2Test.java");
+        final String[] args = {"import"};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("test", 0, "test".length());
+        writer.newLine();
+        writer.write("org.com", 0, "org.com".length());
+        writer.newLine();
+        writer.write(formattedPath, 0, formattedPath.length());
+        writer.newLine();
+        writer.write(tempDirPath, 0, tempDirPath.length());
+        writer.newLine();
+        writer.write("y", 0, "y".length());
+        writer.newLine();
+        writer.close();
+        process.waitFor();
+        assertEquals(0, process.exitValue());
+        assertTrue(new File(pathToTests).exists());
+    }
+
+    @Test
     public void testWhenInteractiveAndFirstInputIsInvalidClassName()
             throws IOException, InterruptedException {
-        String formattedPath =
-                "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
         final String[] args = {"import"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
@@ -134,13 +157,15 @@ public class ProjectImporterTest extends ClassExecutor {
                 new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         writer.write("#$%^%#$test", 0, "#$%^%#$test".length());
         writer.newLine();
-        writer.write("test", 0, "test".length());
+        writer.write("test1", 0, "test1".length());
         writer.newLine();
         writer.write("org.com", 0, "org.com".length());
         writer.newLine();
         writer.write(formattedPath, 0, formattedPath.length());
         writer.newLine();
         writer.write(tempDirPath, 0, tempDirPath.length());
+        writer.newLine();
+        writer.write("n", 0, "n".length());
         writer.newLine();
         writer.close();
         process.waitFor();
@@ -150,8 +175,6 @@ public class ProjectImporterTest extends ClassExecutor {
     @Test
     public void testWhenInteractiveAndFirstInputIsInvalidPackageName()
             throws IOException, InterruptedException {
-        String formattedPath =
-                "/web3j/console/src/test/resources/Solidity".replace("/", File.separator);
         final String[] args = {"import"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
@@ -169,18 +192,10 @@ public class ProjectImporterTest extends ClassExecutor {
         writer.newLine();
         writer.write(tempDirPath, 0, tempDirPath.length());
         writer.newLine();
+        writer.write("n", 0, "n".length());
+        writer.newLine();
         writer.close();
         process.waitFor();
         assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void testWhenInteractiveAndArgumentsAreEmpty() {
-        final String input = " \n \n \n \n";
-        inputStream = new ByteArrayInputStream(input.getBytes());
-        System.setIn(inputStream);
-        final String[] args = {"import"};
-
-        assertThrows(NoSuchElementException.class, () -> ProjectImporter.main(args));
     }
 }

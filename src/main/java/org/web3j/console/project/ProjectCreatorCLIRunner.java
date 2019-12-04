@@ -12,6 +12,7 @@
  */
 package org.web3j.console.project;
 
+import java.io.File;
 import java.io.IOException;
 
 import picocli.CommandLine.Command;
@@ -20,40 +21,59 @@ import picocli.CommandLine.Option;
 import org.web3j.console.project.utills.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
+import static org.web3j.console.project.InteractiveOptions.overrideExistingProject;
 import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;
+import static org.web3j.console.project.utills.ProjectUtils.deleteFolder;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(name = COMMAND_NEW, mixinStandardHelpOptions = true, version = "4.0", sortOptions = false)
 public class ProjectCreatorCLIRunner implements Runnable {
     @Option(
             names = {"-o", "--output-dir"},
-            description = "destination base directory.",
+            description = "Destination base directory.",
             required = false,
             showDefaultValue = ALWAYS)
     String outputDir = System.getProperty("user.dir");
 
     @Option(
             names = {"-p", "--package"},
-            description = "base package name.",
+            description = "Base package name.",
             required = true)
     String packageName;
 
     @Option(
             names = {"-n", "--project-name"},
-            description = "project name.",
+            description = "Project name.",
             required = true)
     String projectName;
 
     @Override
     public void run() {
-        if (InputVerifier.requiredArgsAreNotEmpty(projectName, packageName)
-                && InputVerifier.classNameIsValid(projectName)
-                && InputVerifier.packageNameIsValid(packageName)) {
-            try {
-                new ProjectCreator(outputDir, packageName, projectName).generate();
-            } catch (final IOException e) {
-                exitError(e);
+        if (inputIsValid(projectName, packageName)) {
+            if (InputVerifier.projectExists(new File(projectName))) {
+                if (overrideExistingProject()) {
+                    deleteFolder(new File(projectName).toPath());
+                    createProject();
+                } else {
+                    exitError("Project creation was canceled.");
+                }
+            } else {
+                createProject();
             }
         }
+    }
+
+    private void createProject() {
+        try {
+            new ProjectCreator(outputDir, packageName, projectName).generate();
+        } catch (final IOException e) {
+            exitError(e);
+        }
+    }
+
+    boolean inputIsValid(String... requiredArgs) {
+        return InputVerifier.requiredArgsAreNotEmpty(requiredArgs)
+                && InputVerifier.classNameIsValid(projectName)
+                && InputVerifier.packageNameIsValid(packageName);
     }
 }

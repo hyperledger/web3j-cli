@@ -43,7 +43,7 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
 
     @Override
     public void run() {
-        if (inputIsValid()) {
+        if (inputIsValid(projectName, packageName, solidityImportPath)) {
             if (InputVerifier.projectExists(new File(projectName))) {
                 if (overrideExistingProject()) {
                     deleteFolder(new File(projectName).toPath());
@@ -65,11 +65,5 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
         } catch (final Exception e) {
             exitError(e);
         }
-    }
-
-    private boolean inputIsValid() {
-        return InputVerifier.requiredArgsAreNotEmpty(projectName, packageName, solidityImportPath)
-                && InputVerifier.classNameIsValid(projectName)
-                && InputVerifier.packageNameIsValid(packageName);
     }
 }

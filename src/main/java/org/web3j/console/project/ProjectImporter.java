@@ -16,10 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import picocli.CommandLine;
 
-import static org.web3j.codegen.Console.exitError;
 import static org.web3j.console.project.InteractiveOptions.getPackageName;
 import static org.web3j.console.project.InteractiveOptions.getProjectDestination;
 import static org.web3j.console.project.InteractiveOptions.getProjectName;
@@ -42,11 +42,11 @@ public class ProjectImporter extends ProjectCreator {
     }
 
     public static void main(String[] args) {
+        final String projectName;
+        final List<String> stringOptions = new ArrayList<>();
         if (args.length > 0 && args[0].equals(COMMAND_IMPORT)) {
             args = tail(args);
             if (args.length == 0) {
-                final String projectName;
-                final List<String> stringOptions = new ArrayList<>();
                 stringOptions.add("-n");
                 projectName = getProjectName();
                 stringOptions.add(projectName);
@@ -72,18 +72,6 @@ public class ProjectImporter extends ProjectCreator {
 
     void generate(boolean generateTests) {
         final File solidityFile = new File(solidityImportPath);
-        try {
-            Project.builder()
-                    .withProjectStructure(projectStructure)
-                    .withTemplateProvider(templateProvider)
-                    .withSolidityFile(solidityFile)
-                    .build();
-            if (generateTests) {
-                generateTests();
-            }
-            onSuccess();
-        } catch (final Exception e) {
-            exitError(e);
-        }
+        super.generate(generateTests, Optional.of(solidityFile));
     }
 }

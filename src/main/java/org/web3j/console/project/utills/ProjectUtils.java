@@ -27,13 +27,13 @@ public class ProjectUtils {
             Files.walk(directoryToDeleted)
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
-                    .forEach(ProjectUtils::deleteHelper);
+                    .forEach(ProjectUtils::deleteFile);
         } catch (IOException e) {
             Console.exitError(e);
         }
     }
 
-    static void deleteHelper(File fileToDelete) {
+    static void deleteFile(File fileToDelete) {
         if (!fileToDelete.delete()) {
             Console.exitError(
                     "Could not delete "

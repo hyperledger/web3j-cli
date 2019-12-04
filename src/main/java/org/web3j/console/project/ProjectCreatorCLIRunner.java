@@ -49,16 +49,14 @@ public class ProjectCreatorCLIRunner implements Runnable {
 
     @Override
     public void run() {
-        if (inputIsValid()) {
+        if (inputIsValid(projectName, packageName)) {
             if (InputVerifier.projectExists(new File(projectName))) {
                 if (overrideExistingProject()) {
                     deleteFolder(new File(projectName).toPath());
                     createProject();
-
                 } else {
                     exitError("Project creation was canceled.");
                 }
-
             } else {
                 createProject();
             }
@@ -67,15 +65,14 @@ public class ProjectCreatorCLIRunner implements Runnable {
 
     private void createProject() {
         try {
-            new ProjectCreator(outputDir, packageName, projectName).generate(true);
-
+            new ProjectCreator(outputDir, packageName, projectName).generate();
         } catch (final IOException e) {
             exitError(e);
         }
     }
 
-    private boolean inputIsValid() {
-        return InputVerifier.requiredArgsAreNotEmpty(projectName, packageName)
+    boolean inputIsValid(String... requiredArgs) {
+        return InputVerifier.requiredArgsAreNotEmpty(requiredArgs)
                 && InputVerifier.classNameIsValid(projectName)
                 && InputVerifier.packageNameIsValid(packageName);
     }

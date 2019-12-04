@@ -91,7 +91,7 @@ public class TemplateProvider {
         private Function<String, String> packageNameReplacement = s -> s;
         private Function<String, String> projectNameReplacement = s -> s;
         private Function<String, String> privateKeyReplacement = s -> s;
-
+        private Function<String, String> walletNameReplacement = s -> s;
 
         public Builder loadMainJavaClass(final String name) throws IOException {
             this.mainJavaClass = readFile(name);
@@ -157,17 +157,25 @@ public class TemplateProvider {
             return this;
         }
 
+        public Builder withWalletNameReplacement(
+                final Function<String, String> walletNameReplacement) {
+            this.walletNameReplacement = walletNameReplacement;
+            return this;
+        }
+
         TemplateProvider build() {
             return new TemplateProvider(
-                    projectNameReplacement.apply(packageNameReplacement.apply(privateKeyReplacement.apply(mainJavaClass))),
+                    projectNameReplacement.apply(
+                            packageNameReplacement.apply(
+                                    privateKeyReplacement.apply(
+                                            walletNameReplacement.apply(mainJavaClass)))),
                     solidityProject,
                     packageNameReplacement.apply(gradleBuild),
                     projectNameReplacement.apply(gradleSettings),
                     gradlewWrapperSettings,
                     gradlewBatScript,
                     gradlewScript,
-                    gradlewWrapperJar
-            );
+                    gradlewWrapperJar);
         }
 
         private String readFile(final String name) throws IOException {

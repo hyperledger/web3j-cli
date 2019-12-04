@@ -16,7 +16,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
+import org.web3j.crypto.CipherException;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -68,7 +72,7 @@ public class ProjectCreatorCLIRunner implements Runnable {
     private void createProject() {
         try {
             new ProjectCreator(outputDir, packageName, projectName).generate();
-        } catch (final IOException e) {
+        } catch (final IOException | NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException | CipherException e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             exitError("Could not generate project reason:" + sw.toString());

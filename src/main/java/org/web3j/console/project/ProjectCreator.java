@@ -14,11 +14,16 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.web3j.console.project.utills.ProjectUtils;
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.WalletUtils;
 import picocli.CommandLine;
 
 import org.web3j.console.project.utils.InputVerifier;
@@ -36,9 +41,14 @@ public class ProjectCreator {
     final TemplateProvider templateProvider;
     private final String projectName;
     ProjectCreator(final String root, final String packageName, final String projectName)
-            throws IOException {
+            throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
         this.projectName = projectName;
         this.projectStructure = new ProjectStructure(root, packageName, projectName);
+        projectStructure.createWalletDirectory();
+        final String walletName =
+                WalletUtils.generateNewWalletFile(
+                        walletPassword, new File(projectStructure.getWalletPath()));
+
         this.templateProvider =
                 new TemplateProvider.Builder()
                         .loadGradlewBatScript("gradlew.bat.template")
@@ -57,6 +67,7 @@ public class ProjectCreator {
                                                 InputVerifier.capitalizeFirstLetter(projectName)))
                         .withPrivateKeyReplacement(
                                 s -> s.replace("<wallet_password_placeholder>", walletPassword))
+                        .withWalletNameReplacement(s -> s.replace("<wallet_name>", walletName))
                         .build();
     }
 

@@ -12,15 +12,16 @@
  */
 package org.web3j.console.project;
 
-import java.io.File;
-import java.nio.file.Path;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
+import org.web3j.console.project.utills.ProjectUtils;
 import org.web3j.console.project.utils.InputVerifier;
 
+import java.io.File;
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectTest {
@@ -50,6 +51,7 @@ public class ProjectTest {
         Project.builder()
                 .withTemplateProvider(templateProviderNew)
                 .withProjectStructure(projectStructure)
+                .withWallet(ProjectUtils.generateWalletPassword())
                 .build();
     }
 
@@ -78,9 +80,9 @@ public class ProjectTest {
                         .exists();
         final boolean gradleWrapperSettings =
                 new File(
-                                projectStructure.getWrapperPath()
-                                        + File.separator
-                                        + "gradle-wrapper.properties")
+                        projectStructure.getWrapperPath()
+                                + File.separator
+                                + "gradle-wrapper.properties")
                         .exists();
         final boolean gradleWrapperJar =
                 new File(projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar")
@@ -90,7 +92,10 @@ public class ProjectTest {
                         .exists();
         final boolean gradlewScript =
                 new File(projectStructure.getProjectRoot() + File.separator + "gradlew").exists();
-
+        final File[] filesInWalletDirectory =
+                new File(projectStructure.getWalletPath()).listFiles();
+        assert filesInWalletDirectory != null;
+        assertEquals(2, filesInWalletDirectory.length);
         assertTrue(
                 mainJavaClass
                         && greeterContract

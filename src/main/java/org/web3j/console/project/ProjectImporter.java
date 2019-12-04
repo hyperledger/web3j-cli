@@ -12,19 +12,19 @@
  */
 package org.web3j.console.project;
 
+import org.web3j.crypto.CipherException;
+import picocli.CommandLine;
+
 import java.io.File;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import picocli.CommandLine;
-
-import static org.web3j.console.project.InteractiveOptions.getPackageName;
-import static org.web3j.console.project.InteractiveOptions.getProjectDestination;
-import static org.web3j.console.project.InteractiveOptions.getProjectName;
-import static org.web3j.console.project.InteractiveOptions.getSolidityProjectPath;
-import static org.web3j.console.project.InteractiveOptions.userWantsTests;
+import static org.web3j.console.project.InteractiveOptions.*;
 import static org.web3j.utils.Collection.tail;
 
 public class ProjectImporter extends ProjectCreator {
@@ -36,7 +36,8 @@ public class ProjectImporter extends ProjectCreator {
             final String packageName,
             final String projectName,
             final String solidityImportPath)
-            throws IOException {
+            throws IOException, CipherException, InvalidAlgorithmParameterException,
+                    NoSuchAlgorithmException, NoSuchProviderException {
         super(root, packageName, projectName);
         this.solidityImportPath = solidityImportPath;
     }

@@ -74,8 +74,11 @@ public class ProjectStructure {
             return System.getProperty("user.home");
         } else if (path.startsWith("~" + File.separator)) {
             return System.getProperty("user.home") + path.substring(1);
+        } else if (path.equals(".")) {
+            return System.getProperty("user.dir");
+        } else if (path.startsWith(".")) {
+            return System.getProperty("user.dir") + path.substring(1);
         }
-
         return path;
     }
 

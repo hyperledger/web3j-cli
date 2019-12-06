@@ -12,8 +12,7 @@
  */
 package org.web3j.console.update;
 
-import java.io.IOException;
-
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.MultipartBody;
@@ -50,24 +49,23 @@ public class Updater {
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("os", CliConfig.determineOS().toString())
                         .addFormDataPart("clientId", config.getClientId())
+                        .addFormDataPart("data", "update_check")
                         .build();
 
         Request updateCheckRequest =
                 new okhttp3.Request.Builder()
-                        .url(
-                                String.format(
-                                        "%s/api/v1/versioning/versions/", config.getServicesUrl()))
+                        .url(String.format("%s/api/versions/latest", config.getServicesUrl()))
                         .post(updateBody)
                         .build();
 
         try {
             Response sendRawResponse = client.newCall(updateCheckRequest).execute();
-            if (sendRawResponse.code() == 200) {
-                JsonObject rootObj =
-                        JsonParser.parseString(sendRawResponse.body().string())
-                                .getAsJsonObject()
-                                .get("latest")
-                                .getAsJsonObject();
+            JsonElement element;
+            if (sendRawResponse.code() == 200
+                    && sendRawResponse.body() != null
+                    && (element = JsonParser.parseString(sendRawResponse.body().string())) != null
+                    && element.isJsonObject()) {
+                JsonObject rootObj = element.getAsJsonObject().get("latest").getAsJsonObject();
                 String latestVersion = rootObj.get("version").getAsString();
                 if (!latestVersion.equals(Version.getVersion())) {
                     config.setLatestVersion(latestVersion);
@@ -80,7 +78,7 @@ public class Updater {
                     config.save();
                 }
             }
-        } catch (IOException ignored) {
+        } catch (Exception ignored) {
         }
     }
 }

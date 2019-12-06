@@ -26,7 +26,7 @@ import org.web3j.utils.Version;
 public class CliConfig {
     private static final Path web3jConfigPath =
             Paths.get(System.getProperty("user.home"), ".web3j", ".config");
-    private static final String defaultServicesUrl = "http://localhost:8000";
+    private static final String defaultServicesUrl = "https://internal.services.web3labs.com";
 
     public static Path getWeb3jConfigPath() {
         return web3jConfigPath;

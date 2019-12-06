@@ -18,8 +18,8 @@ import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
 import org.web3j.console.config.CliConfig;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.ProjectImporter;
-import org.web3j.console.update.Updater;
 import org.web3j.console.project.UnitTestCreator;
+import org.web3j.console.update.Updater;
 import org.web3j.utils.Version;
 
 import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDITY;

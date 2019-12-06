@@ -14,6 +14,7 @@ package org.web3j.console;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -33,26 +34,31 @@ import static org.web3j.crypto.Hash.sha256;
 /** Simple class for creating a wallet file. */
 public class WalletFunder {
 
-    private static final String BASE_URL = "https://rinkeby.faucet.epirus.web3labs.com";
-    private static final String USAGE = "fund <destination-address>";
+    private static final String USAGE =
+            String.format(
+                    "fund <network %s> <destination-address>", Arrays.toString(Faucet.values()));
+    private static Faucet selectedFaucet = null;
 
     public static void main(IODevice console, String[] args) {
-        if (args.length != 1 && args.length != 3) {
+        if (args.length != 2 && args.length != 4) {
             exitError(USAGE);
         }
 
         try {
+            selectedFaucet = Faucet.valueOf(args[0].toUpperCase());
+
             String fund =
                     console.readLine(
-                            "This command will fund the specified wallet on the Rinkeby testnet. Do you wish to continue? [Y/n]: ");
+                            "This command will fund the specified wallet on the %s testnet. Do you wish to continue? [Y/n]: ",
+                            selectedFaucet.name);
             if (fund.toUpperCase().equals("N")) {
                 exitError("Operation was cancelled by user.");
             }
-            String transactionHash = fundWallet(args[0], args.length == 3 ? args[2] : null);
+            String transactionHash = fundWallet(args[1], args.length == 4 ? args[3] : null);
             System.out.println(
                     String.format(
-                            "Your Rinkeby wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://rinkeby.explorer.epirus.web3labs.com/transactions/%s",
-                            transactionHash));
+                            "Your wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://%s.explorer.epirus.web3labs.com/transactions/%s",
+                            selectedFaucet.name.toLowerCase(), transactionHash));
             System.exit(0);
         } catch (Exception e) {
             System.err.println("The fund operation failed with the following exception:");
@@ -63,7 +69,7 @@ public class WalletFunder {
 
     private static boolean loading = true;
 
-    private static synchronized void loading(String msg) {
+    private static synchronized void loading() {
         Thread th =
                 new Thread(
                         () -> {
@@ -76,7 +82,8 @@ public class WalletFunder {
                                     String data =
                                             String.format(
                                                     "\r[ %s ] %s",
-                                                    anim.charAt(current % anim.length()), msg);
+                                                    anim.charAt(current % anim.length()),
+                                                    "Performing proof of work to validate your request");
                                     System.out.write(data.getBytes());
                                     Thread.sleep(500);
                                 }
@@ -103,13 +110,13 @@ public class WalletFunder {
 
             sendEtherRequest =
                     new okhttp3.Request.Builder()
-                            .url(String.format("%s/send/%s", BASE_URL, token))
+                            .url(String.format("%s/send/%s", selectedFaucet.url, token))
                             .post(fundingBody)
                             .build();
         } else {
             Request getSeedRequest =
                     new okhttp3.Request.Builder()
-                            .url(String.format("%s/seed/0.2", BASE_URL))
+                            .url(String.format("%s/seed/0.2", selectedFaucet.url))
                             .get()
                             .build();
             Response configRawResponse = client.newCall(getSeedRequest).execute();
@@ -124,7 +131,7 @@ public class WalletFunder {
 
             AtomicBoolean found = new AtomicBoolean(false);
             AtomicInteger intResult = new AtomicInteger(0);
-            loading("Performing proof of work to validate your request");
+            loading();
 
             IntStream.range(0, Integer.MAX_VALUE)
                     .parallel()
@@ -158,7 +165,7 @@ public class WalletFunder {
 
             sendEtherRequest =
                     new okhttp3.Request.Builder()
-                            .url(String.format("%s/send", BASE_URL))
+                            .url(String.format("%s/send", selectedFaucet.url))
                             .post(fundingBody)
                             .build();
         }
@@ -167,7 +174,8 @@ public class WalletFunder {
 
         if (sendRawResponse.code() != 200) {
             exitError(
-                    String.format("An HTTP request failed with code: %d", sendRawResponse.code()));
+                    String.format(
+                            "\nAn HTTP request failed with code: %d", sendRawResponse.code()));
         }
 
         String sendResponse = sendRawResponse.body().string();
@@ -185,4 +193,23 @@ class WalletFunderConfig {
 
 class WalletFunderResult {
     public String result;
+}
+
+enum Faucet {
+    RINKEBY("Rinkeby", "https://rinkeby.faucet.epirus.io"),
+    ROPSTEN("Ropsten", "https://ropsten.faucet.epirus.io");
+    //    LOCAL("Local", "http://localhost:8000");
+
+    public final String name;
+    public final String url;
+
+    Faucet(final String name, final String url) {
+        this.name = name;
+        this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

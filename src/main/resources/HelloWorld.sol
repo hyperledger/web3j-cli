@@ -13,23 +13,23 @@ contract Mortal {
     function kill() public { if (msg.sender == owner) selfdestruct(owner); }
 }
 
-contract Greeter is Mortal {
+contract HelloWorld is Mortal {
     /* define variable greeting of the type string */
-    string greeting;
+    string greet;
 
     /* this runs when the contract is executed */
-    constructor (string _greeting) public {
-        greeting = _greeting;
+    constructor (string _greet) public {
+        greet = _greet;
     }
 
-    function newGreeting(string _greeting) public {
-        emit Modified(greeting, _greeting, greeting, _greeting);
-        greeting = _greeting;
+    function newGreeting(string _greet) public {
+        emit Modified(greet, _greet, greet, _greet);
+        greet = _greet;
     }
 
     /* main function */
-    function greet() public constant returns (string)  {
-        return greeting;
+    function greeting() public constant returns (string)  {
+        return greet;
     }
 
     /* we include indexed events to demonstrate the difference that can be

@@ -35,7 +35,7 @@ public class ProjectImporterCLIRunnerTest {
         final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
         final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
         Assertions.assertThrows(
-                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
+                CommandLine.ParameterException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test

@@ -14,6 +14,7 @@ package org.web3j.console.project;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
@@ -22,9 +23,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InteractiveOptionsTest {
+    private String formattedPath =
+            new File(String.join(separator, "src", "test", "resources", "Solidity"))
+                    .getAbsolutePath();
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
@@ -33,8 +38,7 @@ public class InteractiveOptionsTest {
     @BeforeEach
     void setup(@TempDir Path temp) {
         tempDirPath = temp.toString();
-
-        final String input = "Test\norg.com\n" + tempDirPath + "\n";
+        final String input = "Test\norg.com\n" + formattedPath + "\n" + tempDirPath + "\n";
         inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
         System.setOut(new PrintStream(outContent));
@@ -43,9 +47,9 @@ public class InteractiveOptionsTest {
 
     @Test
     public void runInteractiveModeTest() {
-        final InteractiveOptions options = new InteractiveOptions(inputStream, System.out);
-        assertEquals("Test", options.getProjectName());
-        assertEquals("org.com", options.getPackageName());
-        assertEquals(tempDirPath, options.getProjectDestination().get());
+        assertEquals("Test", InteractiveOptions.getProjectName());
+        assertEquals("org.com", InteractiveOptions.getPackageName());
+        assertEquals(formattedPath, InteractiveOptions.getSolidityProjectPath());
+        assertEquals(tempDirPath, InteractiveOptions.getProjectDestination("Test").get());
     }
 }

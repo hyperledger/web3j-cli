@@ -124,7 +124,7 @@ public class UpdaterTest {
                         version);
 
         stubFor(
-                post(urlPathMatching("/api/v1/versioning/versions/"))
+                post(urlPathMatching("/api/versions/latest"))
                         .willReturn(
                                 aResponse()
                                         .withStatus(200)
@@ -132,7 +132,7 @@ public class UpdaterTest {
                                         .withBody(validUpdateResponse)));
         updater.onlineUpdateCheck();
 
-        verify(postRequestedFor(urlEqualTo("/api/v1/versioning/versions/")));
+        verify(postRequestedFor(urlEqualTo("/api/versions/latest")));
         // if the version parameter does not equal config.getVersion, isUpdateAvailable should
         // return true, otherwise it should return false
         assertEquals(!version.equals(config.getVersion()), config.isUpdateAvailable());

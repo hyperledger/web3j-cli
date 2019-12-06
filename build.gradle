@@ -18,6 +18,8 @@ ext {
     slf4jVersion = "1.7.+"
     junitVersion = '5.+'
     mockitoVersion = "3.+"
+    gsonVersion = "2.8.6"
+    wireMockVersion = "2.25.1"
 }
 
 
@@ -70,10 +72,13 @@ dependencies {
             "javax.xml.bind:jaxb-api:2.2.11",
             "com.sun.xml.bind:jaxb-core:2.2.11",
             "com.sun.xml.bind:jaxb-impl:2.2.11",
-            "javax.activation:activation:1.1.1"
+            "javax.activation:activation:1.1.1",
+            "org.web3j:hosted-providers:$web3jVersion",
+            "com.google.code.gson:gson:$gsonVersion"
 
     runtime "org.slf4j:slf4j-nop:$slf4jVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
-            "org.mockito:mockito-core:$mockitoVersion"
+            "org.mockito:mockito-core:$mockitoVersion",
+            "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
 }

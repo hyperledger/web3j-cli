@@ -15,9 +15,11 @@ package org.web3j.console;
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
+import org.web3j.console.config.CliConfig;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.UnitTestCreator;
+import org.web3j.console.update.Updater;
 import org.web3j.utils.Version;
 
 import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDITY;
@@ -45,6 +47,13 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
+
+        CliConfig config = CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile());
+        Updater updater = new Updater(config);
+        updater.promptIfUpdateAvailable();
+        Thread updateThread = new Thread(updater::onlineUpdateCheck);
+        updateThread.setDaemon(true);
+        updateThread.start();
 
         if (args.length < 1) {
             Console.exitError(USAGE);
@@ -83,5 +92,7 @@ public class Runner {
                     Console.exitError(USAGE);
             }
         }
+
+        config.save();
     }
 }

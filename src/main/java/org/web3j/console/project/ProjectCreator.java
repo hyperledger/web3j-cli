@@ -21,6 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+<<<<<<< HEAD
+=======
+import picocli.CommandLine;
+
+import org.web3j.commons.JavaVersion;
+import org.web3j.console.project.utills.InputVerifier;
+>>>>>>> added new template based on version.
 import org.web3j.console.project.utills.ProjectUtils;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
@@ -48,12 +55,14 @@ public class ProjectCreator {
         final String walletName =
                 WalletUtils.generateNewWalletFile(
                         walletPassword, new File(projectStructure.getWalletPath()));
-
         this.templateProvider =
                 new TemplateProvider.Builder()
                         .loadGradlewBatScript("gradlew.bat.template")
                         .loadGradlewScript("gradlew.template")
-                        .loadMainJavaClass("Template.java")
+                        .loadMainJavaClass(
+                                JavaVersion.getJavaVersionAsDouble() < 11
+                                        ? "Template.java"
+                                        : "TemplateJava11.java")
                         .loadGradleBuild("build.gradle.template")
                         .loadGradleSettings("settings.gradle.template")
                         .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")

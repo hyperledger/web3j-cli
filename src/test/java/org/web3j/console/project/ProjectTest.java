@@ -80,9 +80,9 @@ public class ProjectTest {
                         .exists();
         final boolean gradleWrapperSettings =
                 new File(
-                        projectStructure.getWrapperPath()
-                                + File.separator
-                                + "gradle-wrapper.properties")
+                                projectStructure.getWrapperPath()
+                                        + File.separator
+                                        + "gradle-wrapper.properties")
                         .exists();
         final boolean gradleWrapperJar =
                 new File(projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar")

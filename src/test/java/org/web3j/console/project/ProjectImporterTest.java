@@ -75,7 +75,7 @@ public class ProjectImporterTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"import", "-p= ", "-n= ", "-s= "};
+        final String[] args = {"import", "-p=", "-n=", "-s="};
         ProjectImporter.main(args);
         assertEquals(
                 outContent.toString(), "Please make sure the required parameters are not empty.\n");

@@ -98,7 +98,7 @@ public class ProjectCreatorTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"new", "-n= ", "-p= "};
+        final String[] args = {"new", "-n=", "-p="};
         ProjectCreator.main(args);
         assertEquals(
                 outContent.toString(), "Please make sure the required parameters are not empty.\n");

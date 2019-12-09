@@ -12,9 +12,6 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    maven { url 'http://dl.bintray.com/web3j/maven' }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url "https://dl.bintray.com/ethereum/maven" }
 }
 
 web3j {
@@ -23,19 +20,20 @@ web3j {
 }
 
 ext {
-
-    web3jVersion = '4.4.0'
+    web3jVersion = '4.5.10'
     logbackVersion = '1.2.3'
     junitVersion = '4.12'
 }
+
 dependencies {
     implementation "org.web3j:core:$web3jVersion",
             "ch.qos.logback:logback-core:$logbackVersion",
             "ch.qos.logback:logback-classic:$logbackVersion"
-    implementation("org.web3j:web3j-unit:4.6.0-SNAPSHOT")
-     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-      testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    implementation("org.web3j:web3j-unit:$web3jVersion")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
+
 test {
     useJUnitPlatform()
 }

@@ -170,4 +170,27 @@ public class ProjectCreatorTest extends ClassExecutor {
         process.waitFor();
         assertEquals(0, process.exitValue());
     }
+
+    @Test
+    public void testWhenInteractiveAndOptionsAreDefault() throws IOException, InterruptedException {
+        final String[] args = {"new"};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("", 0, 0);
+        writer.newLine();
+        writer.write("", 0, 0);
+        writer.newLine();
+        writer.write(tempDirPath, 0, tempDirPath.length());
+        writer.newLine();
+        writer.write("y", 0, "y".length());
+        writer.newLine();
+        writer.close();
+        process.waitFor();
+        assertEquals(0, process.exitValue());
+        assertTrue(new File(tempDirPath + separator + "HelloWorld").exists());
+    }
 }

@@ -27,8 +27,11 @@ class InteractiveOptions {
     static Scanner scanner = new Scanner(System.in);
 
     static String getProjectName() {
-        print("Please enter the project name (Required Field):");
+        print("Please enter the project name [HelloWorld]:");
         String projectName = getUserInput();
+        if (projectName.trim().isEmpty()) {
+            return "HelloWorld";
+        }
         while (!InputVerifier.classNameIsValid(projectName)) {
             projectName = getUserInput();
         }
@@ -36,8 +39,11 @@ class InteractiveOptions {
     }
 
     static String getPackageName() {
-        print("Please enter the package name for your project (Required Field): ");
+        print("Please enter the package name for your project [io.web3j]:");
         String packageName = getUserInput();
+        if (packageName.trim().isEmpty()) {
+            return "io.web3j";
+        }
         while (!InputVerifier.packageNameIsValid(packageName)) {
             packageName = getUserInput();
         }
@@ -45,7 +51,10 @@ class InteractiveOptions {
     }
 
     static Optional<String> getProjectDestination(final String projectName) {
-        print("Please enter the destination of your project (Current by default): ");
+        print(
+                "Please enter the destination of your project ["
+                        + System.getProperty("user.dir")
+                        + "]: ");
         final String projectDest = getUserInput();
         final String projectPath = projectDest + separator + projectName;
         if (new File(projectPath).exists()) {
@@ -79,7 +88,7 @@ class InteractiveOptions {
     }
 
     static String getSolidityProjectPath() {
-        System.out.println("Please enter the path to your solidity file/folder (Required Field): ");
+        System.out.println("Please enter the path to your solidity file/folder [Required Field]: ");
         return getUserInput();
     }
 

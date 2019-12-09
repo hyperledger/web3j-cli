@@ -14,6 +14,7 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -67,7 +68,7 @@ public class ProjectCreatorCLIRunner implements Runnable {
         try {
             new ProjectCreator(outputDir, packageName, projectName).generate();
         } catch (final IOException e) {
-            exitError(e);
+            exitError("Could not generate project reason:" + Arrays.toString(e.getStackTrace()));
         }
     }
 

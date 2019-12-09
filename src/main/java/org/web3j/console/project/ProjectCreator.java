@@ -123,9 +123,9 @@ public class ProjectCreator {
 
     private void onSuccess() {
         exitSuccess(
-                "Project created with name: "
+                "\n"
                         + projectStructure.getProjectName()
-                        + " at location: "
+                        + " has been created in"
                         + projectStructure.getProjectRoot());
     }
 }

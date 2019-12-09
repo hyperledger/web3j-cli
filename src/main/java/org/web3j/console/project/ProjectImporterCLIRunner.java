@@ -13,6 +13,7 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.util.Arrays;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -63,7 +64,7 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
                     new ProjectImporter(outputDir, packageName, projectName, solidityImportPath);
             projectImporter.generate(generateTests);
         } catch (final Exception e) {
-            exitError(e);
+            exitError("Could not generate project reason:" + Arrays.toString(e.getStackTrace()));
         }
     }
 }

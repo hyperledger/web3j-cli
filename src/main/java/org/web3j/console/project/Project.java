@@ -14,8 +14,10 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.web3j.console.project.utills.InputVerifier;
+import org.web3j.console.project.utills.ProgressCounter;
 
 import static org.web3j.codegen.Console.exitError;
 
@@ -76,6 +78,8 @@ public class Project {
 
         private void executeCommand(final File workingDir, final String[] command)
                 throws InterruptedException, IOException {
+            ProgressCounter progressCounter = new ProgressCounter();
+            progressCounter.processing(true, "Creating " + projectStructure.getProjectName());
             new ProcessBuilder(command)
                     .directory(workingDir)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
@@ -127,7 +131,7 @@ public class Project {
                         projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
                 buildGradleProject(projectStructure.getProjectRoot());
             } catch (final IOException | InterruptedException e) {
-                exitError("Looks like an error occurred: " + e.getMessage());
+                exitError("Looks like an error occurred: " + Arrays.toString(e.getStackTrace()));
             }
             return new Project(this);
         }

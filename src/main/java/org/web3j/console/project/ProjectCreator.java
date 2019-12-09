@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import picocli.CommandLine;
 
-import org.web3j.console.project.utills.InputVerifier;
+import org.web3j.console.project.utils.InputVerifier;
 
 import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
@@ -123,9 +123,9 @@ public class ProjectCreator {
 
     private void onSuccess() {
         exitSuccess(
-                "Project created with name: "
+                "\n"
                         + projectStructure.getProjectName()
-                        + " at location: "
+                        + " has been created in"
                         + projectStructure.getProjectRoot());
     }
 }

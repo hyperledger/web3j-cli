@@ -13,16 +13,18 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import org.web3j.console.project.utills.InputVerifier;
+import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.console.project.InteractiveOptions.overrideExistingProject;
 import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
-import static org.web3j.console.project.utills.ProjectUtils.*;
+import static org.web3j.console.project.utils.ProjectUtils.*;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(name = COMMAND_IMPORT)
@@ -63,7 +65,9 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
                     new ProjectImporter(outputDir, packageName, projectName, solidityImportPath);
             projectImporter.generate(generateTests);
         } catch (final Exception e) {
-            exitError(e);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            exitError("Could not generate project reason:" + sw.toString());
         }
     }
 }

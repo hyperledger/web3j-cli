@@ -14,16 +14,18 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import org.web3j.console.project.utills.InputVerifier;
+import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.console.project.InteractiveOptions.overrideExistingProject;
 import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;
-import static org.web3j.console.project.utills.ProjectUtils.deleteFolder;
+import static org.web3j.console.project.utils.ProjectUtils.deleteFolder;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(name = COMMAND_NEW, mixinStandardHelpOptions = true, version = "4.0", sortOptions = false)
@@ -67,7 +69,9 @@ public class ProjectCreatorCLIRunner implements Runnable {
         try {
             new ProjectCreator(outputDir, packageName, projectName).generate();
         } catch (final IOException e) {
-            exitError(e);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            exitError("Could not generate project reason:" + sw.toString());
         }
     }
 

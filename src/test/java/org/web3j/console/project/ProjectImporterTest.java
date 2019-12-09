@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
-import org.web3j.console.project.utills.ClassExecutor;
+import org.web3j.console.project.utils.ClassExecutor;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -197,5 +197,30 @@ public class ProjectImporterTest extends ClassExecutor {
         writer.close();
         process.waitFor();
         assertEquals(0, process.exitValue());
+    }
+
+    @Test
+    public void testWhenInteractiveAndDefaultOptions() throws IOException, InterruptedException {
+        final String[] args = {"import"};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("", 0, "".length());
+        writer.newLine();
+        writer.write("", 0, "".length());
+        writer.newLine();
+        writer.write(formattedPath, 0, formattedPath.length());
+        writer.newLine();
+        writer.write(tempDirPath, 0, tempDirPath.length());
+        writer.newLine();
+        writer.write("n", 0, "n".length());
+        writer.newLine();
+        writer.close();
+        process.waitFor();
+        assertEquals(0, process.exitValue());
+        assertTrue(new File(tempDirPath + separator + "HelloWorld").exists());
     }
 }

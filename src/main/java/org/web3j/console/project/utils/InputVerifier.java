@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project.utills;
+package org.web3j.console.project.utils;
 
 import java.io.File;
 import javax.lang.model.SourceVersion;
@@ -28,7 +28,9 @@ public class InputVerifier {
 
     public static boolean classNameIsValid(final String className) {
         if (!SourceVersion.isIdentifier(className) || SourceVersion.isKeyword(className)) {
-            System.out.println(className + " is not valid name.");
+            System.out.println(
+                    className
+                            + " is not valid name. Please make sure that your project name complies with Java's class naming convention.");
             return false;
         }
         return true;
@@ -38,7 +40,9 @@ public class InputVerifier {
         String[] splitPackageName = packageName.split("[.]");
         for (final String argument : splitPackageName) {
             if (!SourceVersion.isIdentifier(argument) || SourceVersion.isKeyword(argument)) {
-                System.out.println(argument + " is not a valid package name.");
+                System.out.println(
+                        argument
+                                + " is not a valid package name. Please make sure that your project package name complies with Java's package naming convention.");
                 return false;
             }
         }

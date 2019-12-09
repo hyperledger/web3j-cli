@@ -14,12 +14,9 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
-import org.web3j.console.project.utills.InputVerifier;
-import org.web3j.console.project.utills.ProgressCounter;
-
-import static org.web3j.codegen.Console.exitError;
+import org.web3j.console.project.utils.InputVerifier;
+import org.web3j.console.project.utils.ProgressCounter;
 
 public class Project {
 
@@ -88,51 +85,48 @@ public class Project {
                     .waitFor();
         }
 
-        public Project build() {
-            try {
-                projectStructure.createDirectoryStructure();
-                final ProjectWriter projectWriter = new ProjectWriter();
+        public Project build() throws IOException, InterruptedException {
+            projectStructure.createDirectoryStructure();
+            final ProjectWriter projectWriter = new ProjectWriter();
+            projectWriter.writeResourceFile(
+                    templateProvider.getMainJavaClass(),
+                    InputVerifier.capitalizeFirstLetter(
+                            projectStructure.getProjectName() + ".java"),
+                    projectStructure.getMainPath());
+            projectWriter.writeResourceFile(
+                    templateProvider.getGradleBuild(),
+                    File.separator + "build.gradle",
+                    projectStructure.getProjectRoot());
+            projectWriter.writeResourceFile(
+                    templateProvider.getGradleSettings(),
+                    File.separator + "settings.gradle",
+                    projectStructure.getProjectRoot());
+            if (solidityImportPath == null) {
                 projectWriter.writeResourceFile(
-                        templateProvider.getMainJavaClass(),
-                        InputVerifier.capitalizeFirstLetter(
-                                projectStructure.getProjectName() + ".java"),
-                        projectStructure.getMainPath());
-                projectWriter.writeResourceFile(
-                        templateProvider.getGradleBuild(),
-                        File.separator + "build.gradle",
-                        projectStructure.getProjectRoot());
-                projectWriter.writeResourceFile(
-                        templateProvider.getGradleSettings(),
-                        File.separator + "settings.gradle",
-                        projectStructure.getProjectRoot());
-                if (solidityImportPath == null) {
-                    projectWriter.writeResourceFile(
-                            templateProvider.getSolidityProject(),
-                            "HelloWorld.sol",
-                            projectStructure.getSolidityPath());
-                } else {
-                    projectWriter.importSolidityProject(
-                            solidityImportPath, projectStructure.getSolidityPath());
-                }
-                projectWriter.writeResourceFile(
-                        templateProvider.getGradlewWrapperSettings(),
-                        File.separator + "gradle-wrapper.properties",
-                        projectStructure.getWrapperPath());
-                projectWriter.writeResourceFile(
-                        templateProvider.getGradlewScript(),
-                        File.separator + "gradlew",
-                        projectStructure.getProjectRoot());
-                projectWriter.writeResourceFile(
-                        templateProvider.getGradlewBatScript(),
-                        File.separator + "gradlew.bat",
-                        projectStructure.getProjectRoot());
-                projectWriter.copyResourceFile(
-                        templateProvider.getGradlewJar(),
-                        projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
-                buildGradleProject(projectStructure.getProjectRoot());
-            } catch (final IOException | InterruptedException e) {
-                exitError("Looks like an error occurred: " + Arrays.toString(e.getStackTrace()));
+                        templateProvider.getSolidityProject(),
+                        "HelloWorld.sol",
+                        projectStructure.getSolidityPath());
+            } else {
+                projectWriter.importSolidityProject(
+                        solidityImportPath, projectStructure.getSolidityPath());
             }
+            projectWriter.writeResourceFile(
+                    templateProvider.getGradlewWrapperSettings(),
+                    File.separator + "gradle-wrapper.properties",
+                    projectStructure.getWrapperPath());
+            projectWriter.writeResourceFile(
+                    templateProvider.getGradlewScript(),
+                    File.separator + "gradlew",
+                    projectStructure.getProjectRoot());
+            projectWriter.writeResourceFile(
+                    templateProvider.getGradlewBatScript(),
+                    File.separator + "gradlew.bat",
+                    projectStructure.getProjectRoot());
+            projectWriter.copyResourceFile(
+                    templateProvider.getGradlewJar(),
+                    projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
+            buildGradleProject(projectStructure.getProjectRoot());
+
             return new Project(this);
         }
     }

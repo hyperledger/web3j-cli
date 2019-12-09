@@ -17,11 +17,11 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Scanner;
 
-import org.web3j.console.project.utills.InputVerifier;
+import org.web3j.console.project.utils.InputVerifier;
 
 import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
-import static org.web3j.console.project.utills.ProjectUtils.deleteFolder;
+import static org.web3j.console.project.utils.ProjectUtils.deleteFolder;
 
 class InteractiveOptions {
     static Scanner scanner = new Scanner(System.in);

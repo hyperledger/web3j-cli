@@ -19,7 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.console.project.utills.InputVerifier;
+import org.web3j.console.project.utils.InputVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

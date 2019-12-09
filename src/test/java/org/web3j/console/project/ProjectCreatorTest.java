@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
-import org.web3j.console.project.utills.ClassExecutor;
+import org.web3j.console.project.utils.ClassExecutor;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -22,16 +22,17 @@ public class ProjectStructure {
     private final String solidityPath;
     private final String mainPath;
     private final String wrapperPath;
-    private final String root;
+    private final String rootDirectory;
     private final String projectRoot;
     private final String walletPath;
 
-    ProjectStructure(final String root, final String packageName, final String projectName) {
-        this.root = generateRoot(root);
+    ProjectStructure(
+            final String rootDirectory, final String packageName, final String projectName) {
+        this.rootDirectory = generateRoot(rootDirectory);
         this.packageName = packageName;
         final String formattedPackageName = formatPackageName(packageName);
         this.projectName = projectName;
-        this.projectRoot = this.root + File.separator + projectName;
+        this.projectRoot = this.rootDirectory + File.separator + projectName;
         this.mainPath = generatePath(this.projectRoot, "src", "main", "java", formattedPackageName);
         this.solidityPath = generatePath(this.projectRoot, "src", "main", "solidity");
         this.testPath = generatePath(this.projectRoot, "src", "test", "java", formattedPackageName);
@@ -39,8 +40,8 @@ public class ProjectStructure {
         this.wrapperPath = generatePath(this.projectRoot, "gradle", "wrapper");
     }
 
-    final String getRoot() {
-        return root;
+    final String getRootDirectory() {
+        return rootDirectory;
     }
 
     final String getProjectRoot() {

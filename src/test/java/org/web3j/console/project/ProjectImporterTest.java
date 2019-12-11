@@ -221,6 +221,6 @@ public class ProjectImporterTest extends ClassExecutor {
         writer.close();
         process.waitFor();
         assertEquals(0, process.exitValue());
-        assertTrue(new File(tempDirPath + separator + "HelloWorld").exists());
+        assertTrue(new File(tempDirPath + separator + "BlockchainApp").exists());
     }
 }

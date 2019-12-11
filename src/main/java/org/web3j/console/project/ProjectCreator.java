@@ -13,29 +13,12 @@
 package org.web3j.console.project;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-<<<<<<< HEAD
-=======
 import picocli.CommandLine;
 
-import org.web3j.commons.JavaVersion;
-import org.web3j.console.project.utills.InputVerifier;
->>>>>>> added new template based on version.
-import org.web3j.console.project.utills.ProjectUtils;
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.WalletUtils;
-import picocli.CommandLine;
-
-import org.web3j.console.project.utils.InputVerifier;
-
-import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.utils.Collection.tail;
@@ -43,41 +26,14 @@ import static org.web3j.utils.Collection.tail;
 public class ProjectCreator {
 
     public static final String COMMAND_NEW = "new";
-    private final String walletPassword = ProjectUtils.generateWalletPassword();
-    final ProjectStructure projectStructure;
-    final TemplateProvider templateProvider;
+    private final String root;
+    private final String packageName;
     private final String projectName;
-    ProjectCreator(final String root, final String packageName, final String projectName)
-            throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, CipherException {
+
+    ProjectCreator(final String root, final String packageName, final String projectName) {
         this.projectName = projectName;
-        this.projectStructure = new ProjectStructure(root, packageName, projectName);
-        projectStructure.createWalletDirectory();
-        final String walletName =
-                WalletUtils.generateNewWalletFile(
-                        walletPassword, new File(projectStructure.getWalletPath()));
-        this.templateProvider =
-                new TemplateProvider.Builder()
-                        .loadGradlewBatScript("gradlew.bat.template")
-                        .loadGradlewScript("gradlew.template")
-                        .loadMainJavaClass(
-                                JavaVersion.getJavaVersionAsDouble() < 11
-                                        ? "Template.java"
-                                        : "TemplateJava11.java")
-                        .loadGradleBuild("build.gradle.template")
-                        .loadGradleSettings("settings.gradle.template")
-                        .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
-                        .loadGradleJar("gradle-wrapper.jar")
-                        .loadSolidityGreeter("HelloWorld.sol")
-                        .withPackageNameReplacement(s -> s.replace("<package_name>", packageName))
-                        .withProjectNameReplacement(
-                                s ->
-                                        s.replace(
-                                                "<project_name>",
-                                                InputVerifier.capitalizeFirstLetter(projectName)))
-                        .withPrivateKeyReplacement(
-                                s -> s.replace("<wallet_password_placeholder>", walletPassword))
-                        .withWalletNameReplacement(s -> s.replace("<wallet_name>", walletName))
-                        .build();
+        this.packageName = packageName;
+        this.root = root;
     }
 
     public static void main(String[] args) {
@@ -100,55 +56,40 @@ public class ProjectCreator {
                 args = stringOptions.toArray(new String[0]);
             }
         }
-
         CommandLine.run(new ProjectCreatorCLIRunner(), args);
     }
 
     void generate() {
-        generate(true, Optional.empty());
+        generate(true, Optional.empty(), false);
     }
 
-
     void generate(boolean withTests, Optional<File> solidityFile) {
+        generate(withTests, solidityFile, false);
+    }
+
+    void generate(boolean withTests, Optional<File> solidityFile, boolean withWallet) {
         try {
             Project.Builder builder =
                     Project.builder()
-                            .withProjectStructure(projectStructure)
-                            .withTemplateProvider(templateProvider);
-            solidityFile.ifPresent(builder::withSolidityFile);
-            builder.build();
-            if (withTests) {
-                generateTests();
+                            .withProjectName(this.projectName)
+                            .withRootDirectory(this.root)
+                            .withPackageName(this.packageName);
+
+            if (withWallet) {
+                builder.withWalletProvider().withSampleCode();
             }
+            solidityFile.ifPresent(builder::withSolidityFile);
+            if (withTests) {
+                builder.withTests();
+            }
+            builder.build();
             onSuccess();
         } catch (final Exception e) {
             exitError(e);
         }
     }
 
-    private void generateTests() throws IOException {
-        String wrapperPath =
-                String.join(
-                        separator,
-                        projectStructure.getRoot(),
-                        projectName,
-                        "build",
-                        "generated",
-                        "source",
-                        "web3j",
-                        "main",
-                        "java");
-        String writePath =
-                String.join(
-                        separator, projectStructure.getRoot(), projectName, "src", "test", "java");
-        new UnitTestCreator(wrapperPath, writePath).generate();
-    }
-
     private void onSuccess() {
-        exitSuccess(
-                "\n"
-                        + projectStructure.getProjectName()
-                        + " has been created in"
-                        + projectStructure.getProjectRoot());
+        exitSuccess("\n" + this.projectName + " has been created in" + this.root);
     }
 }

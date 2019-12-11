@@ -10,13 +10,23 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project.utills;
+package org.web3j.console;
 
-import org.apache.commons.lang3.RandomStringUtils;
+public enum Faucet {
+    RINKEBY("Rinkeby", "https://rinkeby.faucet.epirus.io"),
+    ROPSTEN("Ropsten", "https://ropsten.faucet.epirus.io");
+    //    LOCAL("Local", "http://localhost:8000");
 
-public class ProjectUtils {
+    public final String name;
+    public final String url;
 
-    public static String generateWalletPassword() {
-        return RandomStringUtils.random(10, true, true);
+    Faucet(final String name, final String url) {
+        this.name = name;
+        this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

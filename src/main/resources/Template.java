@@ -1,4 +1,6 @@
-package <package_name>;
+package
+
+<package_name>;
 
 import <package_name>.generated.contracts.HelloWorld;
 import org.slf4j.Logger;
@@ -17,37 +19,33 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class <project_name> {
+public class<project_name> {
 
-private static final Logger log = LoggerFactory.getLogger(<project_name>.class);
+private static final Logger log=LoggerFactory.getLogger(<project_name>.class);
 
 
-public static void main(String[]args) throws Exception {
+public static void main(String[]args)throws Exception{
         Credentials credentials=loadCredentials("<wallet_name>","<wallet_password_placeholder>");
-        Web3j web3j=createWeb3jService("URL_TO_INFURA");
-        HelloWorld helloWorld = deployHelloWorld(web3j,credentials,new DefaultGasProvider());
+        Web3j web3j=createWeb3jService("RINKEBY_NODE_URL");
+        HelloWorld helloWorld=deployHelloWorld(web3j,credentials,new DefaultGasProvider());
         callGreetMethod(helloWorld);
         }
 
-private static Credentials loadCredentials(String walletName,String walletPassword)throws CipherException,IOException,URISyntaxException{
-        String root=System.getProperty("user.dir");
-        String pathToWallet=String.join(File.separator,root,"src","test","resources","wallet",walletName);
+private static Credentials loadCredentials(String walletName)throws CipherException,IOException,URISyntaxException{
+        String pathtoProjectResources=String.join(File.separator,System.getProperty("user.dir"),"src","test","resources","wallet");
+        String pathToWallet=String.join(File.separator,pathtoProjectResources,walletName)
+        String pathToWalletPasswordFile=String.join(File.separator,pathToProjectResources,)
         File file=new File(pathToWallet);
-
+        log.info("Reading wallet password from resources.");
+        String password=new String(Files.readAllBytes(Paths.get(file.toURI())));
         log.info("Loading wallet file: "+walletName+" from resources.");
         log.info("Creating credentials from from wallet.");
-        return WalletUtils.loadCredentials(walletPassword,file);
+        return WalletUtils.loadCredentials(walletPassword,new File(file));
         }
 
-private static void fundAccount(Credentials credentials){
-        // Use the Web3j CLI fund command to obtain testnet Ether
-        // See <Link to docs here>
-        log.info("Funding address "+credentials.getAddress()+" with "+10+" ether.");
-
-        }
 
 private static Web3j createWeb3jService(String url){
-        log.info("Connecting to " + url);
+        log.info("Connecting to "+url);
         return Web3j.build(new HttpService(url));
         }
 
@@ -57,7 +55,7 @@ private static HelloWorld deployHelloWorld(Web3j web3j,Credentials credentials,C
 
 private static void callGreetMethod(HelloWorld helloWorld)throws Exception{
         log.info("Calling the greeting method of contract HelloWorld");
-        String response = helloWorld.greeting().send();
+        String response=helloWorld.greeting().send();
         log.info("Contract returned: "+response);
         }
         }

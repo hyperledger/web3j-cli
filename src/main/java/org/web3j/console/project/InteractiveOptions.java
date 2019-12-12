@@ -27,10 +27,10 @@ class InteractiveOptions {
     static Scanner scanner = new Scanner(System.in);
 
     static String getProjectName() {
-        print("Please enter the project name [BlockchainApp]:");
+        print("Please enter the project name [Web3App]:");
         String projectName = getUserInput();
         if (projectName.trim().isEmpty()) {
-            return "BlockchainApp";
+            return "Web3App";
         }
         while (!InputVerifier.classNameIsValid(projectName)) {
             projectName = getUserInput();

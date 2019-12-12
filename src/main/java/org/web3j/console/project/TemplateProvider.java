@@ -170,7 +170,7 @@ public class TemplateProvider {
                                     privateKeyReplacement.apply(
                                             walletNameReplacement.apply(mainJavaClass)))),
                     solidityProject,
-                    packageNameReplacement.apply(gradleBuild),
+                    packageNameReplacement.apply(projectNameReplacement.apply(gradleBuild)),
                     projectNameReplacement.apply(gradleSettings),
                     gradlewWrapperSettings,
                     gradlewBatScript,

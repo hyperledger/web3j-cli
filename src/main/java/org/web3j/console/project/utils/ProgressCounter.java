@@ -15,7 +15,17 @@ package org.web3j.console.project.utils;
 import java.io.IOException;
 
 public class ProgressCounter {
-    public void processing(boolean loading, String message) {
+    private boolean isLoading;
+
+    public ProgressCounter(boolean isLoading) {
+        this.isLoading = isLoading;
+    }
+
+    public void setLoading(boolean isLoading) {
+        this.isLoading = isLoading;
+    }
+
+    public void processing(String message) {
         Thread th =
                 new Thread(
                         () -> {
@@ -23,7 +33,7 @@ public class ProgressCounter {
                             try {
                                 System.out.write("\r|".getBytes());
                                 int current = 0;
-                                while (loading) {
+                                while (isLoading) {
                                     current++;
                                     String data =
                                             String.format(

@@ -13,11 +13,15 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import picocli.CommandLine;
+
+import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.codegen.Console.exitSuccess;
@@ -60,14 +64,22 @@ public class ProjectCreator {
     }
 
     void generate() {
-        generate(true, Optional.empty(), false);
+        generate(true, Optional.empty(), false, false);
     }
 
     void generate(boolean withTests, Optional<File> solidityFile) {
-        generate(withTests, solidityFile, false);
+        generate(withTests, solidityFile, false, false);
     }
 
     void generate(boolean withTests, Optional<File> solidityFile, boolean withWallet) {
+        generate(withTests, solidityFile, withWallet, false);
+    }
+
+    void generate(
+            boolean withTests,
+            Optional<File> solidityFile,
+            boolean withWallet,
+            boolean withFatJar) {
         try {
             Project.Builder builder =
                     Project.builder()
@@ -82,14 +94,31 @@ public class ProjectCreator {
             if (withTests) {
                 builder.withTests();
             }
+            if (withFatJar) {
+                builder.withFatJar();
+            }
             builder.build();
             onSuccess();
         } catch (final Exception e) {
-            exitError(e);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            exitError("Could not generate project reason:" + sw.toString());
         }
     }
 
     private void onSuccess() {
-        exitSuccess("\n" + this.projectName + " has been created in" + this.root);
+        exitSuccess(
+                "\n"
+                        + this.projectName
+                        + " has been created in "
+                        + this.root
+                        + "\n"
+                        + "To test your smart contracts (./src/test/java/io/web3j/generated/contracts/HelloWorldTest.java): ./gradlew test"
+                        + "\n"
+                        + "To run your Web3 app (./src/main/java/io/web3j/"
+                        + InputVerifier.capitalizeFirstLetter(this.projectName)
+                        + ".java): java -jar ./build/libs/"
+                        + InputVerifier.capitalizeFirstLetter(this.projectName)
+                        + "-0.1.0-all.jar");
     }
 }

@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.web3j.commons.JavaVersion;
-import org.web3j.console.Faucet;
-import org.web3j.console.WalletFunder;
 import org.web3j.console.project.utils.InputVerifier;
 import org.web3j.console.project.utils.ProgressCounter;
 import org.web3j.console.project.utils.ProjectUtils;
@@ -25,8 +23,24 @@ import org.web3j.console.project.utils.ProjectUtils;
 import static java.io.File.separator;
 
 public class Project {
+    private TemplateProvider templateProvider;
+    private ProjectStructure projectStructure;
 
-    private Project(final Builder builder) {}
+    private Project(
+            final Builder builder,
+            TemplateProvider templateProvider,
+            ProjectStructure projectStructure) {
+        this.projectStructure = projectStructure;
+        this.templateProvider = templateProvider;
+    }
+
+    public TemplateProvider getTemplateProvider() {
+        return this.templateProvider;
+    }
+
+    public ProjectStructure getProjectStructure() {
+        return this.projectStructure;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -41,6 +55,8 @@ public class Project {
         private String packageName;
         private String rootDirectory;
         private boolean withSampleCode = false;
+        private boolean withFatJar = false;
+        private ProgressCounter progressCounter = new ProgressCounter(true);
 
         public Builder withSolidityFile(final File solidityImportPath) {
             this.solidityImportPath = solidityImportPath;
@@ -59,6 +75,11 @@ public class Project {
 
         public Builder withTests() {
             this.withTests = true;
+            return this;
+        }
+
+        public Builder withFatJar() {
+            this.withFatJar = true;
             return this;
         }
 
@@ -81,12 +102,12 @@ public class Project {
                 throws IOException, InterruptedException {
             if (!isWindows()) {
                 setExecutable(pathToDirectory, "gradlew");
-                executeCommand(
+                executeBuild(
                         new File(pathToDirectory),
                         new String[] {"bash", "-c", "./gradlew build -q"});
             } else {
                 setExecutable(pathToDirectory, "gradlew.bat");
-                executeCommand(
+                executeBuild(
                         new File(pathToDirectory),
                         new String[] {"cmd.exe", "/c", "gradlew.bat build -q"});
             }
@@ -101,16 +122,32 @@ public class Project {
             return System.getProperty("os.name").toLowerCase().startsWith("windows");
         }
 
-        private void executeCommand(final File workingDir, final String[] command)
+        private void executeBuild(final File workingDir, final String[] command)
                 throws InterruptedException, IOException {
-            ProgressCounter progressCounter = new ProgressCounter();
-            progressCounter.processing(true, "Creating " + projectName);
+            executeProcess(workingDir, command);
+            return;
+        }
+
+        private void executeProcess(File workingDir, String[] command)
+                throws InterruptedException, IOException {
             new ProcessBuilder(command)
                     .directory(workingDir)
                     .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                     .redirectError(ProcessBuilder.Redirect.INHERIT)
                     .start()
                     .waitFor();
+        }
+
+        private void createFatJar(String pathToDirectory) throws IOException, InterruptedException {
+            if (!isWindows()) {
+                executeProcess(
+                        new File(pathToDirectory),
+                        new String[] {"bash", "./gradlew", "shadowJar", "-q"});
+            } else {
+                executeProcess(
+                        new File(pathToDirectory),
+                        new String[] {"cmd.exe", "/c", "./gradlew.bat shadowJar", "-q"});
+            }
         }
 
         public Project build() throws Exception {
@@ -121,11 +158,16 @@ public class Project {
             TemplateProvider builtTemplateProvider =
                     getTemplateProvider(projectStructure, projectWriter);
             generateFiles(projectStructure, projectWriter, builtTemplateProvider);
+            progressCounter.processing("Creating " + projectName);
             buildGradleProject(projectStructure.getProjectRoot());
             if (withTests) {
                 generateTests(projectStructure);
             }
-            return new Project(this);
+            if (withFatJar) {
+                createFatJar(projectStructure.getProjectRoot());
+            }
+            progressCounter.setLoading(false);
+            return new Project(this, builtTemplateProvider, projectStructure);
         }
 
         private void generateTests(ProjectStructure projectStructure) throws IOException {
@@ -241,17 +283,18 @@ public class Project {
                         .withPrivateKeyReplacement(
                                 s ->
                                         s.replace(
-                                                "<wallet_password_placeholder>",
-                                                projectWallet.getWalletPassword()))
+                                                "<passwod_file_name>",
+                                                projectWallet.getPasswordFileName()))
                         .withWalletNameReplacement(
                                 s -> s.replace("<wallet_name>", projectWallet.getWalletName()));
                 projectWriter.writeResourceFile(
                         projectWallet.getWalletPassword(),
                         projectWallet.getPasswordFileName(),
                         projectStructure.getWalletPath());
-                if (JavaVersion.getJavaVersionAsDouble() < 11) {
-                    WalletFunder.fundWallet(projectWallet.getWalletAddress(), Faucet.RINKEBY, null);
-                }
+                //                if (JavaVersion.getJavaVersionAsDouble() < 11) {
+                //                    WalletFunder.fundWallet(projectWallet.getWalletAddress(),
+                // Faucet.RINKEBY, null);
+                //                }
             }
             return templateProvider.build();
         }

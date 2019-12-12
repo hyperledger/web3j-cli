@@ -29,8 +29,17 @@ dependencies {
             "ch.qos.logback:logback-core:$logbackVersion",
             "ch.qos.logback:logback-classic:$logbackVersion"
     implementation("org.web3j:web3j-unit:$web3jVersion")
+    implementation("org.web3j:web3j-evm:$web3jVersion")
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+jar {
+    manifest {
+        attributes(
+                'Main-Class': '<package_name>.<project_name>',
+                'Multi-Release':'true'
+        )
+    }
 }
 
 test {

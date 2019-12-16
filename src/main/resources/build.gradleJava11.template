@@ -13,6 +13,7 @@ sourceCompatibility = 11
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 web3j {

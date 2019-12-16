@@ -27,10 +27,10 @@ class InteractiveOptions {
     static Scanner scanner = new Scanner(System.in);
 
     static String getProjectName() {
-        print("Please enter the project name [HelloWorld]:");
+        print("Please enter the project name [Web3App]:");
         String projectName = getUserInput();
         if (projectName.trim().isEmpty()) {
-            return "HelloWorld";
+            return "Web3App";
         }
         while (!InputVerifier.classNameIsValid(projectName)) {
             projectName = getUserInput();
@@ -102,7 +102,7 @@ class InteractiveOptions {
     }
 
     static boolean overrideExistingProject() {
-        print("Looks like the project exists. Would you like to override it [y/N] ?");
+        print("Looks like the project exists. Would you like to overwrite it [y/N] ?");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y");
     }

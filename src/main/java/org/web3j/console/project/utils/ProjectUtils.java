@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import org.web3j.codegen.Console;
 
 public class ProjectUtils {
@@ -41,5 +43,9 @@ public class ProjectUtils {
                             + " at location "
                             + fileToDelete.getPath());
         }
+    }
+
+    public static String generateWalletPassword() {
+        return RandomStringUtils.random(10, true, true);
     }
 }

@@ -19,37 +19,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.console.project.utils.InputVerifier;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectTest {
     private ProjectStructure projectStructure;
-    private TemplateProvider templateProviderNew;
 
     @BeforeEach
     public void setUpProject(@TempDir Path tempDirPath) throws Exception {
-        projectStructure = new ProjectStructure(tempDirPath.toFile().getPath(), "test", "test");
-        templateProviderNew =
-                new TemplateProvider.Builder()
-                        .loadGradlewBatScript("gradlew.bat.template")
-                        .loadGradlewScript("gradlew.template")
-                        .loadMainJavaClass("Template.java")
-                        .loadGradleBuild("build.gradle.template")
-                        .loadGradleSettings("settings.gradle.template")
-                        .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
-                        .loadGradleJar("gradle-wrapper.jar")
-                        .loadSolidityGreeter("HelloWorld.sol")
-                        .withPackageNameReplacement(s -> s.replace("<package_name>", "test"))
-                        .withProjectNameReplacement(
-                                s ->
-                                        s.replace(
-                                                "<project_name>",
-                                                InputVerifier.capitalizeFirstLetter("test")))
-                        .build();
+        final String rootDirectory = tempDirPath.toFile().getPath();
+        projectStructure = new ProjectStructure(rootDirectory, "test", "test");
         Project.builder()
-                .withTemplateProvider(templateProviderNew)
-                .withProjectStructure(projectStructure)
+                .withProjectName(projectStructure.getProjectName())
+                .withPackageName(projectStructure.getPackageName())
+                .withRootDirectory(rootDirectory)
                 .build();
     }
 

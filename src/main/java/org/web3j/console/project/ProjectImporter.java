@@ -12,33 +12,19 @@
  */
 package org.web3j.console.project;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import picocli.CommandLine;
 
-import static org.web3j.console.project.InteractiveOptions.getPackageName;
-import static org.web3j.console.project.InteractiveOptions.getProjectDestination;
-import static org.web3j.console.project.InteractiveOptions.getProjectName;
-import static org.web3j.console.project.InteractiveOptions.getSolidityProjectPath;
-import static org.web3j.console.project.InteractiveOptions.userWantsTests;
+import static org.web3j.console.project.InteractiveOptions.*;
 import static org.web3j.utils.Collection.tail;
 
 public class ProjectImporter extends ProjectCreator {
     public static final String COMMAND_IMPORT = "import";
-    private final String solidityImportPath;
 
-    public ProjectImporter(
-            final String root,
-            final String packageName,
-            final String projectName,
-            final String solidityImportPath)
-            throws IOException {
+    public ProjectImporter(final String root, final String packageName, final String projectName) {
         super(root, packageName, projectName);
-        this.solidityImportPath = solidityImportPath;
     }
 
     public static void main(String[] args) {
@@ -68,10 +54,5 @@ public class ProjectImporter extends ProjectCreator {
             }
         }
         CommandLine.run(new ProjectImporterCLIRunner(), args);
-    }
-
-    void generate(boolean generateTests) {
-        final File solidityFile = new File(solidityImportPath);
-        super.generate(generateTests, Optional.of(solidityFile));
     }
 }

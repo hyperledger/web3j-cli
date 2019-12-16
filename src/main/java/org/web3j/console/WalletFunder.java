@@ -54,7 +54,8 @@ public class WalletFunder {
             if (fund.toUpperCase().equals("N")) {
                 exitError("Operation was cancelled by user.");
             }
-            String transactionHash = fundWallet(args[1], args.length == 4 ? args[3] : null);
+            String transactionHash =
+                    fundWallet(args[1], selectedFaucet, args.length == 4 ? args[3] : null);
             System.out.println(
                     String.format(
                             "Your wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://%s.explorer.epirus.web3labs.com/transactions/%s",
@@ -95,7 +96,8 @@ public class WalletFunder {
         th.start();
     }
 
-    private static String fundWallet(String walletAddress, String token) throws Exception {
+    public static String fundWallet(String walletAddress, Faucet faucet, String token)
+            throws Exception {
         OkHttpClient client = new OkHttpClient();
         ObjectMapper mapper = new ObjectMapper();
         System.out.println("Sending funding request...");
@@ -110,13 +112,13 @@ public class WalletFunder {
 
             sendEtherRequest =
                     new okhttp3.Request.Builder()
-                            .url(String.format("%s/send/%s", selectedFaucet.url, token))
+                            .url(String.format("%s/send/%s", faucet.url, token))
                             .post(fundingBody)
                             .build();
         } else {
             Request getSeedRequest =
                     new okhttp3.Request.Builder()
-                            .url(String.format("%s/seed/0.2", selectedFaucet.url))
+                            .url(String.format("%s/seed/0.2", faucet.url))
                             .get()
                             .build();
             Response configRawResponse = client.newCall(getSeedRequest).execute();
@@ -165,7 +167,7 @@ public class WalletFunder {
 
             sendEtherRequest =
                     new okhttp3.Request.Builder()
-                            .url(String.format("%s/send", selectedFaucet.url))
+                            .url(String.format("%s/send", faucet.url))
                             .post(fundingBody)
                             .build();
         }
@@ -193,23 +195,4 @@ class WalletFunderConfig {
 
 class WalletFunderResult {
     public String result;
-}
-
-enum Faucet {
-    RINKEBY("Rinkeby", "https://rinkeby.faucet.epirus.io"),
-    ROPSTEN("Ropsten", "https://ropsten.faucet.epirus.io");
-    //    LOCAL("Local", "http://localhost:8000");
-
-    public final String name;
-    public final String url;
-
-    Faucet(final String name, final String url) {
-        this.name = name;
-        this.url = url;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
 }

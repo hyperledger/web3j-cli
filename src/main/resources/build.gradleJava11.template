@@ -9,7 +9,7 @@ plugins {
 group '<package_name>'
 version '0.1.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -44,7 +44,6 @@ jar {
         )
     }
 }
-
 application {
     mainClassName = '<package_name>.<project_name>'
 }

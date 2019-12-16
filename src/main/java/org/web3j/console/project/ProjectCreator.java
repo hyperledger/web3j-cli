@@ -13,7 +13,8 @@
 package org.web3j.console.project;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import picocli.CommandLine;
 
 import org.web3j.console.project.utils.InputVerifier;
 
-import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.utils.Collection.tail;
@@ -30,32 +30,14 @@ import static org.web3j.utils.Collection.tail;
 public class ProjectCreator {
 
     public static final String COMMAND_NEW = "new";
-
-    private final ProjectStructure projectStructure;
-    private final TemplateProvider templateProvider;
+    private final String root;
+    private final String packageName;
     private final String projectName;
 
-    ProjectCreator(final String root, final String packageName, final String projectName)
-            throws IOException {
+    ProjectCreator(final String root, final String packageName, final String projectName) {
         this.projectName = projectName;
-        this.projectStructure = new ProjectStructure(root, packageName, projectName);
-        this.templateProvider =
-                new TemplateProvider.Builder()
-                        .loadGradlewBatScript("gradlew.bat.template")
-                        .loadGradlewScript("gradlew.template")
-                        .loadMainJavaClass("Template.java")
-                        .loadGradleBuild("build.gradle.template")
-                        .loadGradleSettings("settings.gradle.template")
-                        .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
-                        .loadGradleJar("gradle-wrapper.jar")
-                        .loadSolidityGreeter("HelloWorld.sol")
-                        .withPackageNameReplacement(s -> s.replace("<package_name>", packageName))
-                        .withProjectNameReplacement(
-                                s ->
-                                        s.replace(
-                                                "<project_name>",
-                                                InputVerifier.capitalizeFirstLetter(projectName)))
-                        .build();
+        this.packageName = packageName;
+        this.root = root;
     }
 
     public static void main(String[] args) {
@@ -78,54 +60,60 @@ public class ProjectCreator {
                 args = stringOptions.toArray(new String[0]);
             }
         }
-
         CommandLine.run(new ProjectCreatorCLIRunner(), args);
     }
 
-    void generate() {
-        generate(true, Optional.empty());
-    }
-
-    void generate(boolean withTests, Optional<File> solidityFile) {
+    void generate(
+            boolean withTests,
+            Optional<File> solidityFile,
+            boolean withWallet,
+            boolean withFatJar,
+            boolean withSampleCode,
+            String command) {
         try {
             Project.Builder builder =
                     Project.builder()
-                            .withProjectStructure(projectStructure)
-                            .withTemplateProvider(templateProvider);
-            solidityFile.ifPresent(builder::withSolidityFile);
-            builder.build();
-            if (withTests) {
-                generateTests();
+                            .withProjectName(this.projectName)
+                            .withRootDirectory(this.root)
+                            .withPackageName(this.packageName)
+                            .withCommand(command);
+
+            if (withWallet) {
+                builder.withWalletProvider();
             }
-            onSuccess();
+            if (withSampleCode) {
+                builder.withSampleCode();
+            }
+            solidityFile.ifPresent(builder::withSolidityFile);
+            if (withTests) {
+                builder.withTests();
+            }
+            if (withFatJar) {
+                builder.withFatJar();
+            }
+            Project project = builder.build();
+            onSuccess(project);
         } catch (final Exception e) {
-            exitError(e);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            exitError("\nCould not generate project reason: \n" + sw.toString());
         }
     }
 
-    private void generateTests() throws IOException {
-        String wrapperPath =
-                String.join(
-                        separator,
-                        projectStructure.getRoot(),
-                        projectName,
-                        "build",
-                        "generated",
-                        "source",
-                        "web3j",
-                        "main",
-                        "java");
-        String writePath =
-                String.join(
-                        separator, projectStructure.getRoot(), projectName, "src", "test", "java");
-        new UnitTestCreator(wrapperPath, writePath).generate();
-    }
-
-    private void onSuccess() {
+    private void onSuccess(Project project) {
         exitSuccess(
                 "\n"
-                        + projectStructure.getProjectName()
-                        + " has been created in"
-                        + projectStructure.getProjectRoot());
+                        + this.projectName
+                        + " has been created in "
+                        + this.root
+                        + "\n"
+                        + "To test your smart contracts (./src/test/java/io/web3j/generated/contracts/HelloWorldTest.java): ./gradlew test"
+                        + "\n"
+                        + "To run your Web3 app (./src/main/java/io/web3j/"
+                        + InputVerifier.capitalizeFirstLetter(this.projectName)
+                        + ".java): java -DNODE_URL=<URL_TO_NODE> -jar ./build/libs/"
+                        + InputVerifier.capitalizeFirstLetter(this.projectName)
+                        + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/\nYour wallet address is: "
+                        + project.getProjectWallet().getWalletAddress());
     }
 }

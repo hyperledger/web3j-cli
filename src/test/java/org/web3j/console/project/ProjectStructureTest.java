@@ -29,12 +29,16 @@ public class ProjectStructureTest {
     public void init(@TempDir Path temp) {
         tempDirPath = temp.toString();
         projectStructure = new ProjectStructure(tempDirPath, "test.test", "Test");
-        projectStructure.createDirectoryStructure();
+        projectStructure.createMainDirectory();
+        projectStructure.createTestDirectory();
+        projectStructure.createSolidityDirectory();
+        projectStructure.createWrapperDirectory();
+        projectStructure.createTestDirectory();
     }
 
     @Test
     public void getRootTest() {
-        assertEquals(projectStructure.getRoot(), tempDirPath);
+        assertEquals(projectStructure.getRootDirectory(), tempDirPath);
     }
 
     @Test
@@ -128,7 +132,7 @@ public class ProjectStructureTest {
     @Test
     public void getRootUserDir() {
         ProjectStructure projectStructure = new ProjectStructure("~", "test.test", "Test");
-        assertEquals(projectStructure.getRoot(), System.getProperty("user.home"));
+        assertEquals(projectStructure.getRootDirectory(), System.getProperty("user.home"));
     }
 
     @Test
@@ -139,7 +143,7 @@ public class ProjectStructureTest {
                         "test.test",
                         "Test");
         assertEquals(
-                projectStructure.getRoot(),
+                projectStructure.getRootDirectory(),
                 System.getProperty("user.home")
                         + File.separator
                         + "a"
@@ -166,7 +170,7 @@ public class ProjectStructureTest {
                         "test.test",
                         "Test");
         assertEquals(
-                projectStructure.getRoot(),
+                projectStructure.getRootDirectory(),
                 File.separator
                         + "root"
                         + File.separator

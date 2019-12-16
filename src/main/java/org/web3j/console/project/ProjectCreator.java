@@ -111,9 +111,9 @@ public class ProjectCreator {
                         + "\n"
                         + "To run your Web3 app (./src/main/java/io/web3j/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + ".java): java -DnodeURL=\"<URL_TO_NODE>\" -jar ./build/libs/"
+                        + ".java): java -DNODE_URL=<URL_TO_NODE> -jar ./build/libs/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + "-0.1.0-all.jar\nTo get funds on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/\nYour account address is: "
+                        + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/\nYour wallet address is: "
                         + project.getProjectWallet().getWalletAddress());
     }
 }

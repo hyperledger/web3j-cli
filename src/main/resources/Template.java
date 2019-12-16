@@ -46,19 +46,19 @@ public class <project_name> {
 
     private static Web3j createWeb3jService(String url){
         if (url == null || url.isEmpty()) {
-            if (System.getProperty("nodeURL") == null || System.getProperty("nodeURL").isEmpty()) {
-                if (System.getenv("nodeURL") == null || System.getenv("nodeURL").isEmpty()) {
+            if (System.getProperty("NODE_URL") == null || System.getProperty("NODE_URL").isEmpty()) {
+                if (System.getenv("NODE_URL") == null || System.getenv("NODE_URL").isEmpty()) {
                     log.info("Please make sure the node url is valid.");
-                    log.info("You can edit the node url programmatically, use java -DnodeURL=\"\" or as an environmental variable e.g export nodeURL=\"\"");
+                    log.info("You can edit the node url programmatically, use java -DnodeURL=\"\" or as an environmental variable e.g export NODE_URL=\"\"");
                     System.exit(1);
                 } else {
-                    log.info("Connecting to " + System.getenv("nodeURL"));
-                    return Web3j.build(new HttpService(System.getenv("nodeURL")));
+                    log.info("Connecting to " + System.getenv("NODE_URL"));
+                    return Web3j.build(new HttpService(System.getenv("NODE_URL")));
                 }
             }
             else {
-                    log.info("Connecting to " + System.getProperty("nodeURL"));
-                    return Web3j.build(new HttpService(System.getProperty("nodeURL")));
+                    log.info("Connecting to " + System.getProperty("NODE_URL"));
+                    return Web3j.build(new HttpService(System.getProperty("NODE_URL")));
             }
         }
         log.info("Connecting to " + url);

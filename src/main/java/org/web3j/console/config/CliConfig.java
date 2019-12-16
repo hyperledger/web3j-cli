@@ -109,7 +109,6 @@ public class CliConfig {
         }
     }
 
-
     public void setVersion(final String version) {
         this.version = version;
     }

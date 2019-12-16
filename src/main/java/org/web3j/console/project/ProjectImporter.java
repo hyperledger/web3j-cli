@@ -22,15 +22,9 @@ import static org.web3j.utils.Collection.tail;
 
 public class ProjectImporter extends ProjectCreator {
     public static final String COMMAND_IMPORT = "import";
-    private final String solidityImportPath;
 
-    public ProjectImporter(
-            final String root,
-            final String packageName,
-            final String projectName,
-            final String solidityImportPath) {
+    public ProjectImporter(final String root, final String packageName, final String projectName) {
         super(root, packageName, projectName);
-        this.solidityImportPath = solidityImportPath;
     }
 
     public static void main(String[] args) {

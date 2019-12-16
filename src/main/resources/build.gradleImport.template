@@ -9,7 +9,7 @@ plugins {
 group '<package_name>'
 version '0.1.0'
 
-sourceCompatibility = 11
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -17,7 +17,6 @@ repositories {
 
 web3j {
     generatedPackageName = '<package_name>.generated.contracts'
-    excludedContracts = ['Mortal']
 }
 
 ext {
@@ -34,7 +33,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
-
 jar {
     manifest {
         attributes(

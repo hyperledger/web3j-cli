@@ -13,8 +13,6 @@
 package org.web3j.console.project;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Optional;
 
 import picocli.CommandLine.Command;
@@ -61,13 +59,13 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
     }
 
     private void createProject() {
-        try {
-            new ProjectImporter(outputDir, packageName, projectName, solidityImportPath)
-                    .generate(generateTests, Optional.of(new File(solidityImportPath)));
-        } catch (final Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            exitError("Could not generate project reason:" + sw.toString());
-        }
+        new ProjectImporter(outputDir, packageName, projectName)
+                .generate(
+                        generateTests,
+                        Optional.of(new File(solidityImportPath)),
+                        true,
+                        false,
+                        false,
+                        COMMAND_IMPORT);
     }
 }

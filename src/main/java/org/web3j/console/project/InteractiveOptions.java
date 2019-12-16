@@ -102,7 +102,7 @@ class InteractiveOptions {
     }
 
     static boolean overrideExistingProject() {
-        print("Looks like the project exists. Would you like to override it [y/N] ?");
+        print("Looks like the project exists. Would you like to overwrite it [y/N] ?");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y");
     }

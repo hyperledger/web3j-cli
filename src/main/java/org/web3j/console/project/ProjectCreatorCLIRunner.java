@@ -65,7 +65,7 @@ public class ProjectCreatorCLIRunner implements Runnable {
 
     private void createProject() {
         new ProjectCreator(outputDir, packageName, projectName)
-                .generate(true, Optional.empty(), true, true);
+                .generate(true, Optional.empty(), true, true, true, COMMAND_NEW);
     }
 
     boolean inputIsValid(String... requiredArgs) {

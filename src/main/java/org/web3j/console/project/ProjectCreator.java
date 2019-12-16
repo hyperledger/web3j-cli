@@ -63,32 +63,26 @@ public class ProjectCreator {
         CommandLine.run(new ProjectCreatorCLIRunner(), args);
     }
 
-    void generate() {
-        generate(true, Optional.empty(), false, false);
-    }
-
-    void generate(boolean withTests, Optional<File> solidityFile) {
-        generate(withTests, solidityFile, false, false);
-    }
-
-    void generate(boolean withTests, Optional<File> solidityFile, boolean withWallet) {
-        generate(withTests, solidityFile, withWallet, false);
-    }
-
     void generate(
             boolean withTests,
             Optional<File> solidityFile,
             boolean withWallet,
-            boolean withFatJar) {
+            boolean withFatJar,
+            boolean withSampleCode,
+            String command) {
         try {
             Project.Builder builder =
                     Project.builder()
                             .withProjectName(this.projectName)
                             .withRootDirectory(this.root)
-                            .withPackageName(this.packageName);
+                            .withPackageName(this.packageName)
+                            .withCommand(command);
 
             if (withWallet) {
-                builder.withWalletProvider().withSampleCode();
+                builder.withWalletProvider();
+            }
+            if (withSampleCode) {
+                builder.withSampleCode();
             }
             solidityFile.ifPresent(builder::withSolidityFile);
             if (withTests) {
@@ -97,16 +91,16 @@ public class ProjectCreator {
             if (withFatJar) {
                 builder.withFatJar();
             }
-            builder.build();
-            onSuccess();
+            Project project = builder.build();
+            onSuccess(project);
         } catch (final Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            exitError("Could not generate project reason:" + sw.toString());
+            exitError("\nCould not generate project reason: \n" + sw.toString());
         }
     }
 
-    private void onSuccess() {
+    private void onSuccess(Project project) {
         exitSuccess(
                 "\n"
                         + this.projectName
@@ -117,8 +111,9 @@ public class ProjectCreator {
                         + "\n"
                         + "To run your Web3 app (./src/main/java/io/web3j/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + ".java): java -jar ./build/libs/"
+                        + ".java): java -DnodeURL=\"<URL_TO_NODE>\" -jar ./build/libs/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + "-0.1.0-all.jar");
+                        + "-0.1.0-all.jar\nTo get funds on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/\nYour account address is: "
+                        + project.getProjectWallet().getWalletAddress());
     }
 }

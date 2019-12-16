@@ -15,6 +15,7 @@ package org.web3j.console.project;
 import java.io.File;
 import java.io.IOException;
 
+import org.web3j.codegen.Console;
 import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.utils.InputVerifier;
 import org.web3j.console.project.utils.ProgressCounter;
@@ -25,13 +26,15 @@ import static java.io.File.separator;
 public class Project {
     private TemplateProvider templateProvider;
     private ProjectStructure projectStructure;
+    private ProjectWallet projectWallet;
 
     private Project(
-            final Builder builder,
             TemplateProvider templateProvider,
-            ProjectStructure projectStructure) {
+            ProjectStructure projectStructure,
+            ProjectWallet projectWallet) {
         this.projectStructure = projectStructure;
         this.templateProvider = templateProvider;
+        this.projectWallet = projectWallet;
     }
 
     public TemplateProvider getTemplateProvider() {
@@ -40,6 +43,10 @@ public class Project {
 
     public ProjectStructure getProjectStructure() {
         return this.projectStructure;
+    }
+
+    public ProjectWallet getProjectWallet() {
+        return this.projectWallet;
     }
 
     public static Builder builder() {
@@ -56,7 +63,9 @@ public class Project {
         private String rootDirectory;
         private boolean withSampleCode = false;
         private boolean withFatJar = false;
+        private String command = "new";
         private ProgressCounter progressCounter = new ProgressCounter(true);
+        private ProjectWallet projectWallet;
 
         public Builder withSolidityFile(final File solidityImportPath) {
             this.solidityImportPath = solidityImportPath;
@@ -80,6 +89,11 @@ public class Project {
 
         public Builder withFatJar() {
             this.withFatJar = true;
+            return this;
+        }
+
+        public Builder withCommand(String command) {
+            this.command = command;
             return this;
         }
 
@@ -125,17 +139,20 @@ public class Project {
         private void executeBuild(final File workingDir, final String[] command)
                 throws InterruptedException, IOException {
             executeProcess(workingDir, command);
-            return;
         }
 
         private void executeProcess(File workingDir, String[] command)
                 throws InterruptedException, IOException {
-            new ProcessBuilder(command)
-                    .directory(workingDir)
-                    .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                    .redirectError(ProcessBuilder.Redirect.INHERIT)
-                    .start()
-                    .waitFor();
+            int exitCode =
+                    new ProcessBuilder(command)
+                            .directory(workingDir)
+                            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                            .redirectError(ProcessBuilder.Redirect.INHERIT)
+                            .start()
+                            .waitFor();
+            if (exitCode != 0) {
+                Console.exitError("Could not build project.");
+            }
         }
 
         private void createFatJar(String pathToDirectory) throws IOException, InterruptedException {
@@ -167,7 +184,7 @@ public class Project {
                 createFatJar(projectStructure.getProjectRoot());
             }
             progressCounter.setLoading(false);
-            return new Project(this, builtTemplateProvider, projectStructure);
+            return new Project(builtTemplateProvider, projectStructure, projectWallet);
         }
 
         private void generateTests(ProjectStructure projectStructure) throws IOException {
@@ -249,20 +266,25 @@ public class Project {
             TemplateProvider.Builder templateProvider =
                     new TemplateProvider.Builder()
                             .loadGradlewBatScript("gradlew.bat.template")
-                            .loadGradlewScript("gradlew.template")
-                            .loadGradleBuild(
-                                    JavaVersion.getJavaVersionAsDouble() < 11
-                                            ? "build.gradle.template"
-                                            : "build.gradleJava11.template")
-                            .loadGradleSettings("settings.gradle.template")
-                            .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
-                            .loadGradleJar("gradle-wrapper.jar")
-                            .loadSolidityGreeter("HelloWorld.sol");
-            if (withSampleCode) {
-                templateProvider.loadMainJavaClass(
+                            .loadGradlewScript("gradlew.template");
+            if (command.equals("new")) {
+                templateProvider.loadGradleBuild(
                         JavaVersion.getJavaVersionAsDouble() < 11
-                                ? "Template.java"
-                                : "TemplateJava11.java");
+                                ? "build.gradle.template"
+                                : "build.gradleJava11.template");
+            } else if (command.equals("import")) {
+                templateProvider.loadGradleBuild(
+                        JavaVersion.getJavaVersionAsDouble() < 11
+                                ? "build.gradleImport.template"
+                                : "build.gradleImportJava11.template");
+            }
+            templateProvider
+                    .loadGradleSettings("settings.gradle.template")
+                    .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
+                    .loadGradleJar("gradle-wrapper.jar")
+                    .loadSolidityGreeter("HelloWorld.sol");
+            if (withSampleCode) {
+                templateProvider.loadMainJavaClass("Template.java");
             } else {
                 templateProvider.loadMainJavaClass("EmptyTemplate.java");
             }
@@ -273,9 +295,9 @@ public class Project {
                                     s.replace(
                                             "<project_name>",
                                             InputVerifier.capitalizeFirstLetter(projectName)));
-            if (withWallet && withSampleCode) {
+            if (withWallet) {
                 projectStructure.createWalletDirectory();
-                ProjectWallet projectWallet =
+                projectWallet =
                         new ProjectWallet(
                                 ProjectUtils.generateWalletPassword(),
                                 projectStructure.getWalletPath());
@@ -283,7 +305,7 @@ public class Project {
                         .withPrivateKeyReplacement(
                                 s ->
                                         s.replace(
-                                                "<passwod_file_name>",
+                                                "<password_file_name>",
                                                 projectWallet.getPasswordFileName()))
                         .withWalletNameReplacement(
                                 s -> s.replace("<wallet_name>", projectWallet.getWalletName()));
@@ -291,10 +313,6 @@ public class Project {
                         projectWallet.getWalletPassword(),
                         projectWallet.getPasswordFileName(),
                         projectStructure.getWalletPath());
-                //                if (JavaVersion.getJavaVersionAsDouble() < 11) {
-                //                    WalletFunder.fundWallet(projectWallet.getWalletAddress(),
-                // Faucet.RINKEBY, null);
-                //                }
             }
             return templateProvider.build();
         }

@@ -47,7 +47,9 @@ public class CliConfig {
 
     private static CliConfig getSavedConfig(File configFile) throws IOException {
         String configContents = new String(Files.readAllBytes(configFile.toPath()));
-        return new Gson().fromJson(configContents, CliConfig.class);
+        CliConfig config = new Gson().fromJson(configContents, CliConfig.class);
+        config.setVersion(Version.getVersion());
+        return config;
     }
 
     public static CliConfig getConfig(File configFile) throws IOException {
@@ -105,6 +107,10 @@ public class CliConfig {
         } else {
             return OS.UNKNOWN;
         }
+    }
+
+    public void setVersion(final String version) {
+        this.version = version;
     }
 
     private String version;

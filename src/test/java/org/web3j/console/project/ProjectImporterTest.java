@@ -12,17 +12,16 @@
  */
 package org.web3j.console.project;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
@@ -34,21 +33,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectImporterTest extends ClassExecutor {
-    private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    private String tempDirPath;
+    private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    static String tempDirPath;
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
+    @TempDir static Path temp;
 
-    @BeforeEach
-    public void setUpStreams(@TempDir Path temp) {
+    @BeforeAll
+    public static void setUpStreams() {
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
         tempDirPath = temp.toString();
     }
 
     @Test
+    @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + tempDirPath};
         final ProjectImporterCLIRunner projectImporterCLIRunner = new ProjectImporterCLIRunner();
@@ -59,10 +60,10 @@ public class ProjectImporterTest extends ClassExecutor {
     }
 
     @Test
+    @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-
         final String[] args = {
-            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath
+            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
@@ -74,46 +75,13 @@ public class ProjectImporterTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"import", "-p=", "-n=", "-s="};
-        ProjectImporter.main(args);
-        assertEquals(
-                outContent.toString(), "Please make sure the required parameters are not empty.\n");
-    }
-
-    @Test
-    public void testWhenInteractiveAndArgumentsAreCorrect()
-            throws IOException, InterruptedException {
-        final String[] args = {"import"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("test", 0, "test".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(formattedPath, 0, formattedPath.length());
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.write("n", 0, "n".length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void verifyWhenInteractiveThatTestsHaveBeenGenerated()
-            throws IOException, InterruptedException {
+    @Order(3)
+    public void verifyWhenInteractiveThatTestsHaveBeenGenerated() {
         String pathToTests =
                 String.join(
                         separator,
                         tempDirPath,
-                        "test",
+                        "Test5",
                         "src",
                         "test",
                         "java",
@@ -122,105 +90,14 @@ public class ProjectImporterTest extends ClassExecutor {
                         "generated",
                         "contracts",
                         "Test2Test.java");
-        final String[] args = {"import"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("test", 0, "test".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(formattedPath, 0, formattedPath.length());
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.write("y", 0, "y".length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
         assertTrue(new File(pathToTests).exists());
     }
 
     @Test
-    public void testWhenInteractiveAndFirstInputIsInvalidClassName()
-            throws IOException, InterruptedException {
-        final String[] args = {"import"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("#$%^%#$test", 0, "#$%^%#$test".length());
-        writer.newLine();
-        writer.write("test1", 0, "test1".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(formattedPath, 0, formattedPath.length());
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.write("n", 0, "n".length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void testWhenInteractiveAndFirstInputIsInvalidPackageName()
-            throws IOException, InterruptedException {
-        final String[] args = {"import"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("test", 0, "test".length());
-        writer.newLine();
-        writer.write("@#@$%@%@$#@org.com", 0, "@#@$%@%@$#@org.com".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(formattedPath, 0, formattedPath.length());
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.write("n", 0, "n".length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void testWhenInteractiveAndDefaultOptions() throws IOException, InterruptedException {
-        final String[] args = {"import"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("", 0, "".length());
-        writer.newLine();
-        writer.write("", 0, "".length());
-        writer.newLine();
-        writer.write(formattedPath, 0, formattedPath.length());
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.write("n", 0, "n".length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
-        assertTrue(new File(tempDirPath + separator + "Web3App").exists());
+    public void testWithPicoCliWhenArgumentsAreEmpty() {
+        final String[] args = {"import", "-p=", "-n=", "-s="};
+        ProjectImporter.main(args);
+        assertEquals(
+                "Please make sure the required parameters are not empty.\n", outContent.toString());
     }
 }

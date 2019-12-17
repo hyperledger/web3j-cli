@@ -49,7 +49,7 @@ public class <project_name> {
             if (System.getProperty("NODE_URL") == null || System.getProperty("NODE_URL").isEmpty()) {
                 if (System.getenv("NODE_URL") == null || System.getenv("NODE_URL").isEmpty()) {
                     log.info("Please make sure the node url is valid.");
-                    log.info("You can edit the node url programmatically, use java -DnodeURL=\"\" or as an environmental variable e.g export NODE_URL=\"\"");
+                    log.info("You can edit the node url programmatically, use java -DNODE_URL=\"\" or as an environmental variable e.g export NODE_URL=\"\"");
                     System.exit(1);
                 } else {
                     log.info("Connecting to " + System.getenv("NODE_URL"));

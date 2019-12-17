@@ -23,7 +23,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
@@ -35,19 +36,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProjectCreatorTest extends ClassExecutor {
-    private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
-    private String tempDirPath;
+    private static String tempDirPath;
+    @TempDir static Path temp;
 
-    @BeforeEach
-    public void setUpStreams(@TempDir Path temp) {
+    @BeforeAll
+    static void setUpStreams() {
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
         tempDirPath = temp.toString();
     }
 
     @Test
+    @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
         final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
@@ -58,6 +61,7 @@ public class ProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
+    @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {"new", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
@@ -70,8 +74,8 @@ public class ProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
-    public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
-        final String[] args = {"new", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+    @Order(3)
+    public void verifyThatTestsAreGenerated() {
         final File pathToTests =
                 new File(
                         String.join(
@@ -86,13 +90,6 @@ public class ProjectCreatorTest extends ClassExecutor {
                                 "generated",
                                 "contracts",
                                 "HelloWorldTest.java"));
-        int exitCode =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
-                        .inheritIO()
-                        .start()
-                        .waitFor();
-        assertEquals(0, exitCode);
         assertTrue(pathToTests.exists());
     }
 
@@ -123,74 +120,5 @@ public class ProjectCreatorTest extends ClassExecutor {
         writer.close();
         process.waitFor();
         assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void testWhenInteractiveAndFirstInputIsInvalidClassName()
-            throws IOException, InterruptedException {
-        final String[] args = {"new"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("#$%^%#$test", 0, "#$%^%#$test".length());
-        writer.newLine();
-        writer.write("test", 0, "test".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void testWhenInteractiveAndFirstInputIsInvalidPackageName()
-            throws IOException, InterruptedException {
-        final String[] args = {"new"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("test", 0, "test".length());
-        writer.newLine();
-        writer.write("@#@$%@%@$#@org.com", 0, "@#@$%@%@$#@org.com".length());
-        writer.newLine();
-        writer.write("org.com", 0, "org.com".length());
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
-    }
-
-    @Test
-    public void testWhenInteractiveAndOptionsAreDefault() throws IOException, InterruptedException {
-        final String[] args = {"new"};
-        Process process =
-                executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
-                        .start();
-        BufferedWriter writer =
-                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        writer.write("", 0, 0);
-        writer.newLine();
-        writer.write("", 0, 0);
-        writer.newLine();
-        writer.write(tempDirPath, 0, tempDirPath.length());
-        writer.newLine();
-        writer.write("y", 0, "y".length());
-        writer.newLine();
-        writer.close();
-        process.waitFor();
-        assertEquals(0, process.exitValue());
-        assertTrue(new File(tempDirPath + separator + "Web3App").exists());
     }
 }

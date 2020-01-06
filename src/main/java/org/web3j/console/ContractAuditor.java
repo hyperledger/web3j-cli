@@ -35,6 +35,7 @@ import ru.smartdec.smartcheck.RulesXml;
 import ru.smartdec.smartcheck.app.DirectoryAnalysis;
 import ru.smartdec.smartcheck.app.DirectoryAnalysisCombined;
 import ru.smartdec.smartcheck.app.DirectoryAnalysisDefault;
+import ru.smartdec.smartcheck.app.Media;
 import ru.smartdec.smartcheck.app.ReportDefault;
 import ru.smartdec.smartcheck.app.SourceLanguage;
 import ru.smartdec.smartcheck.app.SourceLanguages;
@@ -64,29 +65,6 @@ public class ContractAuditor {
                                 Throwable::printStackTrace)));
     }
 
-    private static String formatAsTable(List<List<String>> rows) {
-        if (rows.isEmpty()) return "";
-        int[] maxLengths = new int[rows.get(0).size()];
-        for (List<String> row : rows) {
-            for (int i = 0; i < row.size(); i++) {
-                maxLengths[i] = Math.max(maxLengths[i], row.get(i).length());
-            }
-        }
-
-        StringBuilder formatBuilder = new StringBuilder();
-        for (int maxLength : maxLengths) {
-            formatBuilder.append("%-").append(maxLength + 3).append("s");
-        }
-        String format = formatBuilder.toString();
-
-        StringBuilder result = new StringBuilder();
-        for (List<String> row : rows) {
-            String[] res = row.toArray(new String[0]);
-            result.append(String.format(format, (Object[]) res)).append("\n");
-        }
-        return result.toString();
-    }
-
     public static void main(String[] args) {
         if (args.length != 1) {
             exitError(USAGE);
@@ -108,69 +86,128 @@ public class ContractAuditor {
                             };
 
             final Integer[] totals = {0, 0};
+            DefaultMedia media = new DefaultMedia(totals);
             new ReportDefault(
-                    new DirectoryAnalysisCombined(
-                            makeDirectoryAnalysis(new SourceLanguages.Solidity(), source, defaultRules),
-                            makeDirectoryAnalysis(new SourceLanguages.Vyper(), source, defaultRules)
-                    ),
-                    info -> {
-                        LinkedList<List<String>> report_fields = new LinkedList<>();
-                        Map<String, Integer> result = new HashMap<>();
-                        info.treeReport().streamUnchecked().forEach(
-                                tree -> tree.contexts().forEach(
-                                        context -> {
-                                            LinkedList<String> fields = new LinkedList<>();
-                                            String rule_name;
-                                            try {
-                                                URL rule_name_resource = Tool.class.getClassLoader().getResource(
-                                                        String.format(
-                                                                "rule_descriptions/%s/name_en.txt",
-                                                                tree.rule().id()));
-                                                if (rule_name_resource != null) {
-                                                    rule_name = new String(Files.readAllBytes(
-                                                            Paths.get(rule_name_resource.toURI())));
-                                                } else {
-                                                    rule_name = "";
-                                                }
-                                            } catch (IOException | URISyntaxException e) {
-                                                rule_name = "";
-                                            }
-                                            fields.addLast("");
-                                            fields.addLast(String.format("%d:%d", context.getStart().getLine(), context
-                                                    .getStart()
-                                                    .getCharPositionInLine()));
-                                            fields.addLast(String.format("severity:%d", tree.pattern().severity()));
-                                            if (tree.pattern().severity() > 1) {
-                                                totals[1]++;
-                                            }
-                                            fields.addLast(rule_name);
-                                            fields.addLast(String.format("%s_%s", tree.rule().id(),
-                                                    tree.pattern().id()));
-                                            result.compute(
-                                                    tree.rule().id(),
-                                                    (k, v) -> Optional
-                                                            .ofNullable(v)
-                                                            .map(i -> i + 1)
-                                                            .orElse(1)
-                                            );
-                                            report_fields.addLast(fields);
-                                        }
-                                )
-                        );
-                        if (!report_fields.isEmpty()) {
-                            System.out.println(info.file());
-                            System.out.print(formatAsTable(report_fields));
-                            totals[0] += report_fields.size();
-                        }
-                    }
-            ).print();
+                            new DirectoryAnalysisCombined(
+                                    makeDirectoryAnalysis(
+                                            new SourceLanguages.Solidity(), source, defaultRules),
+                                    makeDirectoryAnalysis(
+                                            new SourceLanguages.Vyper(), source, defaultRules)),
+                            media)
+                    .print();
 
-            if (totals[1] > 0) {
+            if (media.getTotals()[1] > 0) {
                 System.exit(-1);
             }
         } catch (Exception e) {
             System.err.println("The audit operation failed with the following exception:");
             e.printStackTrace();
         }
+    }
+}
+
+class DefaultMedia implements Media {
+
+    Integer[] getTotals() {
+        return totals;
+    }
+
+    private final Integer[] totals;
+
+    DefaultMedia(final Integer[] totals) {
+        this.totals = totals;
+    }
+
+    @Override
+    public void accept(final DirectoryAnalysis.Info info) {
+        LinkedList<List<String>> report_fields = new LinkedList<>();
+        Map<String, Integer> result = new HashMap<>();
+        info.treeReport()
+                .streamUnchecked()
+                .forEach(
+                        tree ->
+                                tree.contexts()
+                                        .forEach(
+                                                context -> {
+                                                    LinkedList<String> fields = new LinkedList<>();
+                                                    String rule_name;
+                                                    try {
+                                                        URL rule_name_resource =
+                                                                Tool.class
+                                                                        .getClassLoader()
+                                                                        .getResource(
+                                                                                String.format(
+                                                                                        "rule_descriptions/%s/name_en.txt",
+                                                                                        tree.rule()
+                                                                                                .id()));
+                                                        if (rule_name_resource != null) {
+                                                            rule_name =
+                                                                    new String(
+                                                                            Files.readAllBytes(
+                                                                                    Paths.get(
+                                                                                            rule_name_resource
+                                                                                                    .toURI())));
+                                                        } else {
+                                                            rule_name = "";
+                                                        }
+                                                    } catch (IOException | URISyntaxException e) {
+                                                        rule_name = "";
+                                                    }
+                                                    fields.addLast("");
+                                                    fields.addLast(
+                                                            String.format(
+                                                                    "%d:%d",
+                                                                    context.getStart().getLine(),
+                                                                    context.getStart()
+                                                                            .getCharPositionInLine()));
+                                                    fields.addLast(
+                                                            String.format(
+                                                                    "severity:%d",
+                                                                    tree.pattern().severity()));
+                                                    if (tree.pattern().severity() > 1) {
+                                                        totals[1]++;
+                                                    }
+                                                    fields.addLast(rule_name);
+                                                    fields.addLast(
+                                                            String.format(
+                                                                    "%s_%s",
+                                                                    tree.rule().id(),
+                                                                    tree.pattern().id()));
+                                                    result.compute(
+                                                            tree.rule().id(),
+                                                            (k, v) ->
+                                                                    Optional.ofNullable(v)
+                                                                            .map(i -> i + 1)
+                                                                            .orElse(1));
+                                                    report_fields.addLast(fields);
+                                                }));
+        if (!report_fields.isEmpty()) {
+            System.out.println(info.file());
+            System.out.print(formatAsTable(report_fields));
+            totals[0] += report_fields.size();
+        }
+    }
+
+    private static String formatAsTable(List<List<String>> rows) {
+        if (rows.isEmpty()) return "";
+        int[] maxLengths = new int[rows.get(0).size()];
+        for (List<String> row : rows) {
+            for (int i = 0; i < row.size(); i++) {
+                maxLengths[i] = Math.max(maxLengths[i], row.get(i).length());
+            }
+        }
+
+        StringBuilder formatBuilder = new StringBuilder();
+        for (int maxLength : maxLengths) {
+            formatBuilder.append("%-").append(maxLength + 3).append("s");
+        }
+        String format = formatBuilder.toString();
+
+        StringBuilder result = new StringBuilder();
+        for (List<String> row : rows) {
+            String[] res = row.toArray(new String[0]);
+            result.append(String.format(format, (Object[]) res)).append("\n");
+        }
+        return result.toString();
     }
 }

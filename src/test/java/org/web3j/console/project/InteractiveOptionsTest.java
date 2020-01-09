@@ -25,6 +25,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InteractiveOptionsTest {
     private String formattedPath =
@@ -38,7 +39,20 @@ public class InteractiveOptionsTest {
     @BeforeEach
     void setup(@TempDir Path temp) {
         tempDirPath = temp.toString();
-        final String input = "Test\norg.com\n" + formattedPath + "\n" + tempDirPath + "\n";
+        final String input =
+                "Test\norg.com\n"
+                        + formattedPath
+                        + "\n"
+                        + tempDirPath
+                        + "\n"
+                        + "y"
+                        + "\n"
+                        + ""
+                        + "\n"
+                        + "y"
+                        + "\n"
+                        + "y"
+                        + "\n";
         inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
         System.setOut(new PrintStream(outContent));
@@ -51,5 +65,10 @@ public class InteractiveOptionsTest {
         assertEquals("org.com", InteractiveOptions.getPackageName());
         assertEquals(formattedPath, InteractiveOptions.getSolidityProjectPath());
         assertEquals(tempDirPath, InteractiveOptions.getProjectDestination("Test").get());
+        assertTrue(InteractiveOptions.userWantsTests());
+        assertEquals(
+                String.join(separator, System.getProperty("user.dir"), "src", "test", "java"),
+                InteractiveOptions.setGeneratedTestLocation().get());
+        assertTrue(InteractiveOptions.overrideExistingProject());
     }
 }

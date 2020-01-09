@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 public class <project_name> {
 
     private static final Logger log=LoggerFactory.getLogger(<project_name>.class);
-
+    private static final String NODE_URL = "NODE_URL";
 
     public static void main(String[]args) throws Exception{
         try {
@@ -45,20 +45,22 @@ public class <project_name> {
     }
 
     private static Web3j createWeb3jService(String url){
+        final String nodeURLProperty = System.getProperty(NODE_URL);
+        final String nodeURLEnv = System.getenv(NODE_URL);
         if (url == null || url.isEmpty()) {
-            if (System.getProperty("NODE_URL") == null || System.getProperty("NODE_URL").isEmpty()) {
-                if (System.getenv("NODE_URL") == null || System.getenv("NODE_URL").isEmpty()) {
+            if (nodeURLProperty == null || nodeURLProperty.isEmpty()) {
+                if (nodeURLEnv == null || nodeURLEnv.isEmpty()) {
                     log.info("Please make sure the node url is valid.");
-                    log.info("You can edit the node url programmatically, use java -DnodeURL=\"\" or as an environmental variable e.g export NODE_URL=\"\"");
+                    log.info("You can edit the node url programmatically, use java -D"+NODE_URL+"=\"\" or as an environmental variable e.g export "+NODE_URL+"=\"\"");
                     System.exit(1);
                 } else {
-                    log.info("Connecting to " + System.getenv("NODE_URL"));
-                    return Web3j.build(new HttpService(System.getenv("NODE_URL")));
+                    log.info("Connecting to " + nodeURLEnv);
+                    return Web3j.build(new HttpService(nodeURLEnv));
                 }
             }
             else {
-                    log.info("Connecting to " + System.getProperty("NODE_URL"));
-                    return Web3j.build(new HttpService(System.getProperty("NODE_URL")));
+                    log.info("Connecting to " + nodeURLProperty);
+                    return Web3j.build(new HttpService(nodeURLProperty));
             }
         }
         log.info("Connecting to " + url);

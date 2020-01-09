@@ -70,18 +70,48 @@ class InteractiveOptions {
     }
 
     static Optional<String> getGeneratedWrapperLocation() {
-        print("Please enter the path of the generated contract wrappers.");
+        print(
+                "Please enter the path of the generated contract wrappers ["
+                        + String.join(
+                                separator,
+                                System.getProperty("user.dir"),
+                                "build",
+                                "generated",
+                                "source",
+                                "web3j",
+                                "main",
+                                "java")
+                        + "]");
         String pathToTheWrappers = getUserInput();
-        return pathToTheWrappers.isEmpty() ? Optional.empty() : Optional.of(pathToTheWrappers);
+        return pathToTheWrappers.isEmpty()
+                ? Optional.of(
+                        String.join(
+                                separator,
+                                System.getProperty("user.dir"),
+                                "build",
+                                "generated",
+                                "source",
+                                "web3j",
+                                "main",
+                                "java"))
+                : Optional.of(pathToTheWrappers);
     }
 
-    static Optional<String> setGeneratedTestLocation() {
-        print("Where would you like to save your tests.");
+    public static Optional<String> setGeneratedTestLocation() {
+        print(
+                "Where would you like to save your tests ["
+                        + String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "java")
+                        + "]");
         String outputPath = getUserInput();
-        return outputPath.isEmpty() ? Optional.empty() : Optional.of(outputPath);
+        return outputPath.isEmpty()
+                ? Optional.of(
+                        String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "java"))
+                : Optional.of(outputPath);
     }
 
-    static boolean userWantsTests() {
+    public static boolean userWantsTests() {
         print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
         return userAnswer.trim().toLowerCase().equals("y") || userAnswer.trim().equals("");
@@ -101,7 +131,7 @@ class InteractiveOptions {
         System.out.println(text);
     }
 
-    static boolean overrideExistingProject() {
+    public static boolean overrideExistingProject() {
         print("Looks like the project exists. Would you like to overwrite it [y/N] ?");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y");

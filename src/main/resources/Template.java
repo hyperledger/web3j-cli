@@ -21,14 +21,14 @@ public class <project_name> {
     private static final Logger log=LoggerFactory.getLogger(<project_name>.class);
     private static final String NODE_URL = "NODE_URL";
 
-    public static void main(String[]args) throws Exception{
+    public static void main(String[]args) throws Exception {
         try {
             Credentials credentials=loadCredentials("<wallet_name>");
             Web3j web3j = createWeb3jService("");
             HelloWorld helloWorld = deployHelloWorld(web3j, credentials, new DefaultGasProvider());
             callGreetMethod(helloWorld);
         } catch (Exception e) {
-        log.info(e.getMessage());
+            log.info(e.getMessage());
         }
     }
 
@@ -44,7 +44,7 @@ public class <project_name> {
         return WalletUtils.loadCredentials(password, new File(pathToWallet));
     }
 
-    private static Web3j createWeb3jService(String url){
+    private static Web3j createWeb3jService(String url) {
         final String nodeURLProperty = System.getProperty(NODE_URL);
         final String nodeURLEnv = System.getenv(NODE_URL);
         if (url == null || url.isEmpty()) {
@@ -57,8 +57,7 @@ public class <project_name> {
                     log.info("Connecting to " + nodeURLEnv);
                     return Web3j.build(new HttpService(nodeURLEnv));
                 }
-            }
-            else {
+            } else {
                     log.info("Connecting to " + nodeURLProperty);
                     return Web3j.build(new HttpService(nodeURLProperty));
             }
@@ -67,11 +66,11 @@ public class <project_name> {
         return Web3j.build(new HttpService(url));
     }
 
-    private static HelloWorld deployHelloWorld(Web3j web3j,Credentials credentials,ContractGasProvider contractGasProvider)throws Exception{
+    private static HelloWorld deployHelloWorld(Web3j web3j,Credentials credentials,ContractGasProvider contractGasProvider)throws Exception {
         return HelloWorld.deploy(web3j,credentials,contractGasProvider,"Hello Blockchain World!").send();
     }
 
-    private static void callGreetMethod(HelloWorld helloWorld)throws Exception{
+    private static void callGreetMethod(HelloWorld helloWorld)throws Exception {
         log.info("Calling the greeting method of contract HelloWorld");
         String response=helloWorld.greeting().send();
         log.info("Contract returned: "+ response);

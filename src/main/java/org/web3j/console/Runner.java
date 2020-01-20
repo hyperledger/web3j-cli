@@ -15,6 +15,7 @@ package org.web3j.console;
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
+import org.web3j.console.account.AccountManager;
 import org.web3j.console.config.CliConfig;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.ProjectImporter;
@@ -84,6 +85,9 @@ public class Runner {
                     break;
                 case "audit":
                     ContractAuditor.main(tail(args));
+                    break;
+                case "account":
+                    AccountManager.main(config, tail(args));
                     break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));

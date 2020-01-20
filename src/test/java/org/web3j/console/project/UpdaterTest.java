@@ -99,7 +99,8 @@ public class UpdaterTest {
                                                             config.getServicesUrl(),
                                                             config.getClientId(),
                                                             config.getLatestVersion(),
-                                                            config.getUpdatePrompt()));
+                                                            config.getUpdatePrompt(),
+                                                            null));
                             Files.write(
                                     tempWeb3jSettingsPath,
                                     jsonToWrite.getBytes(Charset.defaultCharset()));

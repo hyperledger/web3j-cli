@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.nio.file.Path;
 
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
-public class ProjectImporterCLIRunnerTest {
+public class BaseProjectImporterCLIRunnerTest {
 
     private String tempDirPath;
 

@@ -16,16 +16,16 @@ import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
 import org.web3j.console.config.CliConfig;
-import org.web3j.console.project.ProjectCreator;
-import org.web3j.console.project.ProjectImporter;
-import org.web3j.console.project.UnitTestCreator;
+import org.web3j.console.project.java.ProjectCreator;
+import org.web3j.console.project.java.ProjectImporter;
+import org.web3j.console.project.java.UnitTestCreator;
 import org.web3j.console.update.Updater;
 import org.web3j.utils.Version;
 
 import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDITY;
-import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;
-import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
-import static org.web3j.console.project.UnitTestCreator.COMMAND_GENERATE_TESTS;
+import static org.web3j.console.project.java.ProjectCreator.COMMAND_NEW;
+import static org.web3j.console.project.java.ProjectImporter.COMMAND_IMPORT;
+import static org.web3j.console.project.java.UnitTestCreator.COMMAND_GENERATE_TESTS;
 import static org.web3j.utils.Collection.tail;
 
 /** Main entry point for running command line utilities. */

@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -21,6 +21,9 @@ import java.util.Optional;
 
 import picocli.CommandLine;
 
+import org.web3j.console.project.BaseBuilder;
+import org.web3j.console.project.BaseProject;
+import org.web3j.console.project.InteractiveOptions;
 import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
@@ -66,33 +69,26 @@ public class ProjectCreator {
     void generate(
             boolean withTests,
             Optional<File> solidityFile,
-            boolean withWallet,
+            boolean withWalletProvider,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
         try {
-            Project.Builder builder =
-                    Project.builder()
+            BaseBuilder baseBuilder =
+                    new BaseBuilder()
                             .withProjectName(this.projectName)
                             .withRootDirectory(this.root)
                             .withPackageName(this.packageName)
-                            .withCommand(command);
+                            .withTests(withTests)
+                            .withWalletProvider(withWalletProvider)
+                            .withCommand(command)
+                            .withSampleCode(withSampleCode)
+                            .withFatJar(withFatJar);
+            solidityFile.map(File::getAbsolutePath).ifPresent(baseBuilder::withSolidityFile);
 
-            if (withWallet) {
-                builder.withWalletProvider();
-            }
-            if (withSampleCode) {
-                builder.withSampleCode();
-            }
-            solidityFile.ifPresent(builder::withSolidityFile);
-            if (withTests) {
-                builder.withTests();
-            }
-            if (withFatJar) {
-                builder.withFatJar();
-            }
-            Project project = builder.build();
-            onSuccess(project);
+            BaseProject baseProject = baseBuilder.build();
+            baseProject.createProject();
+            onSuccess(baseProject);
         } catch (final Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -100,7 +96,13 @@ public class ProjectCreator {
         }
     }
 
-    private void onSuccess(Project project) {
+    private void onSuccess(BaseProject baseProject) {
+        String address =
+                baseProject.getProjectWallet() == null
+                        ? ""
+                        : ("\nYour wallet address is: "
+                                + baseProject.getProjectWallet().getWalletAddress());
+
         exitSuccess(
                 "\n"
                         + this.projectName
@@ -113,7 +115,7 @@ public class ProjectCreator {
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
                         + ".java): java -DNODE_URL=<URL_TO_NODE> -jar ./build/libs/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/\nYour wallet address is: "
-                        + project.getProjectWallet().getWalletAddress());
+                        + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/"
+                        + address);
     }
 }

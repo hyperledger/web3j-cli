@@ -25,29 +25,30 @@ import java.util.Objects;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
 
-class ProjectWriter {
+public class ProjectWriter {
 
-    final void writeResourceFile(
+    public static final void writeResourceFile(
             final String file, final String fileName, final String writeLocation)
             throws IOException {
         Files.write(Paths.get(writeLocation + File.separator + fileName), getBytes(file));
     }
 
-    private byte[] getBytes(final String file) {
+    private static byte[] getBytes(final String file) {
         return file.getBytes();
     }
 
-    final void copyResourceFile(final String file, final String destinationPath)
+    public static final void copyResourceFile(final String file, final String destinationPath)
             throws IOException {
 
         Files.copy(
-                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(file)),
+                Objects.requireNonNull(
+                        ProjectWriter.class.getClassLoader().getResourceAsStream(file)),
                 Paths.get(destinationPath),
                 StandardCopyOption.REPLACE_EXISTING);
     }
 
-    final void importSolidityProject(final File solidityImportPath, final String destination)
-            throws IOException {
+    public static final void importSolidityProject(
+            final File solidityImportPath, final String destination) throws IOException {
         if (solidityImportPath != null && solidityImportPath.exists()) {
             Files.walkFileTree(
                     solidityImportPath.toPath(),
@@ -55,7 +56,7 @@ class ProjectWriter {
         }
     }
 
-    final String createWallet(String walletPassword, String walletPath)
+    static final String createWallet(String walletPassword, String walletPath)
             throws NoSuchAlgorithmException, NoSuchProviderException,
                     InvalidAlgorithmParameterException, CipherException, IOException {
         return WalletUtils.generateNewWalletFile(walletPassword, new File(walletPath));

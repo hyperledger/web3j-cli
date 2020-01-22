@@ -10,12 +10,15 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import org.web3j.console.project.templates.TemplateBuilder;
+import org.web3j.console.project.templates.TemplateProvider;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -25,16 +28,16 @@ public class TemplateProviderTest {
     @BeforeEach
     public void init() throws IOException {
         templateProvider =
-                new TemplateProvider.Builder()
-                        .loadGradlewBatScript("gradlew.bat.template")
-                        .loadGradlewScript("gradlew.template")
-                        .loadMainJavaClass("Template.java")
-                        .loadGradleBuild("build.gradle.template")
-                        .loadGradleSettings("settings.gradle.template")
-                        .loadGradlewWrapperSettings("gradlew-wrapper.properties.template")
-                        .loadGradleJar("gradle-wrapper.jar")
-                        .withPackageNameReplacement(s -> s.replace("<package_name>", "test"))
-                        .withProjectNameReplacement(s -> s.replace("<project_name>", "test"))
+                new TemplateBuilder()
+                        .withGradleBatScript("gradlew.bat.template")
+                        .withGradleScript("gradlew.template")
+                        .withMainJavaClass("Template.java")
+                        .withGradleBuild("build.gradle.template")
+                        .withGradleSettings("settings.gradle.template")
+                        .withWrapperGradleSettings("gradlew-wrapper.properties.template")
+                        .withGradlewWrapperJar("gradle-wrapper.jar")
+                        .withPackageNameReplacement("test")
+                        .withProjectNameReplacement("test")
                         .build();
     }
 

@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,13 +20,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.web3j.console.project.ProjectWriter;
+import org.web3j.console.project.templates.TemplateBuilder;
+import org.web3j.console.project.templates.TemplateProvider;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProjectWriterTest {
+public class BaseProjectWriterTest {
 
-    private static final ProjectWriter projectWriter = new ProjectWriter();
+    private static final org.web3j.console.project.ProjectWriter ProjectWriter =
+            new ProjectWriter();
     private static final TemplateProvider templateProvider =
-            new TemplateProvider.Builder().loadGradleJar("gradle-wrapper.jar").build();
+            new TemplateBuilder().withGradlewWrapperJar("gradle-wrapper.jar").build();
 
     private String tempDirPath;
 
@@ -37,13 +42,13 @@ public class ProjectWriterTest {
 
     @Test
     public void writeResourceFileTest() throws Exception {
-        projectWriter.writeResourceFile("HelloWorld.sol", "HelloWorld.sol", tempDirPath);
+        ProjectWriter.writeResourceFile("HelloWorld.sol", "HelloWorld.sol", tempDirPath);
         assertTrue(new File(tempDirPath + File.separator + "HelloWorld.sol").exists());
     }
 
     @Test
     public void copyResourceFileTest() throws IOException {
-        projectWriter.copyResourceFile(
+        ProjectWriter.copyResourceFile(
                 templateProvider.getGradlewJar(),
                 tempDirPath + File.separator + "gradle-wrapper.jar");
         assertTrue(new File(tempDirPath + File.separator + "gradle-wrapper.jar").exists());
@@ -53,11 +58,11 @@ public class ProjectWriterTest {
     public void importSolidityProjectTest() throws IOException {
         final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
         file.mkdirs();
-        projectWriter.writeResourceFile(
+        ProjectWriter.writeResourceFile(
                 "HelloWorld.sol",
                 "HelloWorld.sol",
                 tempDirPath + File.separator + "tempSolidityDir");
-        projectWriter.importSolidityProject(
+        ProjectWriter.importSolidityProject(
                 new File(tempDirPath + File.separator + "tempSolidityDir"),
                 tempDirPath + File.separator + "tempSolidityDestination");
         assertTrue(

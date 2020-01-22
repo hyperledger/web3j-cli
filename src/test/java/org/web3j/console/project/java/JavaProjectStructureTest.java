@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -19,16 +19,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.web3j.console.project.ProjectStructure;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProjectStructureTest {
+public class JavaProjectStructureTest {
     private ProjectStructure projectStructure;
     private String tempDirPath;
 
     @BeforeEach
     public void init(@TempDir Path temp) {
         tempDirPath = temp.toString();
-        projectStructure = new ProjectStructure(tempDirPath, "test.test", "Test");
+        projectStructure = new JavaProjectStructure(tempDirPath, "test.test", "Test");
         projectStructure.createMainDirectory();
         projectStructure.createTestDirectory();
         projectStructure.createSolidityDirectory();
@@ -131,14 +133,14 @@ public class ProjectStructureTest {
 
     @Test
     public void getRootUserDir() {
-        ProjectStructure projectStructure = new ProjectStructure("~", "test.test", "Test");
+        ProjectStructure projectStructure = new JavaProjectStructure("~", "test.test", "Test");
         assertEquals(projectStructure.getRootDirectory(), System.getProperty("user.home"));
     }
 
     @Test
     public void getRootUserDirSubfolder() {
         ProjectStructure projectStructure =
-                new ProjectStructure(
+                new JavaProjectStructure(
                         "~" + File.separator + "a" + File.separator + "b" + File.separator + "c",
                         "test.test",
                         "Test");
@@ -156,7 +158,7 @@ public class ProjectStructureTest {
     @Test
     public void getRootSpecialTildeCase() {
         ProjectStructure projectStructure =
-                new ProjectStructure(
+                new JavaProjectStructure(
                         File.separator
                                 + "root"
                                 + File.separator

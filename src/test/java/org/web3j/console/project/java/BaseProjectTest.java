@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -19,20 +19,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.web3j.console.project.BaseBuilder;
+import org.web3j.console.project.BaseProject;
+import org.web3j.console.project.ProjectStructure;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProjectTest {
+public class BaseProjectTest {
     private ProjectStructure projectStructure;
 
     @BeforeEach
     public void setUpProject(@TempDir Path tempDirPath) throws Exception {
         final String rootDirectory = tempDirPath.toFile().getPath();
-        projectStructure = new ProjectStructure(rootDirectory, "test", "test");
-        Project.builder()
-                .withProjectName(projectStructure.getProjectName())
-                .withPackageName(projectStructure.getPackageName())
-                .withRootDirectory(rootDirectory)
-                .build();
+        projectStructure = new JavaProjectStructure(rootDirectory, "test", "test");
+        BaseProject baseProject =
+                new BaseBuilder()
+                        .withProjectName(projectStructure.getProjectName())
+                        .withPackageName(projectStructure.getPackageName())
+                        .withRootDirectory(rootDirectory)
+                        .build();
+        baseProject.createProject();
     }
 
     @Test

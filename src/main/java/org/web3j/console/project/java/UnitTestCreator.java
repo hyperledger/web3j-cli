@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,8 @@ import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.unit.gen.ClassProvider;
-import org.web3j.codegen.unit.gen.UnitClassGenerator;
+import org.web3j.codegen.unit.gen.java.JavaClassGenerator;
+import org.web3j.console.project.InteractiveOptions;
 
 import static org.web3j.utils.Collection.tail;
 
@@ -59,12 +60,12 @@ public class UnitTestCreator {
         CommandLine.run(new UnitTestCLIRunner(), args);
     }
 
-    void generate() throws IOException {
+    public void generate() throws IOException {
         List<Class> compiledClasses = new ClassProvider(new File(wrapperPath)).getClasses();
         compiledClasses.forEach(
                 compiledClass -> {
                     try {
-                        new UnitClassGenerator(
+                        new JavaClassGenerator(
                                         compiledClass,
                                         compiledClass
                                                 .getCanonicalName()

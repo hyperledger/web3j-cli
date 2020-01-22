@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +35,7 @@ import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProjectCreatorTest extends ClassExecutor {
+public class BaseProjectCreatorTest extends ClassExecutor {
     private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;

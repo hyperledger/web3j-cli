@@ -22,7 +22,7 @@ About
 =====
 The Web3j command line tools enable developers to interact with blockchains more easily. The Web3j command line tools allow allow you to use some of the key functionality of web3j from your terminal, including:
 
-* New baseProject creation
+* New project creation
 * Project creation from existing Solidity code
 * Wallet creation
 * Wallet password management

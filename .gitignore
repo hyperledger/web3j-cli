@@ -45,6 +45,6 @@ docs/build
 .DS_Store
 
 .settings
-.baseProject
+.project
 .classpath
 bin

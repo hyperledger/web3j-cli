@@ -20,17 +20,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.console.project.templates.TemplateBuilder;
-import org.web3j.console.project.templates.TemplateProvider;
+import org.web3j.console.project.templates.java.JavaTemplateBuilder;
+import org.web3j.console.project.templates.java.JavaTemplateProvider;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BaseProjectWriterTest {
+public class JavaProjectWriterTest {
 
     private static final org.web3j.console.project.ProjectWriter ProjectWriter =
             new ProjectWriter();
-    private static final TemplateProvider templateProvider =
-            new TemplateBuilder().withGradlewWrapperJar("gradle-wrapper.jar").build();
+    private static final JavaTemplateProvider templateProvider =
+            new JavaTemplateBuilder().withGradlewWrapperJar("gradle-wrapper.jar").build();
 
     private String tempDirPath;
 

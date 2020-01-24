@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Web3 Labs Ltd.
+ * Copyright 2019 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -10,27 +10,20 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project.kotlin;
+package org.web3j.console.project.java;
 
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.AbstractProject;
 import org.web3j.console.project.Project;
 import org.web3j.console.project.ProjectStructure;
-import org.web3j.console.project.ProjectWallet;
-import org.web3j.console.project.ProjectWriter;
-import org.web3j.console.project.templates.kotlin.KotlinTemplateBuilder;
-import org.web3j.console.project.templates.kotlin.KotlinTemplateProvider;
-import org.web3j.console.project.utils.ProjectUtils;
-import org.web3j.crypto.CipherException;
+import org.web3j.console.project.templates.java.JavaTemplateBuilder;
+import org.web3j.console.project.templates.java.JavaTemplateProvider;
 
-public class KotlinProject extends AbstractProject<KotlinProject> implements Project {
+public class JavaProject extends AbstractProject<JavaProject> implements Project {
 
-    protected KotlinProject(
+    protected JavaProject(
             boolean withTests,
             boolean withFatJar,
             boolean withWallet,
@@ -49,34 +42,20 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
     }
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
-
-        new KotlinTestCreator(
+        new JavaTestCreator(
                         projectStructure.getGeneratedJavaWrappers(),
                         projectStructure.getPathToTestDirectory())
                 .generate();
     }
 
     @Override
-    protected KotlinProject getProjectInstance() {
+    protected JavaProject getProjectInstance() {
         return this;
     }
 
-    protected void generateWallet()
-            throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-                    NoSuchProviderException, IOException {
-        projectStructure.createWalletDirectory();
-        projectWallet =
-                new ProjectWallet(
-                        ProjectUtils.generateWalletPassword(), projectStructure.getWalletPath());
-        ProjectWriter.writeResourceFile(
-                projectWallet.getWalletPassword(),
-                projectWallet.getPasswordFileName(),
-                projectStructure.getWalletPath());
-    }
-
-    public KotlinTemplateProvider getTemplateProvider() {
-        KotlinTemplateBuilder templateBuilder =
-                new KotlinTemplateBuilder()
+    public JavaTemplateProvider getTemplateProvider() {
+        JavaTemplateBuilder templateBuilder =
+                new JavaTemplateBuilder()
                         .withProjectNameReplacement(projectStructure.projectName)
                         .withPackageNameReplacement(projectStructure.packageName)
                         .withGradleBatScript("gradlew.bat.template")
@@ -84,8 +63,9 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
                         .withGradleSettings("settings.gradle.template")
                         .withWrapperGradleSettings("gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar");
-        ;
+
         if (projectWallet != null) {
+
             templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
             templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
         }
@@ -107,7 +87,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         }
 
         if (withSampleCode) {
-            templateBuilder.withMainJavaClass("Kotlin.template");
+            templateBuilder.withMainJavaClass("Java.template");
         } else {
             templateBuilder.withMainJavaClass("EmptyTemplate.java");
         }
@@ -117,6 +97,6 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
 
     @Override
     public void generateTests() {
-        new KotlinTestCreator(projectStructure.getWrapperPath(), projectStructure.getTestPath());
+        new JavaTestCreator(projectStructure.getWrapperPath(), projectStructure.getTestPath());
     }
 }

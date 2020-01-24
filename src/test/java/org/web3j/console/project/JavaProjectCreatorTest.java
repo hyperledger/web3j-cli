@@ -35,7 +35,7 @@ import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BaseProjectCreatorTest extends ClassExecutor {
+public class JavaProjectCreatorTest extends ClassExecutor {
     private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
@@ -53,17 +53,18 @@ public class BaseProjectCreatorTest extends ClassExecutor {
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
-        final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
-        new CommandLine(projectCreatorCLIRunner).parseArgs(args);
-        assert projectCreatorCLIRunner.packageName.equals("org.com");
-        assert projectCreatorCLIRunner.projectName.equals("Test");
-        assert projectCreatorCLIRunner.outputDir.equals(tempDirPath);
+        final JavaProjectCreatorCLIRunner javaProjectCreatorCLIRunner =
+                new JavaProjectCreatorCLIRunner();
+        new CommandLine(javaProjectCreatorCLIRunner).parseArgs(args);
+        assert javaProjectCreatorCLIRunner.packageName.equals("org.com");
+        assert javaProjectCreatorCLIRunner.projectName.equals("Test");
+        assert javaProjectCreatorCLIRunner.outputDir.equals(tempDirPath);
     }
 
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"new", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {"java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
@@ -95,7 +96,7 @@ public class BaseProjectCreatorTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"new", "-n=", "-p="};
+        final String[] args = {"java", "-n=", "-p="};
         ProjectCreator.main(args);
         assertEquals(
                 outContent.toString(), "Please make sure the required parameters are not empty.\n");
@@ -104,7 +105,7 @@ public class BaseProjectCreatorTest extends ClassExecutor {
     @Test
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException {
-        final String[] args = {"new"};
+        final String[] args = {"new", "java"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))

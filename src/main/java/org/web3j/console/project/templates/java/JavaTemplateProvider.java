@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project.templates.kotlin;
+package org.web3j.console.project.templates.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import org.web3j.console.project.templates.TemplateProvider;
 import org.web3j.console.project.templates.TemplateReader;
 import org.web3j.console.project.utils.InputVerifier;
 
-public class KotlinTemplateProvider implements TemplateProvider {
+public class JavaTemplateProvider implements TemplateProvider {
     private final String mainJavaClass;
     protected final String solidityContract;
     protected final String pathToSolidityFolder;
@@ -36,7 +36,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
     private final String passwordFileName;
     private final String walletNameReplacement;
 
-    protected KotlinTemplateProvider(
+    protected JavaTemplateProvider(
             final String mainJavaClass,
             final String solidityContract,
             final String pathToSolidityFolder,

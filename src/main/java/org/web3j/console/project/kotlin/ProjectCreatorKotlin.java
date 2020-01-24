@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import picocli.CommandLine;
 
-import org.web3j.console.project.BaseProject;
 import org.web3j.console.project.InteractiveOptions;
 import org.web3j.console.project.utils.InputVerifier;
 
@@ -30,7 +29,7 @@ import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.utils.Collection.tail;
 
 public class ProjectCreatorKotlin {
-    public static final String COMMAND_NEW_KOTLIN = "kotlin";
+    public static final String COMMAND_NEW_KOTLIN = "new-kotlin";
 
     private final String root;
     private final String packageName;
@@ -73,18 +72,17 @@ public class ProjectCreatorKotlin {
             boolean withSampleCode) {
         try {
             KotlinBuilder kotlinBuilder =
-                    (KotlinBuilder)
-                            new KotlinBuilder()
-                                    .withProjectName(this.projectName)
-                                    .withRootDirectory(this.root)
-                                    .withPackageName(this.packageName)
-                                    .withTests(withTests)
-                                    .withWalletProvider(withWalletProvider)
-                                    .withCommand(ProjectCreatorKotlin.COMMAND_NEW_KOTLIN)
-                                    .withSampleCode(withSampleCode)
-                                    .withFatJar(withFatJar);
+                    new KotlinBuilder()
+                            .withProjectName(this.projectName)
+                            .withRootDirectory(this.root)
+                            .withPackageName(this.packageName)
+                            .withTests(withTests)
+                            .withWalletProvider(withWalletProvider)
+                            .withCommand(ProjectCreatorKotlin.COMMAND_NEW_KOTLIN)
+                            .withSampleCode(withSampleCode)
+                            .withFatJar(withFatJar);
             solidityFile.map(File::getAbsolutePath).ifPresent(kotlinBuilder::withSolidityFile);
-            KotlinProject kotlinProject = (KotlinProject) kotlinBuilder.build();
+            KotlinProject kotlinProject = kotlinBuilder.build();
             kotlinProject.createProject();
             onSuccess(kotlinProject);
         } catch (final Exception e) {
@@ -94,12 +92,12 @@ public class ProjectCreatorKotlin {
         }
     }
 
-    private void onSuccess(BaseProject baseProject) {
+    private void onSuccess(KotlinProject javaProject) {
         String address =
-                baseProject.getProjectWallet() == null
+                javaProject.getProjectWallet() == null
                         ? ""
                         : ("\nYour wallet address is: "
-                                + baseProject.getProjectWallet().getWalletAddress());
+                                + javaProject.getProjectWallet().getWalletAddress());
 
         exitSuccess(
                 "\n"

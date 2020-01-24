@@ -19,24 +19,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.web3j.console.project.java.JavaBuilder;
+import org.web3j.console.project.java.JavaProject;
 import org.web3j.console.project.java.JavaProjectStructure;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BaseProjectTest {
+public class JavaProjectTest {
     private ProjectStructure projectStructure;
 
     @BeforeEach
     public void setUpProject(@TempDir Path tempDirPath) throws Exception {
         final String rootDirectory = tempDirPath.toFile().getPath();
         projectStructure = new JavaProjectStructure(rootDirectory, "test", "test");
-        BaseProject baseProject =
-                new BaseBuilder()
+        JavaProject javaProject =
+                new JavaBuilder()
                         .withProjectName(projectStructure.getProjectName())
                         .withPackageName(projectStructure.getPackageName())
                         .withRootDirectory(rootDirectory)
                         .build();
-        baseProject.createProject();
+        javaProject.createProject();
     }
 
     @Test

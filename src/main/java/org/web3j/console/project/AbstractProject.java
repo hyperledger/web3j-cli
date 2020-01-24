@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs Ltd.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -19,15 +19,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
 import org.web3j.codegen.Console;
-import org.web3j.commons.JavaVersion;
-import org.web3j.console.project.java.JavaTestCreator;
-import org.web3j.console.project.templates.TemplateBuilder;
 import org.web3j.console.project.templates.TemplateProvider;
 import org.web3j.console.project.utils.ProgressCounter;
 import org.web3j.console.project.utils.ProjectUtils;
 import org.web3j.crypto.CipherException;
 
-public class BaseProject {
+public abstract class AbstractProject<T extends AbstractProject<T>> {
+    private T project;
+
     protected final boolean withTests;
     protected final boolean withFatJar;
     protected final boolean withWallet;
@@ -38,7 +37,9 @@ public class BaseProject {
     protected ProjectWallet projectWallet;
     protected ProgressCounter progressCounter = new ProgressCounter(true);
 
-    protected BaseProject(
+    protected abstract T getProjectInstance();
+
+    protected AbstractProject(
             boolean withTests,
             boolean withFatJar,
             boolean withWallet,
@@ -53,14 +54,15 @@ public class BaseProject {
         this.command = command;
         this.solidityImportPath = solidityImportPath;
         this.projectStructure = projectStructure;
+        this.project = getProjectInstance();
     }
 
     public ProjectStructure getProjectStructure() {
-        return this.projectStructure;
+        return project.projectStructure;
     }
 
     public ProjectWallet getProjectWallet() {
-        return this.projectWallet;
+        return project.projectWallet;
     }
 
     protected void buildGradleProject(final String pathToDirectory)
@@ -117,22 +119,6 @@ public class BaseProject {
         }
     }
 
-    protected void generateTopLevelDirectories(ProjectStructure projectStructure) {
-        projectStructure.createMainDirectory();
-        System.out.println(projectStructure.getMainPath());
-        projectStructure.createTestDirectory();
-        projectStructure.createSolidityDirectory();
-        projectStructure.createWrapperDirectory();
-    }
-
-    protected void generateTests(ProjectStructure projectStructure) throws IOException {
-
-        new JavaTestCreator(
-                        projectStructure.getGeneratedJavaWrappers(),
-                        projectStructure.getPathToTestDirectory())
-                .generate();
-    }
-
     protected void generateWallet()
             throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
                     NoSuchProviderException, IOException {
@@ -146,45 +132,12 @@ public class BaseProject {
                 projectStructure.getWalletPath());
     }
 
-    public TemplateProvider getTemplateProvider() {
-        TemplateBuilder templateBuilder =
-                new TemplateBuilder()
-                        .withProjectNameReplacement(projectStructure.projectName)
-                        .withPackageNameReplacement(projectStructure.packageName)
-                        .withGradleBatScript("gradlew.bat.template")
-                        .withGradleScript("gradlew.template");
-        if (projectWallet != null) {
-
-            templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
-            templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
-        }
-        if (command.equals("new")) {
-            templateBuilder
-                    .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradle.template"
-                                    : "build.gradleJava11.template")
-                    .withSolidityProject("HelloWorld.sol");
-
-        } else if (command.equals("import")) {
-            templateBuilder
-                    .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradleImport.template"
-                                    : "build.gradleImportJava11.template")
-                    .withPathToSolidityFolder(solidityImportPath);
-        }
-        templateBuilder
-                .withGradleSettings("settings.gradle.template")
-                .withWrapperGradleSettings("gradlew-wrapper.properties.template")
-                .withGradlewWrapperJar("gradle-wrapper.jar");
-        if (withSampleCode) {
-            templateBuilder.withMainJavaClass("Template.java");
-        } else {
-            templateBuilder.withMainJavaClass("EmptyTemplate.java");
-        }
-
-        return templateBuilder.build();
+    protected void generateTopLevelDirectories(ProjectStructure projectStructure) {
+        projectStructure.createMainDirectory();
+        System.out.println(projectStructure.getMainPath());
+        projectStructure.createTestDirectory();
+        projectStructure.createSolidityDirectory();
+        projectStructure.createWrapperDirectory();
     }
 
     public void createProject()
@@ -206,4 +159,8 @@ public class BaseProject {
         }
         progressCounter.setLoading(false);
     }
+
+    protected abstract TemplateProvider getTemplateProvider();
+
+    protected abstract void generateTests(ProjectStructure projectStructure) throws IOException;
 }

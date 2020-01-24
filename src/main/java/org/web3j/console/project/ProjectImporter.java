@@ -30,9 +30,10 @@ public class ProjectImporter extends ProjectCreator {
     public static void main(String[] args) {
         final String projectName;
         final List<String> stringOptions = new ArrayList<>();
-        if (args.length > 0 && args[0].equals(COMMAND_IMPORT)) {
+        if (args.length > 0 && args[0].equals(COMMAND_JAVA)) {
             args = tail(args);
             if (args.length == 0) {
+
                 stringOptions.add("-n");
                 projectName = getProjectName();
                 stringOptions.add(projectName);
@@ -52,7 +53,31 @@ public class ProjectImporter extends ProjectCreator {
 
                 args = stringOptions.toArray(new String[0]);
             }
+            CommandLine.run(new JavaProjectImporterCLIRunner(), args);
+        } else if (args.length > 0 && args[0].equals(COMMAND_KOTLIN)) {
+            args = tail(args);
+            if (args.length == 0) {
+
+                stringOptions.add("-n");
+                projectName = getProjectName();
+                stringOptions.add(projectName);
+                stringOptions.add("-p");
+                stringOptions.add(getPackageName());
+                stringOptions.add("-s");
+                stringOptions.add(getSolidityProjectPath());
+                getProjectDestination(projectName)
+                        .ifPresent(
+                                projectDest -> {
+                                    stringOptions.add("-o");
+                                    stringOptions.add(projectDest);
+                                });
+                if (userWantsTests()) {
+                    stringOptions.add("-t");
+                }
+
+                args = stringOptions.toArray(new String[0]);
+            }
+            CommandLine.run(new KotlinProjectImporterCLIRunner(), args);
         }
-        CommandLine.run(new ProjectImporterCLIRunner(), args);
     }
 }

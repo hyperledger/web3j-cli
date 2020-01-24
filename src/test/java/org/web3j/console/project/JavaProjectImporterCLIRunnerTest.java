@@ -20,7 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
-public class BaseProjectCreatorCLIRunnerTest {
+public class JavaProjectImporterCLIRunnerTest {
+
     private String tempDirPath;
 
     @BeforeEach
@@ -30,27 +31,32 @@ public class BaseProjectCreatorCLIRunnerTest {
 
     @Test
     public void testWhenNonDefinedArgsArePassed() {
-        final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
+        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
+                new JavaProjectImporterCLIRunner();
         final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
-        final CommandLine commandLine = new CommandLine(projectCreatorCLIRunner);
+        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
         Assertions.assertThrows(
-                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
+                CommandLine.ParameterException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test
     public void testWhenNoArgsArePassed() {
-        final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
+        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
+                new JavaProjectImporterCLIRunner();
         final String[] args = {};
-        final CommandLine commandLine = new CommandLine(projectCreatorCLIRunner);
+        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
         Assertions.assertThrows(
                 CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test
     public void testWhenDuplicateArgsArePassed() {
-        final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
-        final String[] args = {"-p=org.org", "-n=test", "-n=OverrideTest", "-o=" + tempDirPath};
-        final CommandLine commandLine = new CommandLine(projectCreatorCLIRunner);
+        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
+                new JavaProjectImporterCLIRunner();
+        final String[] args = {
+            "-p=org.org", "-n=test", "-n=OverrideTest", "-o=" + tempDirPath, "-s=test"
+        };
+        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
         Assertions.assertThrows(
                 CommandLine.OverwrittenOptionException.class, () -> commandLine.parseArgs(args));
     }

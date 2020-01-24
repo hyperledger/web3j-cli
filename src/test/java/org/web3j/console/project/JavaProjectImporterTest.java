@@ -32,7 +32,7 @@ import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BaseProjectImporterTest extends ClassExecutor {
+public class JavaProjectImporterTest extends ClassExecutor {
     private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     static String tempDirPath;
@@ -52,7 +52,8 @@ public class BaseProjectImporterTest extends ClassExecutor {
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + tempDirPath};
-        final ProjectImporterCLIRunner projectImporterCLIRunner = new ProjectImporterCLIRunner();
+        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
+                new JavaProjectImporterCLIRunner();
         new CommandLine(projectImporterCLIRunner).parseArgs(args);
         assertEquals(projectImporterCLIRunner.packageName, "org.com");
         assertEquals(projectImporterCLIRunner.projectName, "Test");
@@ -63,7 +64,7 @@ public class BaseProjectImporterTest extends ClassExecutor {
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {
-            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
+            "java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
@@ -95,9 +96,11 @@ public class BaseProjectImporterTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"import", "-p=", "-n=", "-s="};
+        final String[] args = {"java", "-p=", "-n=", "-s="};
         ProjectImporter.main(args);
-        assertEquals(
-                "Please make sure the required parameters are not empty.\n", outContent.toString());
+        assertTrue(
+                outContent
+                        .toString()
+                        .contains("Please make sure the required parameters are not empty"));
     }
 }

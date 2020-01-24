@@ -18,17 +18,11 @@ import java.util.Optional;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import org.web3j.console.project.utils.InputVerifier;
-
-import static org.web3j.codegen.Console.exitError;
-import static org.web3j.console.project.InteractiveOptions.overrideExistingProject;
 import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
-import static org.web3j.console.project.utils.ProjectUtils.*;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(name = COMMAND_IMPORT)
-public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
-
+public class JavaProjectImporterCLIRunner extends JavaProjectCreatorCLIRunner {
     @Option(
             names = {"-s", "--solidity-path"},
             description = "Path to solidity file/folder",
@@ -42,25 +36,9 @@ public class ProjectImporterCLIRunner extends ProjectCreatorCLIRunner {
             showDefaultValue = ALWAYS)
     boolean generateTests = false;
 
-    @Override
-    public void run() {
-        if (inputIsValid(projectName, packageName, solidityImportPath)) {
-            if (InputVerifier.projectExists(new File(projectName))) {
-                if (overrideExistingProject()) {
-                    deleteFolder(new File(projectName).toPath());
-                    createProject();
-                } else {
-                    exitError("Project creation was canceled.");
-                }
-            } else {
-                createProject();
-            }
-        }
-    }
-
-    private void createProject() {
+    protected void createProject() {
         new ProjectImporter(outputDir, packageName, projectName)
-                .generate(
+                .generateJava(
                         generateTests,
                         Optional.of(new File(solidityImportPath)),
                         true,

@@ -19,7 +19,6 @@ import org.web3j.console.config.CliConfig;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.java.JavaTestCreator;
-import org.web3j.console.project.kotlin.ProjectCreatorKotlin;
 import org.web3j.console.update.Updater;
 import org.web3j.utils.Version;
 
@@ -27,7 +26,6 @@ import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDIT
 import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;
 import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
 import static org.web3j.console.project.java.JavaTestCreator.COMMAND_GENERATE_TESTS;
-import static org.web3j.console.project.kotlin.ProjectCreatorKotlin.COMMAND_NEW_KOTLIN;
 import static org.web3j.utils.Collection.tail;
 
 /** Main entry point for running command line utilities. */
@@ -71,13 +69,10 @@ public class Runner {
                     TruffleJsonFunctionWrapperGenerator.run(tail(args));
                     break;
                 case COMMAND_NEW:
-                    ProjectCreator.main(args);
-                    break;
-                case COMMAND_NEW_KOTLIN:
-                    ProjectCreatorKotlin.main(args);
+                    ProjectCreator.main(tail(args));
                     break;
                 case COMMAND_IMPORT:
-                    ProjectImporter.main(args);
+                    ProjectImporter.main(tail(args));
                     break;
                 case "version":
                     Console.exitSuccess(

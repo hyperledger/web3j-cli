@@ -107,7 +107,7 @@ public abstract class ProjectStructure {
         createDirectory(wrapperPath);
     }
 
-    void createWalletDirectory() {
+    public void createWalletDirectory() {
         createDirectory(walletPath);
     }
 
@@ -135,7 +135,7 @@ public abstract class ProjectStructure {
         return solidityPath;
     }
 
-    final String getWalletPath() {
+    public final String getWalletPath() {
         return walletPath;
     }
 

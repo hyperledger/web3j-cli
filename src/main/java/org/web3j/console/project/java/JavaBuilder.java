@@ -10,24 +10,33 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project.kotlin;
+package org.web3j.console.project.java;
 
 import org.web3j.console.project.AbstractProjectBuilder;
 import org.web3j.console.project.ProjectBuilder;
 import org.web3j.console.project.ProjectStructure;
 
-public class KotlinBuilder extends AbstractProjectBuilder<KotlinBuilder> implements ProjectBuilder {
-    protected String command = "kotlin";
+public class JavaBuilder extends AbstractProjectBuilder<JavaBuilder> implements ProjectBuilder {
 
-    public KotlinBuilder withCommand(String command) {
+    protected String command = "new";
+
+    protected JavaBuilder getBuilderInstance() {
+        return this;
+    }
+
+    public JavaBuilder() {
+        super();
+    }
+
+    public JavaBuilder withCommand(String command) {
         this.command = command;
         return this;
     }
 
-    public KotlinProject build() {
+    public JavaProject build() {
         final ProjectStructure projectStructure =
-                new KotlinProjectStructure(rootDirectory, packageName, projectName);
-        return new KotlinProject(
+                new JavaProjectStructure(rootDirectory, packageName, projectName);
+        return new JavaProject(
                 withTests,
                 withFatJar,
                 withWallet,
@@ -35,10 +44,5 @@ public class KotlinBuilder extends AbstractProjectBuilder<KotlinBuilder> impleme
                 command,
                 solidityImportPath,
                 projectStructure);
-    }
-
-    @Override
-    protected KotlinBuilder getBuilderInstance() {
-        return this;
     }
 }

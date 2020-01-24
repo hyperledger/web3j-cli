@@ -12,20 +12,20 @@
  */
 package org.web3j.console.project.templates;
 
-public class TemplateBuilder {
-    private String mainJavaClass;
-    private String gradleBuild;
-    private String gradleSettings;
-    private String gradlewWrapperSettings;
-    private String gradlewBatScript;
-    private String gradlewScript;
-    private String solidityProject;
-    private String gradlewWrapperJar;
-    private String packageNameReplacement;
-    private String projectNameReplacement;
-    private String passwordFileName;
-    private String walletNameReplacement;
-    private String pathToSolidityFolder;
+public class TemplateBuilder<T extends TemplateBuilder<T>> {
+    protected String mainJavaClass;
+    protected String gradleBuild;
+    protected String gradleSettings;
+    protected String gradlewWrapperSettings;
+    protected String gradlewBatScript;
+    protected String gradlewScript;
+    protected String solidityProject;
+    protected String gradlewWrapperJar;
+    protected String packageNameReplacement;
+    protected String projectNameReplacement;
+    protected String passwordFileName;
+    protected String walletNameReplacement;
+    protected String pathToSolidityFolder;
 
     public TemplateBuilder withMainJavaClass(String mainJavaClass) {
         this.mainJavaClass = mainJavaClass;
@@ -92,7 +92,7 @@ public class TemplateBuilder {
         return this;
     }
 
-    public TemplateProvider build() {
+    public <T extends TemplateProvider> TemplateProvider build() {
         return new TemplateProvider(
                 mainJavaClass,
                 solidityProject,

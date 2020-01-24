@@ -26,13 +26,13 @@ import org.web3j.console.project.InteractiveOptions;
 
 import static org.web3j.utils.Collection.tail;
 
-public class UnitTestCreator {
+public class JavaTestCreator {
     public static final String COMMAND_GENERATE_TESTS = "generate-tests";
 
     private final String writePath;
     private final String wrapperPath;
 
-    public UnitTestCreator(final String wrapperPath, final String writePath) {
+    public JavaTestCreator(final String wrapperPath, final String writePath) {
         this.writePath = writePath;
         this.wrapperPath = wrapperPath;
     }
@@ -57,7 +57,7 @@ public class UnitTestCreator {
                 args = listOfArgs.toArray(new String[0]);
             }
         }
-        CommandLine.run(new UnitTestCLIRunner(), args);
+        CommandLine.run(new JavaTestCLIRunner(), args);
     }
 
     public void generate() throws IOException {

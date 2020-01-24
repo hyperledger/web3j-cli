@@ -20,25 +20,23 @@ import java.security.NoSuchProviderException;
 
 import org.web3j.codegen.Console;
 import org.web3j.commons.JavaVersion;
-import org.web3j.console.project.java.UnitTestCreator;
+import org.web3j.console.project.java.JavaTestCreator;
 import org.web3j.console.project.templates.TemplateBuilder;
 import org.web3j.console.project.templates.TemplateProvider;
 import org.web3j.console.project.utils.ProgressCounter;
 import org.web3j.console.project.utils.ProjectUtils;
 import org.web3j.crypto.CipherException;
 
-import static java.io.File.separator;
-
 public class BaseProject {
-    private final boolean withTests;
-    private final boolean withFatJar;
-    private final boolean withWallet;
-    private final boolean withSampleCode;
-    private final String command;
-    private final String solidityImportPath;
-    private final ProjectStructure projectStructure;
-    private ProjectWallet projectWallet;
-    private ProgressCounter progressCounter = new ProgressCounter(true);
+    protected final boolean withTests;
+    protected final boolean withFatJar;
+    protected final boolean withWallet;
+    protected final boolean withSampleCode;
+    protected final String command;
+    protected final String solidityImportPath;
+    protected final ProjectStructure projectStructure;
+    protected ProjectWallet projectWallet;
+    protected ProgressCounter progressCounter = new ProgressCounter(true);
 
     protected BaseProject(
             boolean withTests,
@@ -65,7 +63,7 @@ public class BaseProject {
         return this.projectWallet;
     }
 
-    private void buildGradleProject(final String pathToDirectory)
+    protected void buildGradleProject(final String pathToDirectory)
             throws IOException, InterruptedException {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew");
@@ -107,7 +105,7 @@ public class BaseProject {
         }
     }
 
-    private void createFatJar(String pathToDirectory) throws IOException, InterruptedException {
+    protected void createFatJar(String pathToDirectory) throws IOException, InterruptedException {
         if (!isWindows()) {
             executeProcess(
                     new File(pathToDirectory),
@@ -119,37 +117,23 @@ public class BaseProject {
         }
     }
 
-    private void generateTopLevelDirectories(ProjectStructure projectStructure) {
+    protected void generateTopLevelDirectories(ProjectStructure projectStructure) {
         projectStructure.createMainDirectory();
+        System.out.println(projectStructure.getMainPath());
         projectStructure.createTestDirectory();
         projectStructure.createSolidityDirectory();
         projectStructure.createWrapperDirectory();
     }
 
-    private void generateTests(ProjectStructure projectStructure) throws IOException {
-        String wrapperPath =
-                String.join(
-                        separator,
-                        projectStructure.getRootDirectory(),
-                        projectStructure.projectName,
-                        "build",
-                        "generated",
-                        "source",
-                        "web3j",
-                        "main",
-                        "java");
-        String writePath =
-                String.join(
-                        separator,
-                        projectStructure.getRootDirectory(),
-                        projectStructure.projectName,
-                        "src",
-                        "test",
-                        "java");
-        new UnitTestCreator(wrapperPath, writePath).generate();
+    protected void generateTests(ProjectStructure projectStructure) throws IOException {
+
+        new JavaTestCreator(
+                        projectStructure.getGeneratedJavaWrappers(),
+                        projectStructure.getPathToTestDirectory())
+                .generate();
     }
 
-    private void generateWallet()
+    protected void generateWallet()
             throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
                     NoSuchProviderException, IOException {
         projectStructure.createWalletDirectory();
@@ -162,7 +146,7 @@ public class BaseProject {
                 projectStructure.getWalletPath());
     }
 
-    private TemplateProvider getTemplateProvider() {
+    public TemplateProvider getTemplateProvider() {
         TemplateBuilder templateBuilder =
                 new TemplateBuilder()
                         .withProjectNameReplacement(projectStructure.projectName)

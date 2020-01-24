@@ -23,23 +23,23 @@ import org.web3j.codegen.Console;
         mixinStandardHelpOptions = true,
         version = "4.0",
         sortOptions = false)
-public class UnitTestCLIRunner implements Runnable {
+public class JavaTestCLIRunner implements Runnable {
     @CommandLine.Option(
             names = {"-i", "--java-wrapper-directory"},
             description = "The class path of your generated wrapper.",
             required = true)
-    String javaWrapperDir;
+    public String javaWrapperDir;
 
     @CommandLine.Option(
             names = {"-o", "--output-directory"},
             description = "The path where the unit tests will be generated.",
             required = true)
-    String unitTestOutputDir;
+    public String unitTestOutputDir;
 
     @Override
     public void run() {
         try {
-            new UnitTestCreator(javaWrapperDir, unitTestOutputDir).generate();
+            new JavaTestCreator(javaWrapperDir, unitTestOutputDir).generate();
             Console.exitSuccess(
                     "Unit tests were generated successfully at location: " + unitTestOutputDir);
         } catch (IOException e) {

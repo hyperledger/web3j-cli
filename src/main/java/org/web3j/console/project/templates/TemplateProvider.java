@@ -21,8 +21,8 @@ import org.web3j.console.project.utils.InputVerifier;
 
 public class TemplateProvider {
     private final String mainJavaClass;
-    private final String solidityContract;
-    private final String pathToSolidityFolder;
+    protected final String solidityContract;
+    protected final String pathToSolidityFolder;
     private final String gradleBuild;
     private final String gradleSettings;
     private final String gradlewWrapperSettings;
@@ -34,7 +34,7 @@ public class TemplateProvider {
     private final String passwordFileName;
     private final String walletNameReplacement;
 
-    TemplateProvider(
+    protected TemplateProvider(
             final String mainJavaClass,
             final String solidityContract,
             final String pathToSolidityFolder,

@@ -16,62 +16,62 @@ import org.web3j.console.project.java.JavaProjectStructure;
 
 public class BaseBuilder {
 
-    private String solidityImportPath;
-    private boolean withWallet;
-    private boolean withTests;
-    private String projectName;
-    private String packageName;
-    private String rootDirectory;
-    private boolean withSampleCode;
-    private boolean withFatJar;
-    private String command = "new";
+    protected String solidityImportPath;
+    protected boolean withWallet;
+    protected boolean withTests;
+    protected String projectName;
+    protected String packageName;
+    protected String rootDirectory;
+    protected boolean withSampleCode;
+    protected boolean withFatJar;
+    protected String command = "new";
 
-    public BaseBuilder withSolidityFile(final String solidityImportPath) {
+    public <T extends BaseBuilder> BaseBuilder withSolidityFile(final String solidityImportPath) {
         this.solidityImportPath = solidityImportPath;
         return this;
     }
 
-    public BaseBuilder withWalletProvider(boolean withWalletProvider) {
+    public <T extends BaseBuilder> BaseBuilder withWalletProvider(boolean withWalletProvider) {
         this.withWallet = withWalletProvider;
         return this;
     }
 
-    public BaseBuilder withSampleCode(boolean withSampleCode) {
+    public <T extends BaseBuilder> BaseBuilder withSampleCode(boolean withSampleCode) {
         this.withSampleCode = withSampleCode;
         return this;
     }
 
-    public BaseBuilder withTests(boolean withTests) {
+    public <T extends BaseBuilder> BaseBuilder withTests(boolean withTests) {
         this.withTests = withTests;
         return this;
     }
 
-    public BaseBuilder withFatJar(boolean withFatJar) {
+    public <T extends BaseBuilder> BaseBuilder withFatJar(boolean withFatJar) {
         this.withFatJar = withFatJar;
         return this;
     }
 
-    public BaseBuilder withCommand(String command) {
+    public <T extends BaseBuilder> BaseBuilder withCommand(String command) {
         this.command = command;
         return this;
     }
 
-    public BaseBuilder withProjectName(String projectName) {
+    public <T extends BaseBuilder> BaseBuilder withProjectName(String projectName) {
         this.projectName = projectName;
         return this;
     }
 
-    public BaseBuilder withPackageName(String packageName) {
+    public <T extends BaseBuilder> BaseBuilder withPackageName(String packageName) {
         this.packageName = packageName;
         return this;
     }
 
-    public BaseBuilder withRootDirectory(String rootDirectory) {
+    public <T extends BaseBuilder> BaseBuilder withRootDirectory(String rootDirectory) {
         this.rootDirectory = rootDirectory;
         return this;
     }
 
-    public BaseProject build() throws Exception {
+    public <T extends BaseProject> BaseProject build() throws Exception {
         final ProjectStructure projectStructure =
                 new JavaProjectStructure(rootDirectory, packageName, projectName);
         return new BaseProject(

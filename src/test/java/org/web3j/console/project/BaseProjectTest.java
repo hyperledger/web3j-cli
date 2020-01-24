@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project.java;
+package org.web3j.console.project;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -19,9 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.console.project.BaseBuilder;
-import org.web3j.console.project.BaseProject;
-import org.web3j.console.project.ProjectStructure;
+import org.web3j.console.project.java.JavaProjectStructure;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,7 +43,7 @@ public class BaseProjectTest {
     public void directoryCreationTest() {
         final boolean mainProjectDir = new File(projectStructure.getMainPath()).exists();
         final boolean gradleWrapperDir = new File(projectStructure.getWrapperPath()).exists();
-        final boolean testProjectDir = new File(projectStructure.getTestPath()).exists();
+        final boolean testProjectDir = new File(projectStructure.getPathToTestDirectory()).exists();
         final boolean solidityPath = new File(projectStructure.getSolidityPath()).exists();
 
         assertTrue(mainProjectDir && gradleWrapperDir && testProjectDir && solidityPath);

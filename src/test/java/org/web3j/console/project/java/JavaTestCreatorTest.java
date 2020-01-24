@@ -24,11 +24,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
+import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.utils.ClassExecutor;
 
 import static java.io.File.separator;
 
-public class UnitTestCreatorTest extends ClassExecutor {
+public class JavaTestCreatorTest extends ClassExecutor {
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
@@ -42,10 +43,10 @@ public class UnitTestCreatorTest extends ClassExecutor {
     @Test
     public void testThatCorrectArgumentsArePassed() {
         final String[] args = {"-i=" + formattedPath, "-o=" + tempDirPath};
-        final UnitTestCLIRunner unitTestCLIRunner = new UnitTestCLIRunner();
-        new CommandLine(unitTestCLIRunner).parseArgs(args);
-        assert unitTestCLIRunner.unitTestOutputDir.equals(tempDirPath);
-        assert unitTestCLIRunner.javaWrapperDir.equals(formattedPath);
+        final JavaTestCLIRunner javaTestCLIRunner = new JavaTestCLIRunner();
+        new CommandLine(javaTestCLIRunner).parseArgs(args);
+        assert javaTestCLIRunner.unitTestOutputDir.equals(tempDirPath);
+        assert javaTestCLIRunner.javaWrapperDir.equals(formattedPath);
     }
 
     @Test
@@ -76,7 +77,7 @@ public class UnitTestCreatorTest extends ClassExecutor {
         final String[] unitTestsArgs = {"-i=" + pathToJavaWrappers, "-o=" + tempDirPath};
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                UnitTestCreator.class,
+                                JavaTestCreator.class,
                                 Collections.emptyList(),
                                 Arrays.asList(unitTestsArgs))
                         .inheritIO()

@@ -16,15 +16,17 @@ import java.io.File;
 
 public abstract class ProjectStructure {
 
-    protected final String packageName;
-    protected final String projectName;
+    public final String packageName;
+    public final String projectName;
     protected final String rootDirectory;
     protected final String projectRoot;
-    private final String testPath;
+    private final String pathToTestDirectory;
     private final String solidityPath;
     private final String mainPath;
     private final String wrapperPath;
     private final String walletPath;
+    private final String generatedJavaWrapper;
+    private final String testPath;
 
     protected ProjectStructure(
             final String rootDirectory,
@@ -39,10 +41,21 @@ public abstract class ProjectStructure {
         this.mainPath =
                 generatePath(this.projectRoot, "src", "main", projectType, formattedPackageName);
         this.solidityPath = generatePath(this.projectRoot, "src", "main", "solidity");
+        this.pathToTestDirectory = generatePath(this.projectRoot, "src", "test", projectType);
         this.testPath =
                 generatePath(this.projectRoot, "src", "test", projectType, formattedPackageName);
         this.walletPath = generatePath(this.projectRoot, "src", "test", "resources", "wallet");
         this.wrapperPath = generatePath(this.projectRoot, "gradle", "wrapper");
+        this.generatedJavaWrapper =
+                generatePath(
+                        this.rootDirectory,
+                        projectName,
+                        "build",
+                        "generated",
+                        "source",
+                        "web3j",
+                        "main",
+                        "java");
     }
 
     protected String generateRoot(final String path) {
@@ -83,7 +96,7 @@ public abstract class ProjectStructure {
     }
 
     public void createTestDirectory() {
-        createDirectory(testPath);
+        createDirectory(pathToTestDirectory);
     }
 
     public void createSolidityDirectory() {
@@ -106,8 +119,16 @@ public abstract class ProjectStructure {
         return projectName;
     }
 
+    public final String getPathToTestDirectory() {
+        return pathToTestDirectory;
+    }
+
     public final String getTestPath() {
         return testPath;
+    }
+
+    public final String getGeneratedJavaWrappers() {
+        return generatedJavaWrapper;
     }
 
     public final String getSolidityPath() {

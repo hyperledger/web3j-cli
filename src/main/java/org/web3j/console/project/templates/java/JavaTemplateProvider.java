@@ -14,6 +14,7 @@ package org.web3j.console.project.templates.java;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.web3j.console.project.ProjectStructure;
 import org.web3j.console.project.ProjectWriter;
@@ -31,10 +32,10 @@ public class JavaTemplateProvider implements TemplateProvider {
     private final String gradlewBatScript;
     private final String gradlewScript;
     private final String gradlewJar;
-    private final String packageNameReplacement;
-    private final String projectNameReplacement;
-    private final String passwordFileName;
-    private final String walletNameReplacement;
+    private final Optional<String> packageNameReplacement;
+    private final Optional<String> projectNameReplacement;
+    private final Optional<String> passwordFileName;
+    private final Optional<String> walletNameReplacement;
 
     protected JavaTemplateProvider(
             final String mainJavaClass,
@@ -59,10 +60,10 @@ public class JavaTemplateProvider implements TemplateProvider {
         this.gradlewBatScript = gradlewBatScript;
         this.gradlewScript = gradlewScript;
         this.gradlewJar = gradlewJar;
-        this.packageNameReplacement = packageNameReplacement;
-        this.projectNameReplacement = projectNameReplacement;
-        this.passwordFileName = passwordFileName;
-        this.walletNameReplacement = walletNameReplacement;
+        this.packageNameReplacement = Optional.ofNullable(packageNameReplacement);
+        this.projectNameReplacement = Optional.ofNullable(projectNameReplacement);
+        this.passwordFileName = Optional.ofNullable(passwordFileName);
+        this.walletNameReplacement = Optional.ofNullable(walletNameReplacement);
     }
 
     public String getSolidityContract() {
@@ -101,16 +102,16 @@ public class JavaTemplateProvider implements TemplateProvider {
         return TemplateReader.readFile(mainJavaClass)
                 .replaceAll(
                         "<project_name>",
-                        InputVerifier.capitalizeFirstLetter(projectNameReplacement))
-                .replaceAll("<package_name>", packageNameReplacement)
-                .replaceAll("<wallet_name>", walletNameReplacement)
-                .replaceAll("<password_file_name>", passwordFileName);
+                        InputVerifier.capitalizeFirstLetter(projectNameReplacement.orElse("")))
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
+                .replaceAll("<wallet_name>", walletNameReplacement.orElse(""))
+                .replaceAll("<password_file_name>", passwordFileName.orElse(""));
     }
 
     public String loadGradleBuild() throws IOException {
         return TemplateReader.readFile(gradleBuild)
-                .replaceAll("<package_name>", packageNameReplacement)
-                .replaceAll("<project_name>", projectNameReplacement);
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
+                .replaceAll("<project_name>", projectNameReplacement.orElse(""));
     }
 
     public String loadSolidityContract() throws IOException {
@@ -119,7 +120,7 @@ public class JavaTemplateProvider implements TemplateProvider {
 
     public String loadGradleSettings() throws IOException {
         return TemplateReader.readFile(gradleSettings)
-                .replaceAll("<project_name>", projectNameReplacement);
+                .replaceAll("<project_name>", projectNameReplacement.orElse(""));
     }
 
     public String loadGradlewWrapperSettings() throws IOException {

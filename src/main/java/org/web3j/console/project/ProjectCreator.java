@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import org.web3j.console.project.java.JavaBuilder;
+import org.web3j.console.project.java.JavaProjectCreatorCLIRunner;
 import org.web3j.console.project.kotlin.KotlinBuilder;
+import org.web3j.console.project.kotlin.KotlinProjectCreatorCLIRunner;
 import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
@@ -39,53 +42,47 @@ public class ProjectCreator {
     private final String packageName;
     private final String projectName;
 
-    ProjectCreator(final String root, final String packageName, final String projectName) {
+    public ProjectCreator(final String root, final String packageName, final String projectName) {
         this.projectName = projectName;
         this.packageName = packageName;
         this.root = root;
     }
 
     public static void main(String[] args) {
-        final String projectName;
         final List<String> stringOptions = new ArrayList<>();
         if (args.length > 0 && args[0].equals(COMMAND_JAVA)) {
-            args = tail(args);
-            if (args.length == 0) {
-                stringOptions.add("-n");
-                projectName = InteractiveOptions.getProjectName();
-                stringOptions.add(projectName);
-                stringOptions.add("-p");
-                stringOptions.add(InteractiveOptions.getPackageName());
-                InteractiveOptions.getProjectDestination(projectName)
-                        .ifPresent(
-                                projectDest -> {
-                                    stringOptions.add("-o");
-                                    stringOptions.add(projectDest);
-                                });
-                args = stringOptions.toArray(new String[0]);
-            }
+            args = getValues(args, stringOptions);
             CommandLine.run(new JavaProjectCreatorCLIRunner(), args);
         } else if (args.length > 0 && args[0].equals(COMMAND_KOTLIN)) {
-            args = tail(args);
-            if (args.length == 0) {
-                stringOptions.add("-n");
-                projectName = InteractiveOptions.getProjectName();
-                stringOptions.add(projectName);
-                stringOptions.add("-p");
-                stringOptions.add(InteractiveOptions.getPackageName());
-                InteractiveOptions.getProjectDestination(projectName)
-                        .ifPresent(
-                                projectDest -> {
-                                    stringOptions.add("-o");
-                                    stringOptions.add(projectDest);
-                                });
-                args = stringOptions.toArray(new String[0]);
-            }
+            args = getValues(args, stringOptions);
             CommandLine.run(new KotlinProjectCreatorCLIRunner(), args);
+        } else {
+            System.out.println(USAGE);
         }
     }
 
-    void generateJava(
+    @NotNull
+    private static String[] getValues(String[] args, List<String> stringOptions) {
+        String projectName;
+        args = tail(args);
+        if (args.length == 0) {
+            stringOptions.add("-n");
+            projectName = InteractiveOptions.getProjectName();
+            stringOptions.add(projectName);
+            stringOptions.add("-p");
+            stringOptions.add(InteractiveOptions.getPackageName());
+            InteractiveOptions.getProjectDestination(projectName)
+                    .ifPresent(
+                            projectDest -> {
+                                stringOptions.add("-o");
+                                stringOptions.add(projectDest);
+                            });
+            args = stringOptions.toArray(new String[0]);
+        }
+        return args;
+    }
+
+    public void generateJava(
             boolean withTests,
             Optional<File> solidityFile,
             boolean withWalletProvider,
@@ -115,7 +112,7 @@ public class ProjectCreator {
         }
     }
 
-    void generateKotlin(
+    public void generateKotlin(
             boolean withTests,
             Optional<File> solidityFile,
             boolean withWalletProvider,

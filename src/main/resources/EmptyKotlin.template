@@ -1,0 +1,9 @@
+package <package_name>;
+
+class  <project_name> {
+
+    fun main(args: Array<String>) {
+
+    }
+
+}

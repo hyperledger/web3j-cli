@@ -17,7 +17,7 @@ import org.web3j.console.project.ProjectBuilder;
 import org.web3j.console.project.ProjectStructure;
 
 public class KotlinBuilder extends AbstractProjectBuilder<KotlinBuilder> implements ProjectBuilder {
-    protected String command = "kotlin";
+    protected String command = "new";
 
     public KotlinBuilder withCommand(String command) {
         this.command = command;

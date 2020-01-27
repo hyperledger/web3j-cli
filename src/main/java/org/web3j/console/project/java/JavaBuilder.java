@@ -20,10 +20,6 @@ public class JavaBuilder extends AbstractProjectBuilder<JavaBuilder> implements 
 
     protected String command = "new";
 
-    protected JavaBuilder getBuilderInstance() {
-        return this;
-    }
-
     public JavaBuilder() {
         super();
     }
@@ -44,5 +40,9 @@ public class JavaBuilder extends AbstractProjectBuilder<JavaBuilder> implements 
                 command,
                 solidityImportPath,
                 projectStructure);
+    }
+
+    protected JavaBuilder getBuilderInstance() {
+        return this;
     }
 }

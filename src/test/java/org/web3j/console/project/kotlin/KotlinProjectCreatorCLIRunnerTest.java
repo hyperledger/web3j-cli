@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.kotlin;
 
 import java.nio.file.Path;
 
@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
-public class JavaProjectImporterCLIRunnerTest {
-
+public class KotlinProjectCreatorCLIRunnerTest {
     private String tempDirPath;
 
     @BeforeEach
@@ -31,32 +30,30 @@ public class JavaProjectImporterCLIRunnerTest {
 
     @Test
     public void testWhenNonDefinedArgsArePassed() {
-        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
-                new JavaProjectImporterCLIRunner();
+        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
+                new KotlinProjectCreatorCLIRunner();
         final String[] args = {"-t=org.org", "-b=test", "-z=" + tempDirPath};
-        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
+        final CommandLine commandLine = new CommandLine(kotlinProjectCreatorCLIRunner);
         Assertions.assertThrows(
-                CommandLine.ParameterException.class, () -> commandLine.parseArgs(args));
+                CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test
     public void testWhenNoArgsArePassed() {
-        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
-                new JavaProjectImporterCLIRunner();
+        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
+                new KotlinProjectCreatorCLIRunner();
         final String[] args = {};
-        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
+        final CommandLine commandLine = new CommandLine(kotlinProjectCreatorCLIRunner);
         Assertions.assertThrows(
                 CommandLine.MissingParameterException.class, () -> commandLine.parseArgs(args));
     }
 
     @Test
     public void testWhenDuplicateArgsArePassed() {
-        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
-                new JavaProjectImporterCLIRunner();
-        final String[] args = {
-            "-p=org.org", "-n=test", "-n=OverrideTest", "-o=" + tempDirPath, "-s=test"
-        };
-        final CommandLine commandLine = new CommandLine(projectImporterCLIRunner);
+        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
+                new KotlinProjectCreatorCLIRunner();
+        final String[] args = {"-p=org.org", "-n=test", "-n=OverrideTest", "-o=" + tempDirPath};
+        final CommandLine commandLine = new CommandLine(kotlinProjectCreatorCLIRunner);
         Assertions.assertThrows(
                 CommandLine.OverwrittenOptionException.class, () -> commandLine.parseArgs(args));
     }

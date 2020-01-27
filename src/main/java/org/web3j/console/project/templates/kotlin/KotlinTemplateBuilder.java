@@ -30,8 +30,8 @@ public class KotlinTemplateBuilder implements TemplateBuilder {
     protected String walletNameReplacement;
     protected String pathToSolidityFolder;
 
-    public KotlinTemplateBuilder withMainJavaClass(String mainJavaClass) {
-        this.mainJavaClass = mainJavaClass;
+    public KotlinTemplateBuilder withMainKotlinClass(String mainKotlinClass) {
+        this.mainJavaClass = mainKotlinClass;
         return this;
     }
 

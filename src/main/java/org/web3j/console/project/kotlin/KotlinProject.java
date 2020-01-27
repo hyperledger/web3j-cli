@@ -84,7 +84,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
                         .withGradleSettings("settings.gradle.template")
                         .withWrapperGradleSettings("gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar");
-        ;
+
         if (projectWallet != null) {
             templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
             templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
@@ -107,9 +107,9 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         }
 
         if (withSampleCode) {
-            templateBuilder.withMainJavaClass("Kotlin.template");
+            templateBuilder.withMainKotlinClass("Kotlin.template");
         } else {
-            templateBuilder.withMainJavaClass("EmptyTemplate.java");
+            templateBuilder.withMainKotlinClass("EmptyKotlin.template");
         }
 
         return templateBuilder.build();

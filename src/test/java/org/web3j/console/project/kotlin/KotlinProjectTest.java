@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.kotlin;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -19,26 +19,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.web3j.console.project.java.JavaBuilder;
-import org.web3j.console.project.java.JavaProject;
-import org.web3j.console.project.java.JavaProjectStructure;
+import org.web3j.console.project.ProjectStructure;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JavaProjectTest {
+public class KotlinProjectTest {
     private ProjectStructure projectStructure;
 
     @BeforeEach
     public void setUpProject(@TempDir Path tempDirPath) throws Exception {
         final String rootDirectory = tempDirPath.toFile().getPath();
-        projectStructure = new JavaProjectStructure(rootDirectory, "test", "test");
-        JavaProject javaProject =
-                new JavaBuilder()
+        projectStructure = new KotlinProjectStructure(rootDirectory, "test", "test");
+        KotlinProject kotlinProject =
+                new KotlinBuilder()
                         .withProjectName(projectStructure.getProjectName())
                         .withPackageName(projectStructure.getPackageName())
                         .withRootDirectory(rootDirectory)
                         .build();
-        javaProject.createProject();
+        kotlinProject.createProject();
     }
 
     @Test
@@ -53,8 +51,8 @@ public class JavaProjectTest {
 
     @Test
     public void fileCreationTest() {
-        final boolean mainJavaClass =
-                new File(projectStructure.getMainPath() + File.separator + "Test.java").exists();
+        final boolean mainKotlinClass =
+                new File(projectStructure.getMainPath() + File.separator + "Test.kt").exists();
         final boolean greeterContract =
                 new File(projectStructure.getSolidityPath() + File.separator + "HelloWorld.sol")
                         .exists();
@@ -80,7 +78,7 @@ public class JavaProjectTest {
                 new File(projectStructure.getProjectRoot() + File.separator + "gradlew").exists();
 
         assertTrue(
-                mainJavaClass
+                mainKotlinClass
                         && greeterContract
                         && gradleBuild
                         && gradleSettings

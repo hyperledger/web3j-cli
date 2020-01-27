@@ -29,19 +29,19 @@ public abstract class ProjectCreatorCLIRunner implements Runnable {
             description = "Destination base directory.",
             required = false,
             showDefaultValue = ALWAYS)
-    String outputDir = System.getProperty("user.dir");
+    public String outputDir = System.getProperty("user.dir");
 
     @CommandLine.Option(
             names = {"-p", "--package"},
             description = "Base package name.",
             required = true)
-    String packageName;
+    public String packageName;
 
     @CommandLine.Option(
             names = {"-n", "--project-name"},
             description = "Project name.",
             required = true)
-    String projectName;
+    public String projectName;
 
     @Override
     public void run() {

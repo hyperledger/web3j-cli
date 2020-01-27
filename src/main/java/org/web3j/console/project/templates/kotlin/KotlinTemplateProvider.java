@@ -14,6 +14,7 @@ package org.web3j.console.project.templates.kotlin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.web3j.console.project.ProjectStructure;
 import org.web3j.console.project.ProjectWriter;
@@ -22,7 +23,7 @@ import org.web3j.console.project.templates.TemplateReader;
 import org.web3j.console.project.utils.InputVerifier;
 
 public class KotlinTemplateProvider implements TemplateProvider {
-    private final String mainJavaClass;
+    private final String mainKotlinClass;
     protected final String solidityContract;
     protected final String pathToSolidityFolder;
     private final String gradleBuild;
@@ -31,13 +32,13 @@ public class KotlinTemplateProvider implements TemplateProvider {
     private final String gradlewBatScript;
     private final String gradlewScript;
     private final String gradlewJar;
-    private final String packageNameReplacement;
-    private final String projectNameReplacement;
-    private final String passwordFileName;
-    private final String walletNameReplacement;
+    private final Optional<String> packageNameReplacement;
+    private final Optional<String> projectNameReplacement;
+    private final Optional<String> passwordFileName;
+    private final Optional<String> walletNameReplacement;
 
     protected KotlinTemplateProvider(
-            final String mainJavaClass,
+            final String mainKotlinClass,
             final String solidityContract,
             final String pathToSolidityFolder,
             final String gradleBuild,
@@ -50,7 +51,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
             String projectNameReplacement,
             String passwordFileName,
             String walletNameReplacement) {
-        this.mainJavaClass = mainJavaClass;
+        this.mainKotlinClass = mainKotlinClass;
         this.solidityContract = solidityContract;
         this.pathToSolidityFolder = pathToSolidityFolder;
         this.gradleBuild = gradleBuild;
@@ -59,18 +60,18 @@ public class KotlinTemplateProvider implements TemplateProvider {
         this.gradlewBatScript = gradlewBatScript;
         this.gradlewScript = gradlewScript;
         this.gradlewJar = gradlewJar;
-        this.packageNameReplacement = packageNameReplacement;
-        this.projectNameReplacement = projectNameReplacement;
-        this.passwordFileName = passwordFileName;
-        this.walletNameReplacement = walletNameReplacement;
+        this.packageNameReplacement = Optional.ofNullable(packageNameReplacement);
+        this.projectNameReplacement = Optional.ofNullable(projectNameReplacement);
+        this.passwordFileName = Optional.ofNullable(passwordFileName);
+        this.walletNameReplacement = Optional.ofNullable(walletNameReplacement);
     }
 
     public String getSolidityContract() {
         return solidityContract;
     }
 
-    public String getMainJavaClass() {
-        return mainJavaClass;
+    public String getMainKotlinClass() {
+        return mainKotlinClass;
     }
 
     public String getGradleBuild() {
@@ -97,20 +98,20 @@ public class KotlinTemplateProvider implements TemplateProvider {
         return gradlewJar;
     }
 
-    public String loadMainJavaClass() throws IOException {
-        return TemplateReader.readFile(mainJavaClass)
+    public String loadMainKotlinClass() throws IOException {
+        return TemplateReader.readFile(mainKotlinClass)
                 .replaceAll(
                         "<project_name>",
-                        InputVerifier.capitalizeFirstLetter(projectNameReplacement))
-                .replaceAll("<package_name>", packageNameReplacement)
-                .replaceAll("<wallet_name>", walletNameReplacement)
-                .replaceAll("<password_file_name>", passwordFileName);
+                        InputVerifier.capitalizeFirstLetter(projectNameReplacement.orElse("")))
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
+                .replaceAll("<wallet_name>", walletNameReplacement.orElse(""))
+                .replaceAll("<password_file_name>", passwordFileName.orElse(""));
     }
 
     public String loadGradleBuild() throws IOException {
         return TemplateReader.readFile(gradleBuild)
-                .replaceAll("<package_name>", packageNameReplacement)
-                .replaceAll("<project_name>", projectNameReplacement);
+                .replaceAll("<package_name>", packageNameReplacement.orElse(""))
+                .replaceAll("<project_name>", projectNameReplacement.orElse(""));
     }
 
     public String loadSolidityContract() throws IOException {
@@ -119,7 +120,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
 
     public String loadGradleSettings() throws IOException {
         return TemplateReader.readFile(gradleSettings)
-                .replaceAll("<project_name>", projectNameReplacement);
+                .replaceAll("<project_name>", projectNameReplacement.orElse(""));
     }
 
     public String loadGradlewWrapperSettings() throws IOException {
@@ -139,8 +140,8 @@ public class KotlinTemplateProvider implements TemplateProvider {
 
     public void generateFiles(ProjectStructure projectStructure) throws IOException {
         ProjectWriter.writeResourceFile(
-                loadMainJavaClass(),
-                InputVerifier.capitalizeFirstLetter(projectStructure.getProjectName() + ".java"),
+                loadMainKotlinClass(),
+                InputVerifier.capitalizeFirstLetter(projectStructure.getProjectName() + ".kt"),
                 projectStructure.getMainPath());
         ProjectWriter.writeResourceFile(
                 loadGradleBuild(), "build.gradle", projectStructure.getProjectRoot());

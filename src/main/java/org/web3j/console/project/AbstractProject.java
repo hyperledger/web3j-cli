@@ -134,7 +134,6 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
 
     protected void generateTopLevelDirectories(ProjectStructure projectStructure) {
         projectStructure.createMainDirectory();
-        System.out.println(projectStructure.getMainPath());
         projectStructure.createTestDirectory();
         projectStructure.createSolidityDirectory();
         projectStructure.createWrapperDirectory();

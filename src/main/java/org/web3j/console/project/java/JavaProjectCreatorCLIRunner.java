@@ -10,11 +10,14 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.util.Optional;
 
 import picocli.CommandLine.Command;
+
+import org.web3j.console.project.ProjectCreator;
+import org.web3j.console.project.ProjectCreatorCLIRunner;
 
 import static org.web3j.console.project.ProjectCreator.COMMAND_JAVA;
 import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;

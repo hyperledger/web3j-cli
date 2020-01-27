@@ -52,7 +52,7 @@ public class KotlinTestCreatorTest extends ClassExecutor {
     @Test
     public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
         final String[] args = {
-            "kotlin", "-p=org.com", "-n=Testing", "-o=" + tempDirPath, "-s=" + formattedPath
+            "-p=org.com", "-n=Testing", "-o=" + tempDirPath, "-s=" + formattedPath
         };
         final String pathToJavaWrappers =
                 new File(

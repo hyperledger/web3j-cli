@@ -65,7 +65,7 @@ public class JavaProjectCreatorTest extends ClassExecutor {
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
@@ -97,7 +97,7 @@ public class JavaProjectCreatorTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"java", "-n=", "-p="};
+        final String[] args = {"--java", "-n=", "-p="};
         ProjectCreator.main(args);
         assertEquals(
                 outContent.toString(), "Please make sure the required parameters are not empty.\n");
@@ -106,7 +106,7 @@ public class JavaProjectCreatorTest extends ClassExecutor {
     @Test
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException {
-        final String[] args = {"new", "java"};
+        final String[] args = {"new", "--java"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))

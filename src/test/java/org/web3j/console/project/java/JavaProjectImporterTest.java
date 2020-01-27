@@ -65,7 +65,7 @@ public class JavaProjectImporterTest extends ClassExecutor {
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {
-            "java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
+            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
@@ -97,7 +97,7 @@ public class JavaProjectImporterTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"java", "-p=", "-n=", "-s="};
+        final String[] args = {"--java", "-p=", "-n=", "-s="};
         ProjectImporter.main(args);
         assertTrue(
                 outContent

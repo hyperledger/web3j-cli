@@ -65,7 +65,7 @@ public class KotlinProjectImporterTest extends ClassExecutor {
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {
-            "kotlin", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
+            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
@@ -97,7 +97,7 @@ public class KotlinProjectImporterTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"kotlin", "-p=", "-n=", "-s="};
+        final String[] args = {"-p=", "-n=", "-s="};
         ProjectImporter.main(args);
         assertTrue(
                 outContent

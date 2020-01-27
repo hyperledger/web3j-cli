@@ -33,10 +33,11 @@ public class ProjectImporter extends ProjectCreator {
 
     public static void main(String[] args) {
         final List<String> stringOptions = new ArrayList<>();
-        if (args.length > 0 && args[0].equals(COMMAND_JAVA)) {
+        if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
+            args = tail(args);
             args = getValues(args, stringOptions);
             CommandLine.run(new JavaProjectImporterCLIRunner(), args);
-        } else if (args.length > 0 && args[0].equals(COMMAND_KOTLIN)) {
+        } else {
             args = getValues(args, stringOptions);
             CommandLine.run(new KotlinProjectImporterCLIRunner(), args);
         }
@@ -45,7 +46,6 @@ public class ProjectImporter extends ProjectCreator {
     @NotNull
     private static String[] getValues(String[] args, List<String> stringOptions) {
         String projectName;
-        args = tail(args);
         if (args.length == 0) {
 
             stringOptions.add("-n");

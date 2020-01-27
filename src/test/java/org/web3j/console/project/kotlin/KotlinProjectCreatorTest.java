@@ -65,7 +65,7 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"kotlin", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {"-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
@@ -97,7 +97,7 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"kotlin", "-n=", "-p="};
+        final String[] args = {"-n=", "-p="};
         ProjectCreator.main(args);
         assertEquals(
                 outContent.toString(), "Please make sure the required parameters are not empty.\n");

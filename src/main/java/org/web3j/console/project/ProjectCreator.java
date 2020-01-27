@@ -35,7 +35,7 @@ import static org.web3j.utils.Collection.tail;
 public class ProjectCreator {
 
     public static final String COMMAND_NEW = "new";
-    public static final String COMMAND_JAVA = "java";
+    public static final String COMMAND_JAVA = "--java";
     public static final String COMMAND_KOTLIN = "kotlin";
     public static final String USAGE = "new java|kotlin";
     private final String root;
@@ -50,21 +50,19 @@ public class ProjectCreator {
 
     public static void main(String[] args) {
         final List<String> stringOptions = new ArrayList<>();
-        if (args.length > 0 && args[0].equals(COMMAND_JAVA)) {
+        if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
+            args = tail(args);
             args = getValues(args, stringOptions);
             CommandLine.run(new JavaProjectCreatorCLIRunner(), args);
-        } else if (args.length > 0 && args[0].equals(COMMAND_KOTLIN)) {
+        } else {
             args = getValues(args, stringOptions);
             CommandLine.run(new KotlinProjectCreatorCLIRunner(), args);
-        } else {
-            System.out.println(USAGE);
         }
     }
 
     @NotNull
     private static String[] getValues(String[] args, List<String> stringOptions) {
         String projectName;
-        args = tail(args);
         if (args.length == 0) {
             stringOptions.add("-n");
             projectName = InteractiveOptions.getProjectName();

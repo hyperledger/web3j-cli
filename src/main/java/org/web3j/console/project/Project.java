@@ -24,7 +24,5 @@ public interface Project {
             throws IOException, InterruptedException, NoSuchAlgorithmException,
                     NoSuchProviderException, InvalidAlgorithmParameterException, CipherException;
 
-    void generateTests();
-
     ProjectWallet getProjectWallet();
 }

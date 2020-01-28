@@ -17,6 +17,7 @@ import java.io.IOException;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
+import org.web3j.console.project.UnitTestCreator;
 
 @CommandLine.Command(
         name = "generate-tests",
@@ -39,7 +40,7 @@ public class KotlinTestCLIRunner implements Runnable {
     @Override
     public void run() {
         try {
-            new KotlinTestCreator(javaWrapperDir, unitTestOutputDir).generate();
+            new UnitTestCreator(javaWrapperDir, unitTestOutputDir).generateKotlin();
             Console.exitSuccess(
                     "Unit tests were generated successfully at location: " + unitTestOutputDir);
         } catch (IOException e) {

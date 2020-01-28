@@ -18,6 +18,7 @@ import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.AbstractProject;
 import org.web3j.console.project.Project;
 import org.web3j.console.project.ProjectStructure;
+import org.web3j.console.project.UnitTestCreator;
 import org.web3j.console.project.templates.java.JavaTemplateBuilder;
 import org.web3j.console.project.templates.java.JavaTemplateProvider;
 
@@ -42,10 +43,10 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
     }
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
-        new JavaTestCreator(
+        new UnitTestCreator(
                         projectStructure.getGeneratedJavaWrappers(),
                         projectStructure.getPathToTestDirectory())
-                .generate();
+                .generateJava();
     }
 
     @Override
@@ -93,10 +94,5 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
         }
 
         return templateBuilder.build();
-    }
-
-    @Override
-    public void generateTests() {
-        new JavaTestCreator(projectStructure.getWrapperPath(), projectStructure.getTestPath());
     }
 }

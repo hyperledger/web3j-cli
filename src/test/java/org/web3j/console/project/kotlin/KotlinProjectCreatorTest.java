@@ -96,7 +96,7 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws Exception {
         final String[] args = {"-n=", "-p="};
         ProjectCreator.main(args);
         assertEquals(

@@ -97,7 +97,7 @@ public class InteractiveOptions {
                 : Optional.of(pathToTheWrappers);
     }
 
-    public static Optional<String> setGeneratedTestLocation() {
+    public static Optional<String> setGeneratedTestLocationJava() {
         print(
                 "Where would you like to save your tests ["
                         + String.join(
@@ -108,6 +108,20 @@ public class InteractiveOptions {
                 ? Optional.of(
                         String.join(
                                 separator, System.getProperty("user.dir"), "src", "test", "java"))
+                : Optional.of(outputPath);
+    }
+
+    public static Optional<String> setGeneratedTestLocationKotlin() {
+        print(
+                "Where would you like to save your tests ["
+                        + String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin")
+                        + "]");
+        String outputPath = getUserInput();
+        return outputPath.isEmpty()
+                ? Optional.of(
+                        String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin"))
                 : Optional.of(outputPath);
     }
 

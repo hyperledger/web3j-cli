@@ -25,6 +25,7 @@ import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 import org.web3j.console.project.ProjectImporter;
+import org.web3j.console.project.UnitTestCreator;
 import org.web3j.console.project.utils.ClassExecutor;
 
 import static java.io.File.separator;
@@ -77,7 +78,7 @@ public class KotlinTestCreatorTest extends ClassExecutor {
         final String[] unitTestsArgs = {"-i=" + pathToJavaWrappers, "-o=" + tempDirPath};
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                KotlinTestCreator.class,
+                                UnitTestCreator.class,
                                 Collections.emptyList(),
                                 Arrays.asList(unitTestsArgs))
                         .inheritIO()

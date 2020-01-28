@@ -23,6 +23,7 @@ import org.web3j.console.project.Project;
 import org.web3j.console.project.ProjectStructure;
 import org.web3j.console.project.ProjectWallet;
 import org.web3j.console.project.ProjectWriter;
+import org.web3j.console.project.UnitTestCreator;
 import org.web3j.console.project.templates.kotlin.KotlinTemplateBuilder;
 import org.web3j.console.project.templates.kotlin.KotlinTemplateProvider;
 import org.web3j.console.project.utils.ProjectUtils;
@@ -50,10 +51,10 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
 
-        new KotlinTestCreator(
+        new UnitTestCreator(
                         projectStructure.getGeneratedJavaWrappers(),
                         projectStructure.getPathToTestDirectory())
-                .generate();
+                .generateKotlin();
     }
 
     @Override
@@ -113,10 +114,5 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         }
 
         return templateBuilder.build();
-    }
-
-    @Override
-    public void generateTests() {
-        new KotlinTestCreator(projectStructure.getWrapperPath(), projectStructure.getTestPath());
     }
 }

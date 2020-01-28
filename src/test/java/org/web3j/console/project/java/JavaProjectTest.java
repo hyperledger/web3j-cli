@@ -45,7 +45,6 @@ public class JavaProjectTest {
         final boolean gradleWrapperDir = new File(projectStructure.getWrapperPath()).exists();
         final boolean testProjectDir = new File(projectStructure.getPathToTestDirectory()).exists();
         final boolean solidityPath = new File(projectStructure.getSolidityPath()).exists();
-
         assertTrue(mainProjectDir && gradleWrapperDir && testProjectDir && solidityPath);
     }
 

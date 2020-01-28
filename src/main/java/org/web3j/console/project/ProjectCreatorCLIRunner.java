@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs Ltd.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -13,39 +13,35 @@
 package org.web3j.console.project;
 
 import java.io.File;
-import java.util.Optional;
 
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
+import picocli.CommandLine;
 
 import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.console.project.InteractiveOptions.overrideExistingProject;
-import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;
 import static org.web3j.console.project.utils.ProjectUtils.deleteFolder;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
-@Command(name = COMMAND_NEW, mixinStandardHelpOptions = true, version = "4.0", sortOptions = false)
-public class ProjectCreatorCLIRunner implements Runnable {
-    @Option(
+public abstract class ProjectCreatorCLIRunner implements Runnable {
+    @CommandLine.Option(
             names = {"-o", "--output-dir"},
             description = "Destination base directory.",
             required = false,
             showDefaultValue = ALWAYS)
-    String outputDir = System.getProperty("user.dir");
+    public String outputDir = System.getProperty("user.dir");
 
-    @Option(
+    @CommandLine.Option(
             names = {"-p", "--package"},
             description = "Base package name.",
             required = true)
-    String packageName;
+    public String packageName;
 
-    @Option(
+    @CommandLine.Option(
             names = {"-n", "--project-name"},
             description = "Project name.",
             required = true)
-    String projectName;
+    public String projectName;
 
     @Override
     public void run() {
@@ -63,10 +59,7 @@ public class ProjectCreatorCLIRunner implements Runnable {
         }
     }
 
-    private void createProject() {
-        new ProjectCreator(outputDir, packageName, projectName)
-                .generate(true, Optional.empty(), true, true, true, COMMAND_NEW);
-    }
+    protected abstract void createProject();
 
     boolean inputIsValid(String... requiredArgs) {
         return InputVerifier.requiredArgsAreNotEmpty(requiredArgs)

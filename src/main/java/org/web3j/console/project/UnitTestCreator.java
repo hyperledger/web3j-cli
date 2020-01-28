@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs Ltd.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -21,50 +21,62 @@ import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
 import org.web3j.codegen.unit.gen.ClassProvider;
-import org.web3j.codegen.unit.gen.UnitClassGenerator;
+import org.web3j.codegen.unit.gen.java.JavaClassGenerator;
+import org.web3j.codegen.unit.gen.kotlin.KotlinClassGenerator;
+import org.web3j.console.project.java.JavaTestCLIRunner;
+import org.web3j.console.project.kotlin.KotlinTestCLIRunner;
 
+import static org.web3j.console.project.ProjectCreator.COMMAND_JAVA;
 import static org.web3j.utils.Collection.tail;
 
 public class UnitTestCreator {
     public static final String COMMAND_GENERATE_TESTS = "generate-tests";
-
     private final String writePath;
     private final String wrapperPath;
 
-    public UnitTestCreator(final String wrapperPath, final String writePath) {
+    public UnitTestCreator(String wrapperPath, String writePath) {
         this.writePath = writePath;
         this.wrapperPath = wrapperPath;
     }
 
     public static void main(String[] args) {
-        if (args.length > 0 && args[0].equals(COMMAND_GENERATE_TESTS)) {
+        if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
-            if (args.length == 0) {
-                final List<String> listOfArgs = new ArrayList<>();
-                InteractiveOptions.getGeneratedWrapperLocation()
-                        .ifPresent(
-                                wrappersPath -> {
-                                    listOfArgs.add("-i");
-                                    listOfArgs.add(wrappersPath);
-                                });
-                InteractiveOptions.setGeneratedTestLocation()
-                        .ifPresent(
-                                outputPath -> {
-                                    listOfArgs.add("-o");
-                                    listOfArgs.add(outputPath);
-                                });
-                args = listOfArgs.toArray(new String[0]);
-            }
+            args = getValue(args);
+            CommandLine.run(new JavaTestCLIRunner(), args);
+        } else {
+            args = getValue(args);
+            CommandLine.run(new KotlinTestCLIRunner(), args);
         }
-        CommandLine.run(new UnitTestCLIRunner(), args);
     }
 
-    void generate() throws IOException {
+    private static String[] getValue(String[] args) {
+        if (args.length == 0) {
+            final List<String> listOfArgs = new ArrayList<>();
+            InteractiveOptions.getGeneratedWrapperLocation()
+                    .ifPresent(
+                            wrappersPath -> {
+                                listOfArgs.add("-i");
+                                listOfArgs.add(wrappersPath);
+                            });
+            InteractiveOptions.setGeneratedTestLocationJava()
+                    .ifPresent(
+                            outputPath -> {
+                                listOfArgs.add("-o");
+                                listOfArgs.add(outputPath);
+                            });
+            args = listOfArgs.toArray(new String[0]);
+        }
+        return args;
+    }
+
+    public void generateKotlin() throws IOException {
+
         List<Class> compiledClasses = new ClassProvider(new File(wrapperPath)).getClasses();
         compiledClasses.forEach(
                 compiledClass -> {
                     try {
-                        new UnitClassGenerator(
+                        new KotlinClassGenerator(
                                         compiledClass,
                                         compiledClass
                                                 .getCanonicalName()
@@ -77,6 +89,32 @@ public class UnitTestCreator {
                                 .writeClass();
                     } catch (IOException e) {
                         Console.exitError(e);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    public void generateJava() throws IOException {
+        List<Class> compiledClasses = new ClassProvider(new File(wrapperPath)).getClasses();
+        compiledClasses.forEach(
+                compiledClass -> {
+                    try {
+                        new JavaClassGenerator(
+                                        compiledClass,
+                                        compiledClass
+                                                .getCanonicalName()
+                                                .substring(
+                                                        0,
+                                                        compiledClass
+                                                                .getCanonicalName()
+                                                                .lastIndexOf(".")),
+                                        writePath)
+                                .writeClass();
+                    } catch (IOException e) {
+                        Console.exitError(e);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
     }

@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.kotlin;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -29,13 +29,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
+import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.utils.ClassExecutor;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProjectCreatorTest extends ClassExecutor {
+public class KotlinProjectCreatorTest extends ClassExecutor {
     private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
@@ -53,17 +54,18 @@ public class ProjectCreatorTest extends ClassExecutor {
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath};
-        final ProjectCreatorCLIRunner projectCreatorCLIRunner = new ProjectCreatorCLIRunner();
-        new CommandLine(projectCreatorCLIRunner).parseArgs(args);
-        assert projectCreatorCLIRunner.packageName.equals("org.com");
-        assert projectCreatorCLIRunner.projectName.equals("Test");
-        assert projectCreatorCLIRunner.outputDir.equals(tempDirPath);
+        final KotlinProjectCreatorCLIRunner kotlinProjectCreatorCLIRunner =
+                new KotlinProjectCreatorCLIRunner();
+        new CommandLine(kotlinProjectCreatorCLIRunner).parseArgs(args);
+        assert kotlinProjectCreatorCLIRunner.packageName.equals("org.com");
+        assert kotlinProjectCreatorCLIRunner.projectName.equals("Test");
+        assert kotlinProjectCreatorCLIRunner.outputDir.equals(tempDirPath);
     }
 
     @Test
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
-        final String[] args = {"new", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
+        final String[] args = {"-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
@@ -84,18 +86,18 @@ public class ProjectCreatorTest extends ClassExecutor {
                                 "Test",
                                 "src",
                                 "test",
-                                "java",
+                                "kotlin",
                                 "org",
                                 "com",
                                 "generated",
                                 "contracts",
-                                "HelloWorldTest.java"));
+                                "HelloWorldTest.kt"));
         assertTrue(pathToTests.exists());
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"new", "-n=", "-p="};
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws Exception {
+        final String[] args = {"-n=", "-p="};
         ProjectCreator.main(args);
         assertEquals(
                 outContent.toString(), "Please make sure the required parameters are not empty.\n");
@@ -104,7 +106,7 @@ public class ProjectCreatorTest extends ClassExecutor {
     @Test
     public void testWhenInteractiveAndArgumentsAreCorrect()
             throws IOException, InterruptedException {
-        final String[] args = {"new"};
+        final String[] args = {"new", "kotlin"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
                                 ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))

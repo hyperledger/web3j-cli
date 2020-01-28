@@ -68,7 +68,7 @@ public class InteractiveOptionsTest {
         assertTrue(InteractiveOptions.userWantsTests());
         assertEquals(
                 String.join(separator, System.getProperty("user.dir"), "src", "test", "java"),
-                InteractiveOptions.setGeneratedTestLocation().get());
+                InteractiveOptions.setGeneratedTestLocationJava().get());
         assertTrue(InteractiveOptions.overrideExistingProject());
     }
 }

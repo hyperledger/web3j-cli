@@ -19,8 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
+import org.web3j.console.project.java.JavaBuilder;
+import org.web3j.console.project.java.JavaProjectCreatorCLIRunner;
+import org.web3j.console.project.kotlin.KotlinBuilder;
+import org.web3j.console.project.kotlin.KotlinProjectCreatorCLIRunner;
 import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
@@ -30,69 +35,74 @@ import static org.web3j.utils.Collection.tail;
 public class ProjectCreator {
 
     public static final String COMMAND_NEW = "new";
+    public static final String COMMAND_JAVA = "--java";
+    public static final String COMMAND_KOTLIN = "kotlin";
+    public static final String USAGE = "new java|kotlin";
     private final String root;
     private final String packageName;
     private final String projectName;
 
-    ProjectCreator(final String root, final String packageName, final String projectName) {
+    public ProjectCreator(final String root, final String packageName, final String projectName) {
         this.projectName = projectName;
         this.packageName = packageName;
         this.root = root;
     }
 
     public static void main(String[] args) {
-        final String projectName;
         final List<String> stringOptions = new ArrayList<>();
-        if (args.length > 0 && args[0].equals(COMMAND_NEW)) {
+        if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
-            if (args.length == 0) {
-                stringOptions.add("-n");
-                projectName = InteractiveOptions.getProjectName();
-                stringOptions.add(projectName);
-                stringOptions.add("-p");
-                stringOptions.add(InteractiveOptions.getPackageName());
-                InteractiveOptions.getProjectDestination(projectName)
-                        .ifPresent(
-                                projectDest -> {
-                                    stringOptions.add("-o");
-                                    stringOptions.add(projectDest);
-                                });
-                args = stringOptions.toArray(new String[0]);
-            }
+            args = getValues(args, stringOptions);
+            CommandLine.run(new JavaProjectCreatorCLIRunner(), args);
+        } else {
+            args = getValues(args, stringOptions);
+            CommandLine.run(new KotlinProjectCreatorCLIRunner(), args);
         }
-        CommandLine.run(new ProjectCreatorCLIRunner(), args);
     }
 
-    void generate(
+    @NotNull
+    private static String[] getValues(String[] args, List<String> stringOptions) {
+        String projectName;
+        if (args.length == 0) {
+            stringOptions.add("-n");
+            projectName = InteractiveOptions.getProjectName();
+            stringOptions.add(projectName);
+            stringOptions.add("-p");
+            stringOptions.add(InteractiveOptions.getPackageName());
+            InteractiveOptions.getProjectDestination(projectName)
+                    .ifPresent(
+                            projectDest -> {
+                                stringOptions.add("-o");
+                                stringOptions.add(projectDest);
+                            });
+            args = stringOptions.toArray(new String[0]);
+        }
+        return args;
+    }
+
+    public void generateJava(
             boolean withTests,
             Optional<File> solidityFile,
-            boolean withWallet,
+            boolean withWalletProvider,
             boolean withFatJar,
             boolean withSampleCode,
             String command) {
         try {
-            Project.Builder builder =
-                    Project.builder()
+            JavaBuilder javaBuilder =
+                    new JavaBuilder()
                             .withProjectName(this.projectName)
                             .withRootDirectory(this.root)
                             .withPackageName(this.packageName)
-                            .withCommand(command);
+                            .withTests(withTests)
+                            .withWalletProvider(withWalletProvider)
+                            .withCommand(command)
+                            .withSampleCode(withSampleCode)
+                            .withFatJar(withFatJar);
+            solidityFile.map(File::getAbsolutePath).ifPresent(javaBuilder::withSolidityFile);
 
-            if (withWallet) {
-                builder.withWalletProvider();
-            }
-            if (withSampleCode) {
-                builder.withSampleCode();
-            }
-            solidityFile.ifPresent(builder::withSolidityFile);
-            if (withTests) {
-                builder.withTests();
-            }
-            if (withFatJar) {
-                builder.withFatJar();
-            }
-            Project project = builder.build();
-            onSuccess(project);
+            Project javaProject = javaBuilder.build();
+            javaProject.createProject();
+            onSuccess(javaProject);
         } catch (final Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -100,7 +110,42 @@ public class ProjectCreator {
         }
     }
 
-    private void onSuccess(Project project) {
+    public void generateKotlin(
+            boolean withTests,
+            Optional<File> solidityFile,
+            boolean withWalletProvider,
+            boolean withFatJar,
+            boolean withSampleCode,
+            String command) {
+        try {
+            KotlinBuilder kotlinBuilder =
+                    new KotlinBuilder()
+                            .withProjectName(this.projectName)
+                            .withRootDirectory(this.root)
+                            .withPackageName(this.packageName)
+                            .withTests(withTests)
+                            .withWalletProvider(withWalletProvider)
+                            .withCommand(command)
+                            .withSampleCode(withSampleCode)
+                            .withFatJar(withFatJar);
+            solidityFile.map(File::getAbsolutePath).ifPresent(kotlinBuilder::withSolidityFile);
+            Project kotlinProject = kotlinBuilder.build();
+            kotlinProject.createProject();
+            onSuccess(kotlinProject);
+        } catch (final Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            exitError("\nCould not generate project reason: \n" + sw.toString());
+        }
+    }
+
+    private void onSuccess(Project javaProject) {
+        String address =
+                javaProject.getProjectWallet() == null
+                        ? ""
+                        : ("\nYour wallet address is: "
+                                + javaProject.getProjectWallet().getWalletAddress());
+
         exitSuccess(
                 "\n"
                         + this.projectName
@@ -113,7 +158,7 @@ public class ProjectCreator {
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
                         + ".java): java -DNODE_URL=<URL_TO_NODE> -jar ./build/libs/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/\nYour wallet address is: "
-                        + project.getProjectWallet().getWalletAddress());
+                        + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/"
+                        + address);
     }
 }

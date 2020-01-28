@@ -1,0 +1,99 @@
+package <package_name>;
+
+import <package_name>.generated.contracts.HelloWorld;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.web3j.crypto.CipherException
+import org.web3j.crypto.Credentials
+import org.web3j.crypto.WalletUtils
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.http.HttpService
+import org.web3j.tx.gas.ContractGasProvider
+import org.web3j.tx.gas.DefaultGasProvider
+import java.io.File
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Paths
+
+class <project_name> {
+
+    private val log: Logger = LoggerFactory.getLogger(<project_name>::class.java)
+    private val NODE_URL = "NODE_URL"
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            <project_name>().start(args)
+        }
+    }
+
+    fun start(args: Array<String>) {
+        val credentials: Credentials? = loadCredentials("<wallet_name>")
+        val web3j: Web3j? = createWeb3jService("")
+        val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, DefaultGasProvider())
+        callGreetMethod(helloWorld)
+    }
+
+    @Throws(IOException::class, CipherException::class)
+    private fun loadCredentials(walletName: String): Credentials? {
+        val pathToProjectResources = java.lang.String.join(
+                File.separator,
+                System.getProperty("user.dir"),
+                "src",
+                "test",
+                "resources",
+                "wallet"
+        )
+        val pathToWallet =
+                java.lang.String.join(File.separator, pathToProjectResources, walletName)
+        val pathToWalletPasswordFile = java.lang.String.join(
+                File.separator,
+                pathToProjectResources,
+                "<password_file_name>"
+        )
+        val file = File(pathToWalletPasswordFile)
+        log.info("Reading wallet password from resources.")
+        val password = String(Files.readAllBytes(Paths.get(file.toURI())))
+        log.info("Loading wallet file: $walletName from resources.")
+        log.info("Creating credentials from wallet.")
+        return WalletUtils.loadCredentials(password, File(pathToWallet))
+    }
+
+    private fun createWeb3jService(url: String?): Web3j? {
+        val nodeURLProperty = System.getProperty(NODE_URL)
+        val nodeURLEnv = System.getenv(NODE_URL)
+        if (url == null || url.isEmpty()) {
+            if (nodeURLProperty == null || nodeURLProperty.isEmpty()) {
+                if (nodeURLEnv == null || nodeURLEnv.isEmpty()) {
+                    log.info("Please make sure the node url is valid.")
+                    log.info("You can edit the node url programmatically, use java -D$NODE_URL=\"\" or as an environmental variable e.g export $NODE_URL=\"\"")
+                    System.exit(1)
+                } else {
+                    log.info("Connecting to $nodeURLEnv")
+                    return Web3j.build(HttpService(nodeURLEnv))
+                }
+            } else {
+                log.info("Connecting to $nodeURLProperty")
+                return Web3j.build(HttpService(nodeURLProperty))
+            }
+        }
+        log.info("Connecting to $url")
+        return Web3j.build(HttpService(url))
+    }
+
+    @Throws(Exception::class)
+    private fun deployHelloWorld(
+            web3j: Web3j?,
+            credentials: Credentials?,
+            contractGasProvider: ContractGasProvider?
+    ): HelloWorld? {
+        return HelloWorld.deploy(web3j, credentials, contractGasProvider, "Hello Blockchain World!").send()
+    }
+
+    @Throws(Exception::class)
+    private fun callGreetMethod(helloWorld: HelloWorld?) {
+        log.info("Calling the greeting method of contract HelloWorld")
+        val response: String = helloWorld?.greeting()!!.send()
+        log.info("Contract returned: $response")
+    }
+}

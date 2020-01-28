@@ -10,19 +10,13 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import org.web3j.console.project.ProjectStructure;
 
-import org.web3j.crypto.CipherException;
+public class JavaProjectStructure extends ProjectStructure {
 
-public interface Project {
-    void createProject()
-            throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException;
-
-    ProjectWallet getProjectWallet();
+    public JavaProjectStructure(String rootDirectory, String packageName, String projectName) {
+        super(rootDirectory, packageName, projectName, "java");
+    }
 }

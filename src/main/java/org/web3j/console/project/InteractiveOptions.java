@@ -23,10 +23,10 @@ import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
 import static org.web3j.console.project.utils.ProjectUtils.deleteFolder;
 
-class InteractiveOptions {
+public class InteractiveOptions {
     static Scanner scanner = new Scanner(System.in);
 
-    static String getProjectName() {
+    public static String getProjectName() {
         print("Please enter the project name [Web3App]:");
         String projectName = getUserInput();
         if (projectName.trim().isEmpty()) {
@@ -38,7 +38,7 @@ class InteractiveOptions {
         return projectName;
     }
 
-    static String getPackageName() {
+    public static String getPackageName() {
         print("Please enter the package name for your project [io.web3j]:");
         String packageName = getUserInput();
         if (packageName.trim().isEmpty()) {
@@ -50,7 +50,7 @@ class InteractiveOptions {
         return packageName;
     }
 
-    static Optional<String> getProjectDestination(final String projectName) {
+    public static Optional<String> getProjectDestination(final String projectName) {
         print(
                 "Please enter the destination of your project ["
                         + System.getProperty("user.dir")
@@ -69,7 +69,7 @@ class InteractiveOptions {
         return projectDest.isEmpty() ? Optional.empty() : Optional.of(projectDest);
     }
 
-    static Optional<String> getGeneratedWrapperLocation() {
+    public static Optional<String> getGeneratedWrapperLocation() {
         print(
                 "Please enter the path of the generated contract wrappers ["
                         + String.join(
@@ -97,7 +97,7 @@ class InteractiveOptions {
                 : Optional.of(pathToTheWrappers);
     }
 
-    public static Optional<String> setGeneratedTestLocation() {
+    public static Optional<String> setGeneratedTestLocationJava() {
         print(
                 "Where would you like to save your tests ["
                         + String.join(
@@ -111,13 +111,27 @@ class InteractiveOptions {
                 : Optional.of(outputPath);
     }
 
+    public static Optional<String> setGeneratedTestLocationKotlin() {
+        print(
+                "Where would you like to save your tests ["
+                        + String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin")
+                        + "]");
+        String outputPath = getUserInput();
+        return outputPath.isEmpty()
+                ? Optional.of(
+                        String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin"))
+                : Optional.of(outputPath);
+    }
+
     public static boolean userWantsTests() {
         print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
         return userAnswer.trim().toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 
-    static String getSolidityProjectPath() {
+    public static String getSolidityProjectPath() {
         System.out.println("Please enter the path to your solidity file/folder [Required Field]: ");
         return getUserInput();
     }

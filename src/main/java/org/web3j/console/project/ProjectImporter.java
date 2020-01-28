@@ -15,7 +15,11 @@ package org.web3j.console.project;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
+
+import org.web3j.console.project.java.JavaProjectImporterCLIRunner;
+import org.web3j.console.project.kotlin.KotlinProjectImporterCLIRunner;
 
 import static org.web3j.console.project.InteractiveOptions.*;
 import static org.web3j.utils.Collection.tail;
@@ -28,31 +32,41 @@ public class ProjectImporter extends ProjectCreator {
     }
 
     public static void main(String[] args) {
-        final String projectName;
         final List<String> stringOptions = new ArrayList<>();
-        if (args.length > 0 && args[0].equals(COMMAND_IMPORT)) {
+        if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
-            if (args.length == 0) {
-                stringOptions.add("-n");
-                projectName = getProjectName();
-                stringOptions.add(projectName);
-                stringOptions.add("-p");
-                stringOptions.add(getPackageName());
-                stringOptions.add("-s");
-                stringOptions.add(getSolidityProjectPath());
-                getProjectDestination(projectName)
-                        .ifPresent(
-                                projectDest -> {
-                                    stringOptions.add("-o");
-                                    stringOptions.add(projectDest);
-                                });
-                if (userWantsTests()) {
-                    stringOptions.add("-t");
-                }
-
-                args = stringOptions.toArray(new String[0]);
-            }
+            args = getValues(args, stringOptions);
+            CommandLine.run(new JavaProjectImporterCLIRunner(), args);
+        } else {
+            args = getValues(args, stringOptions);
+            CommandLine.run(new KotlinProjectImporterCLIRunner(), args);
         }
-        CommandLine.run(new ProjectImporterCLIRunner(), args);
+    }
+
+    @NotNull
+    private static String[] getValues(String[] args, List<String> stringOptions) {
+        String projectName;
+        if (args.length == 0) {
+
+            stringOptions.add("-n");
+            projectName = getProjectName();
+            stringOptions.add(projectName);
+            stringOptions.add("-p");
+            stringOptions.add(getPackageName());
+            stringOptions.add("-s");
+            stringOptions.add(getSolidityProjectPath());
+            getProjectDestination(projectName)
+                    .ifPresent(
+                            projectDest -> {
+                                stringOptions.add("-o");
+                                stringOptions.add(projectDest);
+                            });
+            if (userWantsTests()) {
+                stringOptions.add("-t");
+            }
+
+            args = stringOptions.toArray(new String[0]);
+        }
+        return args;
     }
 }

@@ -69,10 +69,10 @@ public class Runner {
                     TruffleJsonFunctionWrapperGenerator.run(tail(args));
                     break;
                 case COMMAND_NEW:
-                    ProjectCreator.main(args);
+                    ProjectCreator.main(tail(args));
                     break;
                 case COMMAND_IMPORT:
-                    ProjectImporter.main(args);
+                    ProjectImporter.main(tail(args));
                     break;
                 case "version":
                     Console.exitSuccess(
@@ -86,7 +86,7 @@ public class Runner {
                     ContractAuditor.main(tail(args));
                     break;
                 case COMMAND_GENERATE_TESTS:
-                    UnitTestCreator.main(args);
+                    UnitTestCreator.main(tail(args));
                     break;
                 default:
                     Console.exitError(USAGE);

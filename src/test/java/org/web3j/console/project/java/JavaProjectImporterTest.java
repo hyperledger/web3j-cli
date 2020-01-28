@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,13 +26,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
+import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.utils.ClassExecutor;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProjectImporterTest extends ClassExecutor {
+public class JavaProjectImporterTest extends ClassExecutor {
     private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     static String tempDirPath;
@@ -52,7 +53,8 @@ public class ProjectImporterTest extends ClassExecutor {
     @Order(1)
     public void testWhenCorrectArgsArePassedProjectStructureCreated() {
         final String[] args = {"-p=org.com", "-n=Test", "-o=" + tempDirPath, "-s=" + tempDirPath};
-        final ProjectImporterCLIRunner projectImporterCLIRunner = new ProjectImporterCLIRunner();
+        final JavaProjectImporterCLIRunner projectImporterCLIRunner =
+                new JavaProjectImporterCLIRunner();
         new CommandLine(projectImporterCLIRunner).parseArgs(args);
         assertEquals(projectImporterCLIRunner.packageName, "org.com");
         assertEquals(projectImporterCLIRunner.projectName, "Test");
@@ -63,7 +65,7 @@ public class ProjectImporterTest extends ClassExecutor {
     @Order(2)
     public void testWithPicoCliWhenArgumentsAreCorrect() throws IOException, InterruptedException {
         final String[] args = {
-            "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
+            "--java", "-p=org.com", "-n=Test5", "-o=" + tempDirPath, "-s=" + formattedPath, "-t"
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
@@ -95,9 +97,11 @@ public class ProjectImporterTest extends ClassExecutor {
 
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() {
-        final String[] args = {"import", "-p=", "-n=", "-s="};
+        final String[] args = {"--java", "-p=", "-n=", "-s="};
         ProjectImporter.main(args);
-        assertEquals(
-                "Please make sure the required parameters are not empty.\n", outContent.toString());
+        assertTrue(
+                outContent
+                        .toString()
+                        .contains("Please make sure the required parameters are not empty"));
     }
 }

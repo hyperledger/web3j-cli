@@ -14,69 +14,51 @@ package org.web3j.console.project;
 
 import java.io.File;
 
-public class ProjectStructure {
+public abstract class ProjectStructure {
 
-    private final String packageName;
-    private final String projectName;
-    private final String testPath;
+    public final String packageName;
+    public final String projectName;
+    protected final String rootDirectory;
+    protected final String projectRoot;
+    private final String pathToTestDirectory;
     private final String solidityPath;
     private final String mainPath;
     private final String wrapperPath;
-    private final String rootDirectory;
-    private final String projectRoot;
     private final String walletPath;
+    private final String generatedJavaWrapper;
+    private final String testPath;
 
-    ProjectStructure(
-            final String rootDirectory, final String packageName, final String projectName) {
+    protected ProjectStructure(
+            final String rootDirectory,
+            final String packageName,
+            final String projectName,
+            String projectType) {
         this.rootDirectory = generateRoot(rootDirectory);
-        this.packageName = packageName;
         final String formattedPackageName = formatPackageName(packageName);
+        this.packageName = packageName;
         this.projectName = projectName;
         this.projectRoot = this.rootDirectory + File.separator + projectName;
-        this.mainPath = generatePath(this.projectRoot, "src", "main", "java", formattedPackageName);
+        this.mainPath =
+                generatePath(this.projectRoot, "src", "main", projectType, formattedPackageName);
         this.solidityPath = generatePath(this.projectRoot, "src", "main", "solidity");
-        this.testPath = generatePath(this.projectRoot, "src", "test", "java", formattedPackageName);
+        this.pathToTestDirectory = generatePath(this.projectRoot, "src", "test", projectType);
+        this.testPath =
+                generatePath(this.projectRoot, "src", "test", projectType, formattedPackageName);
         this.walletPath = generatePath(this.projectRoot, "src", "test", "resources", "wallet");
         this.wrapperPath = generatePath(this.projectRoot, "gradle", "wrapper");
+        this.generatedJavaWrapper =
+                generatePath(
+                        this.rootDirectory,
+                        projectName,
+                        "build",
+                        "generated",
+                        "source",
+                        "web3j",
+                        "main",
+                        "java");
     }
 
-    final String getRootDirectory() {
-        return rootDirectory;
-    }
-
-    final String getProjectRoot() {
-        return projectRoot;
-    }
-
-    final String getPackageName() {
-        return packageName;
-    }
-
-    final String getProjectName() {
-        return projectName;
-    }
-
-    final String getTestPath() {
-        return testPath;
-    }
-
-    final String getSolidityPath() {
-        return solidityPath;
-    }
-
-    final String getWalletPath() {
-        return walletPath;
-    }
-
-    final String getMainPath() {
-        return mainPath;
-    }
-
-    final String getWrapperPath() {
-        return wrapperPath;
-    }
-
-    private String generateRoot(final String path) {
+    protected String generateRoot(final String path) {
         if (path.equals("~")) {
             return System.getProperty("user.home");
         } else if (path.startsWith("~" + File.separator)) {
@@ -89,7 +71,7 @@ public class ProjectStructure {
         return path;
     }
 
-    private String generatePath(final String... a) {
+    protected String generatePath(final String... a) {
         final StringBuilder finalPath = new StringBuilder();
         for (final String b : a) {
             finalPath.append(b).append(File.separator);
@@ -97,35 +79,79 @@ public class ProjectStructure {
         return finalPath.toString();
     }
 
-    private String formatPackageName(final String packageName) {
+    protected String formatPackageName(final String packageName) {
         if (packageName.contains(".")) {
             return packageName.replace(".", File.separator);
         }
         return packageName;
     }
 
-    private void createDirectory(final String path) {
+    protected void createDirectory(final String path) {
         final File directory = new File(path);
         directory.mkdirs();
     }
 
-    void createMainDirectory() {
+    public void createMainDirectory() {
         createDirectory(mainPath);
     }
 
-    void createTestDirectory() {
-        createDirectory(testPath);
+    public void createTestDirectory() {
+        createDirectory(pathToTestDirectory);
     }
 
-    void createSolidityDirectory() {
+    public void createSolidityDirectory() {
         createDirectory(solidityPath);
     }
 
-    void createWrapperDirectory() {
+    public void createWrapperDirectory() {
         createDirectory(wrapperPath);
     }
 
-    void createWalletDirectory() {
+    public void createWalletDirectory() {
         createDirectory(walletPath);
+    }
+
+    public final String getPackageName() {
+        return packageName;
+    }
+
+    public final String getProjectName() {
+        return projectName;
+    }
+
+    public final String getPathToTestDirectory() {
+        return pathToTestDirectory;
+    }
+
+    public final String getTestPath() {
+        return testPath;
+    }
+
+    public final String getGeneratedJavaWrappers() {
+        return generatedJavaWrapper;
+    }
+
+    public final String getSolidityPath() {
+        return solidityPath;
+    }
+
+    public final String getWalletPath() {
+        return walletPath;
+    }
+
+    public final String getMainPath() {
+        return mainPath;
+    }
+
+    public final String getWrapperPath() {
+        return wrapperPath;
+    }
+
+    public final String getRootDirectory() {
+        return rootDirectory;
+    }
+
+    public final String getProjectRoot() {
+        return projectRoot;
     }
 }

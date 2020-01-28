@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.web3j.console.project;
+package org.web3j.console.project.java;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +24,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
+import org.web3j.console.project.ProjectImporter;
+import org.web3j.console.project.UnitTestCreator;
 import org.web3j.console.project.utils.ClassExecutor;
 
 import static java.io.File.separator;
 
-public class UnitTestCreatorTest extends ClassExecutor {
+public class JavaTestCreatorTest extends ClassExecutor {
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
@@ -42,16 +44,16 @@ public class UnitTestCreatorTest extends ClassExecutor {
     @Test
     public void testThatCorrectArgumentsArePassed() {
         final String[] args = {"-i=" + formattedPath, "-o=" + tempDirPath};
-        final UnitTestCLIRunner unitTestCLIRunner = new UnitTestCLIRunner();
-        new CommandLine(unitTestCLIRunner).parseArgs(args);
-        assert unitTestCLIRunner.unitTestOutputDir.equals(tempDirPath);
-        assert unitTestCLIRunner.javaWrapperDir.equals(formattedPath);
+        final JavaTestCLIRunner javaTestCLIRunner = new JavaTestCLIRunner();
+        new CommandLine(javaTestCLIRunner).parseArgs(args);
+        assert javaTestCLIRunner.unitTestOutputDir.equals(tempDirPath);
+        assert javaTestCLIRunner.javaWrapperDir.equals(formattedPath);
     }
 
     @Test
     public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
         final String[] args = {
-            "-p=org.com", "-n=Testing", "-o=" + tempDirPath, "-s=" + formattedPath
+            "--java", "-p=org.com", "-n=Testing", "-o=" + tempDirPath, "-s=" + formattedPath
         };
         final String pathToJavaWrappers =
                 new File(
@@ -73,7 +75,7 @@ public class UnitTestCreatorTest extends ClassExecutor {
                         .start()
                         .waitFor();
         Assertions.assertEquals(0, exitCode);
-        final String[] unitTestsArgs = {"-i=" + pathToJavaWrappers, "-o=" + tempDirPath};
+        final String[] unitTestsArgs = {"--java", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath};
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(
                                 UnitTestCreator.class,

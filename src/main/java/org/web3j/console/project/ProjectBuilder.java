@@ -12,17 +12,6 @@
  */
 package org.web3j.console.project;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
-import org.web3j.crypto.CipherException;
-
-public interface Project {
-    void createProject()
-            throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException;
-
-    ProjectWallet getProjectWallet();
+public interface ProjectBuilder {
+    Project build();
 }

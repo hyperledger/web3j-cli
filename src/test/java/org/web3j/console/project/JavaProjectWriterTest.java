@@ -20,13 +20,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.web3j.console.project.templates.java.JavaTemplateBuilder;
+import org.web3j.console.project.templates.java.JavaTemplateProvider;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProjectWriterTest {
+public class JavaProjectWriterTest {
 
-    private static final ProjectWriter projectWriter = new ProjectWriter();
-    private static final TemplateProvider templateProvider =
-            new TemplateProvider.Builder().loadGradleJar("gradle-wrapper.jar").build();
+    private static final org.web3j.console.project.ProjectWriter ProjectWriter =
+            new ProjectWriter();
+    private static final JavaTemplateProvider templateProvider =
+            new JavaTemplateBuilder().withGradlewWrapperJar("gradle-wrapper.jar").build();
 
     private String tempDirPath;
 
@@ -37,13 +41,13 @@ public class ProjectWriterTest {
 
     @Test
     public void writeResourceFileTest() throws Exception {
-        projectWriter.writeResourceFile("HelloWorld.sol", "HelloWorld.sol", tempDirPath);
+        ProjectWriter.writeResourceFile("HelloWorld.sol", "HelloWorld.sol", tempDirPath);
         assertTrue(new File(tempDirPath + File.separator + "HelloWorld.sol").exists());
     }
 
     @Test
     public void copyResourceFileTest() throws IOException {
-        projectWriter.copyResourceFile(
+        ProjectWriter.copyResourceFile(
                 templateProvider.getGradlewJar(),
                 tempDirPath + File.separator + "gradle-wrapper.jar");
         assertTrue(new File(tempDirPath + File.separator + "gradle-wrapper.jar").exists());
@@ -53,11 +57,11 @@ public class ProjectWriterTest {
     public void importSolidityProjectTest() throws IOException {
         final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
         file.mkdirs();
-        projectWriter.writeResourceFile(
+        ProjectWriter.writeResourceFile(
                 "HelloWorld.sol",
                 "HelloWorld.sol",
                 tempDirPath + File.separator + "tempSolidityDir");
-        projectWriter.importSolidityProject(
+        ProjectWriter.importSolidityProject(
                 new File(tempDirPath + File.separator + "tempSolidityDir"),
                 tempDirPath + File.separator + "tempSolidityDestination");
         assertTrue(

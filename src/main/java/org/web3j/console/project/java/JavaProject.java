@@ -90,7 +90,7 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
         if (withSampleCode) {
             templateBuilder.withMainJavaClass("Java.template");
         } else {
-            templateBuilder.withMainJavaClass("EmptyTemplate.java");
+            templateBuilder.withMainJavaClass("EmptyJava.template");
         }
 
         return templateBuilder.build();

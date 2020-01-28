@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import org.web3j.codegen.Console;
@@ -51,7 +50,6 @@ public class UnitTestCreator {
         }
     }
 
-    @NotNull
     private static String[] getValue(String[] args) {
         if (args.length == 0) {
             final List<String> listOfArgs = new ArrayList<>();

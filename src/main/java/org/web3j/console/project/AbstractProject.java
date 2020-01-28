@@ -98,8 +98,8 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         int exitCode =
                 new ProcessBuilder(command)
                         .directory(workingDir)
-                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                        .redirectError(ProcessBuilder.Redirect.INHERIT)
+                        .redirectErrorStream(true)
+                        .redirectOutput(File.createTempFile("w3j", "cli"))
                         .start()
                         .waitFor();
         if (exitCode != 0) {

@@ -17,6 +17,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.AbstractProject;
 import org.web3j.console.project.Project;
 import org.web3j.console.project.ProjectStructure;
@@ -91,12 +92,18 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         }
         if (command.equals("new")) {
             templateBuilder
-                    .withGradleBuild("build.gradle.template")
+                    .withGradleBuild(
+                            JavaVersion.getJavaVersionAsDouble() < 11
+                                    ? "build.gradle.template"
+                                    : "build.gradleJava11.template")
                     .withSolidityProject("HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder
-                    .withGradleBuild("build.gradleImport.template")
+                    .withGradleBuild(
+                            JavaVersion.getJavaVersionAsDouble() < 11
+                                    ? "build.gradleImport.template"
+                                    : "build.gradleImportJava11.template")
                     .withPathToSolidityFolder(solidityImportPath);
         }
 

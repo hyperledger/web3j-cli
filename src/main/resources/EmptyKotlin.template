@@ -1,9 +1,10 @@
 package <package_name>;
 
-class  <project_name> {
+class <project_name> {
 
-    fun main(args: Array<String>) {
-
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+        }
     }
-
 }

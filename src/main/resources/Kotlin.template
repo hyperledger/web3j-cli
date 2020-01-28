@@ -15,23 +15,25 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class  <project_name> {
+fun main(args: Array<String>) {
+    <project_name>().start(args)
+
+}
+
+class <project_name> {
 
     private val log: Logger = LoggerFactory.getLogger( <project_name>::class.java)
     private val NODE_URL = "NODE_URL"
 
-
-    fun main(args: Array<String>) {
+    fun start(args: Array<String>) {
          try {
-                    val credentials: Credentials? =
-                        loadCredentials("<wallet_name>")
-                    val web3j: Web3j? = createWeb3jService("")
-                    val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, DefaultGasProvider())
-                    callGreetMethod(helloWorld)
-                } catch (e: Exception) {
-                    log.info(e.message)
-                }
-
+             val credentials: Credentials? = loadCredentials("<wallet_name>")
+             val web3j: Web3j? = createWeb3jService("")
+             val helloWorld: HelloWorld? = deployHelloWorld(web3j, credentials, DefaultGasProvider())
+             callGreetMethod(helloWorld)
+         } catch (e: Exception) {
+             log.info(e.message)
+         }
     }
 
     @Throws(IOException::class, CipherException::class)

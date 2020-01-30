@@ -58,7 +58,7 @@ public class WalletFunder {
                     fundWallet(args[1], selectedFaucet, args.length == 4 ? args[3] : null);
             System.out.println(
                     String.format(
-                            "Your wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://%s.explorer.epirus.web3labs.com/transactions/%s",
+                            "Your wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://%s.epirus.io/transactions/%s",
                             selectedFaucet.name.toLowerCase(), transactionHash));
             System.exit(0);
         } catch (Exception e) {

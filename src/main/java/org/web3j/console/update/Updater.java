@@ -33,6 +33,7 @@ public class Updater {
     }
 
     public void promptIfUpdateAvailable() {
+
         if (config.isUpdateAvailable()) {
             System.out.println(
                     String.format(

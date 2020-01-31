@@ -33,7 +33,7 @@ import static org.web3j.utils.Collection.tail;
 public class Runner {
 
     private static final String USAGE =
-            "Usage: web3j version|wallet|solidity|new|import|generate-tests|audit ...";
+            "Usage: web3j version|wallet|solidity|new|import|generate-tests|audit|account ...";
 
     private static final String LOGO =
             "\n" // generated at http://patorjk.com/software/taag

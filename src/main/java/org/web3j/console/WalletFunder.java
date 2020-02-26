@@ -171,20 +171,22 @@ public class WalletFunder {
                             .post(fundingBody)
                             .build();
         }
+        try {
+            Response sendRawResponse = client.newCall(sendEtherRequest).execute();
 
-        Response sendRawResponse = client.newCall(sendEtherRequest).execute();
+            if (sendRawResponse.code() != 200) {
+                exitError(
+                        String.format(
+                                "\nAn HTTP request failed with code: %d", sendRawResponse.code()));
+            }
 
-        if (sendRawResponse.code() != 200) {
-            exitError(
-                    String.format(
-                            "\nAn HTTP request failed with code: %d", sendRawResponse.code()));
+            String sendResponse = sendRawResponse.body().string();
+
+            WalletFunderResult result = mapper.readValue(sendResponse, WalletFunderResult.class);
+            return result.result;
+        } catch (Exception ex) {
+            return "The fund operation failed - this may be due to an issue with the remote server. Please try again.";
         }
-
-        String sendResponse = sendRawResponse.body().string();
-
-        WalletFunderResult result = mapper.readValue(sendResponse, WalletFunderResult.class);
-
-        return result.result;
     }
 }
 

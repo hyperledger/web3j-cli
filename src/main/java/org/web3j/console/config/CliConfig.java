@@ -24,12 +24,12 @@ import com.google.gson.Gson;
 import org.web3j.utils.Version;
 
 public class CliConfig {
-    private static final Path web3jConfigPath =
+    private static final Path CONFIG_PATH =
             Paths.get(System.getProperty("user.home"), ".web3j", ".config");
-    private static final String defaultServicesUrl = "https://internal.services.web3labs.com";
+    private static final String DEFAULT_SERVICES_URL = "https://internal.services.web3labs.com";
 
-    public static Path getWeb3jConfigPath() {
-        return web3jConfigPath;
+    public static Path getConfigPath() {
+        return CONFIG_PATH;
     }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
@@ -39,7 +39,7 @@ public class CliConfig {
         }
         return new CliConfig(
                 Version.getVersion(),
-                defaultServicesUrl,
+                DEFAULT_SERVICES_URL,
                 UUID.randomUUID().toString(),
                 Version.getVersion(),
                 null);
@@ -154,6 +154,6 @@ public class CliConfig {
 
     public void save() throws IOException {
         String jsonToWrite = new Gson().toJson(this);
-        Files.write(web3jConfigPath, jsonToWrite.getBytes(Charset.defaultCharset()));
+        Files.write(CONFIG_PATH, jsonToWrite.getBytes(Charset.defaultCharset()));
     }
 }

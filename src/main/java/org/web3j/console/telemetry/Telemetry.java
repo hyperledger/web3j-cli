@@ -1,56 +1,74 @@
+/*
+ * Copyright 2020 Web3 Labs Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package org.web3j.console.telemetry;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+
 import org.web3j.console.Runner;
 import org.web3j.console.config.CliConfig;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 public class Telemetry {
 
-    public static void invokeAnalyticsUpload() throws URISyntaxException, IOException {
+    public static void invokeAnalyticsUpload(String[] args) throws URISyntaxException, IOException {
         System.out.println("Invoking telemetry upload");
-        final String jarFile = new File(
-                Runner.class
-                        .getProtectionDomain()
-                        .getCodeSource()
-                        .getLocation()
-                        .toURI())
-                .getPath();
+        final String jarFile =
+                new File(Runner.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+                        .getPath();
         if (jarFile.endsWith(".jar")) {
             Runtime.getRuntime()
                     .exec(
-                            new String[]{
-                                    "java",
-                                    "-jar",
-                                    jarFile,
-                                    "--telemetry"
-                            });
+                            Stream.concat(
+                                            Arrays.stream(
+                                                    new String[] {
+                                                        "java", "-jar", jarFile, "--telemetry"
+                                                    }),
+                                            Arrays.stream(args))
+                                    .toArray(String[]::new));
         }
     }
 
-
     private CliConfig config;
+    private String[] args;
 
-    public Telemetry(CliConfig config) {
+    public Telemetry(CliConfig config, String[] args) {
         this.config = config;
+        this.args = args;
     }
 
-    public void uploadAnalytics() {
+    public void uploadAnalytics() throws IOException {
         OkHttpClient client = new OkHttpClient();
+        ArrayList<String> allArgs =
+                Arrays.stream(args).skip(1).collect(Collectors.toCollection(ArrayList::new));
+        String argsToUpload = allArgs.stream().skip(1).collect(Collectors.joining(", "));
 
         RequestBody analyticsBody =
                 new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("os", CliConfig.determineOS().toString())
                         .addFormDataPart("clientId", config.getClientId())
-                        .addFormDataPart("data", "not_update")
-                        .addFormDataPart("params", "params")
+                        .addFormDataPart("data", allArgs.get(0))
+                        .addFormDataPart("params", argsToUpload)
                         .build();
 
         Request analyticsRequest =
@@ -64,5 +82,4 @@ public class Telemetry {
         } catch (Exception ignored) {
         }
     }
-
 }

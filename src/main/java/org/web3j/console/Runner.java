@@ -54,9 +54,9 @@ public class Runner {
         CliConfig config = CliConfig.getConfig(CliConfig.getConfigPath().toFile());
 
         if (Arrays.asList(args).contains("--telemetry")) {
-            new Telemetry(config).uploadAnalytics();
+            new Telemetry(config, args).uploadAnalytics();
         } else {
-            Telemetry.invokeAnalyticsUpload();
+            Telemetry.invokeAnalyticsUpload(args);
         }
 
         Updater updater = new Updater(config);
@@ -105,5 +105,4 @@ public class Runner {
 
         config.save();
     }
-
 }

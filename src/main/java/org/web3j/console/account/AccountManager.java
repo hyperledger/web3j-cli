@@ -30,7 +30,7 @@ import static org.web3j.codegen.Console.exitError;
 
 public class AccountManager {
     private static final String USAGE = "account login|logout|create";
-    private static final String CLOUD_URL = "http://localhost:80";
+    private static final String CLOUD_URL = "https://auth.epirus.io";
 
     public static void main(final CliConfig config, final String[] args) {
         OkHttpClient client = new OkHttpClient();
@@ -55,7 +55,7 @@ public class AccountManager {
 
                     Request newAccountRequest =
                             new Request.Builder()
-                                    .url(String.format("%s/api/users/create/", CLOUD_URL))
+                                    .url(String.format("%s/auth/realms/EpirusPortal/web3j-token/create", CLOUD_URL))
                                     .post(accountBody)
                                     .build();
 

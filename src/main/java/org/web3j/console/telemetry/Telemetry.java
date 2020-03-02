@@ -31,7 +31,6 @@ import org.web3j.console.config.CliConfig;
 public class Telemetry {
 
     public static void invokeAnalyticsUpload(String[] args) throws URISyntaxException, IOException {
-        System.out.println("Invoking telemetry upload");
         final String jarFile =
                 new File(Runner.class.getProtectionDomain().getCodeSource().getLocation().toURI())
                         .getPath();
@@ -48,15 +47,7 @@ public class Telemetry {
         }
     }
 
-    private CliConfig config;
-    private String[] args;
-
-    public Telemetry(CliConfig config, String[] args) {
-        this.config = config;
-        this.args = args;
-    }
-
-    public void uploadAnalytics() throws IOException {
+    public static void uploadAnalytics(CliConfig config, String[] args) {
         OkHttpClient client = new OkHttpClient();
         ArrayList<String> allArgs =
                 Arrays.stream(args).skip(1).collect(Collectors.toCollection(ArrayList::new));

@@ -1,7 +1,7 @@
 web3j-cli: Web3j Command Line Tools
 ==================================
 
-.. image:: https://readthedocs.org/projects/web3j/badge/?version=latest
+.. image:: https://api.travis-ci.org/web3j/web3j-docs.svg?branch=master
    :target: http://docs.web3j.io
    :alt: Documentation Status
 

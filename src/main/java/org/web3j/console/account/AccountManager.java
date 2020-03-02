@@ -77,6 +77,8 @@ public class AccountManager {
                         } else {
                             System.out.println("Account creation failed. Please try again later.");
                         }
+                        client.connectionPool().evictAll();
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

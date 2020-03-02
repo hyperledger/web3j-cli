@@ -55,7 +55,10 @@ public class AccountManager {
 
                     Request newAccountRequest =
                             new Request.Builder()
-                                    .url(String.format("%s/auth/realms/EpirusPortal/web3j-token/create", CLOUD_URL))
+                                    .url(
+                                            String.format(
+                                                    "%s/auth/realms/EpirusPortal/web3j-token/create",
+                                                    CLOUD_URL))
                                     .post(accountBody)
                                     .build();
 

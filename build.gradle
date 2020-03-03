@@ -34,7 +34,7 @@ apply {
         download {
             src "https://raw.githubusercontent.com/web3j/build-tools/master/gradle/$buildScript/build.gradle"
             dest "$rootDir/gradle/$buildScript/build.gradle"
-            overwrite true
+            overwrite false
             quiet true
             onlyIfModified true
         }
@@ -43,8 +43,9 @@ apply {
 }
 
 repositories {
+
     maven { url "https://dl.bintray.com/ethereum/maven/" }
-    mavenLocal()
+
 }
 
 test {
@@ -84,4 +85,5 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion",
             "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
 }

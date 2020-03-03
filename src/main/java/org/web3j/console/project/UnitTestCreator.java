@@ -12,19 +12,18 @@
  */
 package org.web3j.console.project;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import picocli.CommandLine;
-
 import org.web3j.codegen.Console;
 import org.web3j.codegen.unit.gen.ClassProvider;
 import org.web3j.codegen.unit.gen.java.JavaClassGenerator;
 import org.web3j.codegen.unit.gen.kotlin.KotlinClassGenerator;
 import org.web3j.console.project.java.JavaTestCLIRunner;
 import org.web3j.console.project.kotlin.KotlinTestCLIRunner;
+import picocli.CommandLine;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.web3j.console.project.ProjectCreator.COMMAND_JAVA;
 import static org.web3j.utils.Collection.tail;

@@ -96,7 +96,8 @@ public class Runner {
                     Console.exitError(USAGE);
             }
         }
-
         config.save();
+        // TODO change this with a no argument method when the update is done in web3j
+        Console.exitSuccess("");
     }
 }

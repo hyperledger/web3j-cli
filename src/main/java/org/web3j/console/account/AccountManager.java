@@ -12,6 +12,7 @@
  */
 package org.web3j.console.account;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -28,7 +29,7 @@ import org.web3j.console.config.CliConfig;
 
 import static org.web3j.codegen.Console.exitError;
 
-public class AccountManager {
+public class AccountManager implements Closeable {
     private static final String USAGE = "account login|logout|create";
     private static final String CLOUD_URL = "https://auth.epirus.io";
     private OkHttpClient client;
@@ -39,20 +40,21 @@ public class AccountManager {
         this.config = cliConfig;
     }
 
-    public static void main(final CliConfig config, final String[] args) {
+    public static void main(final CliConfig config, final String[] args) throws IOException {
 
         Scanner console = new Scanner(System.in);
         if ("create".equals(args[0])) {
             System.out.println("Please enter your email address: ");
             String email = console.nextLine().trim();
-            new AccountManager(config, new OkHttpClient()).createAccount(email);
-
+            AccountManager accountManager = new AccountManager(config, new OkHttpClient());
+            accountManager.createAccount(email);
+            accountManager.close();
         } else {
             exitError(USAGE);
         }
     }
 
-    public void createAccount(String email) {
+    public void createAccount(String email) throws IOException {
         RequestBody requestBody = createRequestBody(email);
         Request newAccountRequest = createRequest(requestBody);
 
@@ -79,7 +81,6 @@ public class AccountManager {
         } catch (IOException e) {
             System.out.println("Could not connect to the server.\nReason:" + e.getMessage());
         }
-        client.connectionPool().evictAll();
     }
 
     protected final Response executeClientCall(Request newAccountRequest) throws IOException {
@@ -97,5 +98,11 @@ public class AccountManager {
                 .url(String.format("%s/auth/realms/EpirusPortal/web3j-token/create", CLOUD_URL))
                 .post(accountBody)
                 .build();
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.client.dispatcher().executorService().shutdown();
+        this.client.connectionPool().evictAll();
     }
 }

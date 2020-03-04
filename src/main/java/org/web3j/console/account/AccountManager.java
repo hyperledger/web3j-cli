@@ -60,13 +60,18 @@ public class AccountManager {
 
         try {
             Response sendRawResponse = executeClientCall(newAccountRequest);
-            System.out.println(sendRawResponse);
             ResponseBody body;
             if (sendRawResponse.code() == 200
                     && (body = sendRawResponse.body()) != null) {
                 String rawResponse = body.string();
                 JsonObject responseJsonObj =
                         JsonParser.parseString(rawResponse).getAsJsonObject();
+
+                if (responseJsonObj.get("token") == null) {
+                    String tokenError = responseJsonObj.get("tokenError").getAsString();
+                    System.out.println(tokenError);
+                    return;
+                }
                 String token = responseJsonObj.get("token").getAsString();
                 config.setLoginToken(token);
                 System.out.println(
@@ -74,11 +79,12 @@ public class AccountManager {
             } else {
                 System.out.println("Account creation failed. Please try again later.");
             }
-//            client.connectionPool().evictAll();
+
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Could not connect to the server.\nReason:" + e.getMessage());
         }
+        client.connectionPool().evictAll();
     }
 
     protected final Response executeClientCall(Request newAccountRequest) throws IOException {

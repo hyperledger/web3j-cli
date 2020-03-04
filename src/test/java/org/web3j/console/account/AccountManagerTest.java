@@ -1,6 +1,7 @@
 package org.web3j.console.account;
 
 import okhttp3.Call;
+import okhttp3.ConnectionPool;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,6 +46,7 @@ public class AccountManagerTest {
     public void testAccountCreation() throws IOException {
         OkHttpClient mockedOkHttpClient = mock(OkHttpClient.class);
         Call call = mock(Call.class);
+        ConnectionPool connectionPool = mock(ConnectionPool.class);
         AccountManager accountManager = new AccountManager(new CliConfig("", "", "", "", "", ""), mockedOkHttpClient);
         Request request = accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
         Response response = new Response.Builder().protocol(Protocol.H2_PRIOR_KNOWLEDGE).message("")
@@ -54,6 +57,8 @@ public class AccountManagerTest {
                 .code(200).request(request).build();
         when(call.execute()).thenReturn(response);
         when(mockedOkHttpClient.newCall(any(Request.class))).thenReturn(call);
+        when(mockedOkHttpClient.connectionPool()).thenReturn(connectionPool);
+        doNothing().when(connectionPool).evictAll();
         accountManager.createAccount("test@gmail.com");
         Assertions.assertTrue(outContent.toString().contains("Account created successfully."));
     }

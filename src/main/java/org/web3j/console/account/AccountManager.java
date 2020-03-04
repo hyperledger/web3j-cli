@@ -18,7 +18,6 @@ import java.util.Scanner;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.FormBody;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -40,7 +39,6 @@ public class AccountManager {
         this.config = cliConfig;
     }
 
-
     public static void main(final CliConfig config, final String[] args) {
 
         Scanner console = new Scanner(System.in);
@@ -61,11 +59,9 @@ public class AccountManager {
         try {
             Response sendRawResponse = executeClientCall(newAccountRequest);
             ResponseBody body;
-            if (sendRawResponse.code() == 200
-                    && (body = sendRawResponse.body()) != null) {
+            if (sendRawResponse.code() == 200 && (body = sendRawResponse.body()) != null) {
                 String rawResponse = body.string();
-                JsonObject responseJsonObj =
-                        JsonParser.parseString(rawResponse).getAsJsonObject();
+                JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
 
                 if (responseJsonObj.get("token") == null) {
                     String tokenError = responseJsonObj.get("tokenError").getAsString();
@@ -80,7 +76,6 @@ public class AccountManager {
                 System.out.println("Account creation failed. Please try again later.");
             }
 
-
         } catch (IOException e) {
             System.out.println("Could not connect to the server.\nReason:" + e.getMessage());
         }
@@ -93,19 +88,13 @@ public class AccountManager {
 
     protected final RequestBody createRequestBody(String email) {
 
-        return new FormBody.Builder().add("email", email)
-                .build();
-
-
+        return new FormBody.Builder().add("email", email).build();
     }
 
     protected final Request createRequest(RequestBody accountBody) {
 
         return new Request.Builder()
-                .url(
-                        String.format(
-                                "%s/auth/realms/EpirusPortal/web3j-token/create",
-                                CLOUD_URL))
+                .url(String.format("%s/auth/realms/EpirusPortal/web3j-token/create", CLOUD_URL))
                 .post(accountBody)
                 .build();
     }

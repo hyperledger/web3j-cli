@@ -126,6 +126,12 @@ public abstract class AbstractProject<T extends AbstractProject<T>> {
         projectWallet =
                 new ProjectWallet(
                         ProjectUtils.generateWalletPassword(), projectStructure.getWalletPath());
+
+        ProjectWriter.writeResourceFile(
+                projectWallet.getPasswordFileName(),
+                ".gitignore",
+                projectStructure.getWalletPath());
+
         ProjectWriter.writeResourceFile(
                 projectWallet.getWalletPassword(),
                 projectWallet.getPasswordFileName(),

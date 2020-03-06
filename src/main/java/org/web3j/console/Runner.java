@@ -48,7 +48,6 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
         System.out.println(LOGO);
-
         CliConfig config = CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile());
         Updater updater = new Updater(config);
         updater.promptIfUpdateAvailable();
@@ -97,7 +96,6 @@ public class Runner {
             }
         }
         config.save();
-        // TODO change this with a no argument method when the update is done in web3j
-        Console.exitSuccess("");
+        Console.exitSuccess();
     }
 }

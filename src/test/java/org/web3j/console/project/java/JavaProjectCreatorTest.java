@@ -96,7 +96,7 @@ public class JavaProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         final String[] args = {"--java", "-n=", "-p="};
         ProjectCreator.main(args);
         assertEquals(

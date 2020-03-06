@@ -66,8 +66,13 @@ public class AccountManager implements Closeable {
                 JsonObject responseJsonObj = JsonParser.parseString(rawResponse).getAsJsonObject();
 
                 if (responseJsonObj.get("token") == null) {
+
                     String tokenError = responseJsonObj.get("tokenError").getAsString();
-                    System.out.println(tokenError);
+                    if (tokenError == null || tokenError.isEmpty()) {
+                        System.out.println("Could not retrieve token. Try again later.");
+                    } else {
+                        System.out.println(tokenError);
+                    }
                     return;
                 }
                 String token = responseJsonObj.get("token").getAsString();

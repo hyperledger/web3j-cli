@@ -49,7 +49,7 @@ public class TelemetryTest {
     }
 
     @Test
-    public void textExpectedTelemetryWorks() throws IOException {
+    public void testExpectedTelemetryWorks() throws IOException {
         CliConfig config =
                 mock(
                         CliConfig.class,
@@ -59,6 +59,7 @@ public class TelemetryTest {
                                         "http://localhost:8081",
                                         UUID.randomUUID().toString(),
                                         Version.getVersion(),
+                                        null,
                                         null)
                                 .defaultAnswer(Mockito.CALLS_REAL_METHODS));
 

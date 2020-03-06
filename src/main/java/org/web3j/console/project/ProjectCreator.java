@@ -83,14 +83,14 @@ public class ProjectCreator {
                 if (!InteractiveOptions.userHasWeb3jAccount()) {
                     if (InteractiveOptions.userWantsWeb3jAccount()) {
                         AccountManager.main(
-                                CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile()),
+                                CliConfig.getConfig(CliConfig.getConfigPath().toFile()),
                                 new String[] {"create"});
                     }
                 }
             } else {
                 if (InteractiveOptions.userWantsWeb3jAccount()) {
                     AccountManager.main(
-                            CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile()),
+                            CliConfig.getConfig(CliConfig.getConfigPath().toFile()),
                             new String[] {"create"});
                 }
             }

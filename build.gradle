@@ -43,6 +43,7 @@ apply {
 }
 
 repositories {
+
     maven { url "https://dl.bintray.com/ethereum/maven/" }
 }
 
@@ -83,4 +84,5 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion",
             "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
+    testImplementation 'org.mockito:mockito-inline:3.3.0'
 }

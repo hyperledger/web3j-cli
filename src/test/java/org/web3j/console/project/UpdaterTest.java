@@ -86,7 +86,8 @@ public class UpdaterTest {
                                         "http://localhost:8081",
                                         UUID.randomUUID().toString(),
                                         Version.getVersion(),
-                                        null,null)
+                                        null,
+                                        null)
                                 .defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
         doAnswer(

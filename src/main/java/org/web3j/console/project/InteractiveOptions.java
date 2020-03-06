@@ -77,27 +77,27 @@ public class InteractiveOptions {
         print(
                 "Please enter the path of the generated contract wrappers ["
                         + String.join(
-                        separator,
-                        System.getProperty("user.dir"),
-                        "build",
-                        "generated",
-                        "source",
-                        "web3j",
-                        "main",
-                        "java")
+                                separator,
+                                System.getProperty("user.dir"),
+                                "build",
+                                "generated",
+                                "source",
+                                "web3j",
+                                "main",
+                                "java")
                         + "]");
         String pathToTheWrappers = getUserInput();
         return pathToTheWrappers.isEmpty()
                 ? Optional.of(
-                String.join(
-                        separator,
-                        System.getProperty("user.dir"),
-                        "build",
-                        "generated",
-                        "source",
-                        "web3j",
-                        "main",
-                        "java"))
+                        String.join(
+                                separator,
+                                System.getProperty("user.dir"),
+                                "build",
+                                "generated",
+                                "source",
+                                "web3j",
+                                "main",
+                                "java"))
                 : Optional.of(pathToTheWrappers);
     }
 
@@ -105,13 +105,13 @@ public class InteractiveOptions {
         print(
                 "Where would you like to save your tests ["
                         + String.join(
-                        separator, System.getProperty("user.dir"), "src", "test", "java")
+                                separator, System.getProperty("user.dir"), "src", "test", "java")
                         + "]");
         String outputPath = getUserInput();
         return outputPath.isEmpty()
                 ? Optional.of(
-                String.join(
-                        separator, System.getProperty("user.dir"), "src", "test", "java"))
+                        String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "java"))
                 : Optional.of(outputPath);
     }
 
@@ -119,13 +119,13 @@ public class InteractiveOptions {
         print(
                 "Where would you like to save your tests ["
                         + String.join(
-                        separator, System.getProperty("user.dir"), "src", "test", "kotlin")
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin")
                         + "]");
         String outputPath = getUserInput();
         return outputPath.isEmpty()
                 ? Optional.of(
-                String.join(
-                        separator, System.getProperty("user.dir"), "src", "test", "kotlin"))
+                        String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin"))
                 : Optional.of(outputPath);
     }
 

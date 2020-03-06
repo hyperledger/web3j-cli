@@ -99,8 +99,10 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
     public void testWithPicoCliWhenArgumentsAreEmpty() throws Exception {
         final String[] args = {"-n=", "-p="};
         ProjectCreator.main(args);
-        assertEquals(
-                outContent.toString(), "Please make sure the required parameters are not empty.\n");
+        assertTrue(
+                outContent
+                        .toString()
+                        .contains("Please make sure the required parameters are not empty"));
     }
 
     @Test

@@ -43,7 +43,8 @@ public class CliConfig {
                 UUID.randomUUID().toString(),
                 Version.getVersion(),
                 null,
-                null);
+                null,
+                false);
     }
 
     private static CliConfig getSavedConfig(File configFile) throws IOException {
@@ -98,6 +99,31 @@ public class CliConfig {
         }
     }
 
+    private String version;
+    private String servicesUrl;
+    private String clientId;
+    private String latestVersion;
+    private String updatePrompt;
+    private String loginToken;
+    private boolean disableTelemetry;
+
+    public CliConfig(
+            String version,
+            String servicesUrl,
+            String clientId,
+            String latestVersion,
+            String updatePrompt,
+            String loginToken,
+            boolean disableTelemetry) {
+        this.version = version;
+        this.servicesUrl = servicesUrl;
+        this.clientId = clientId;
+        this.latestVersion = latestVersion;
+        this.updatePrompt = updatePrompt;
+        this.loginToken = loginToken;
+        this.disableTelemetry = disableTelemetry;
+    }
+
     public String getLatestVersion() {
         return latestVersion;
     }
@@ -122,28 +148,6 @@ public class CliConfig {
         this.version = version;
     }
 
-    private String version;
-    private String servicesUrl;
-    private String clientId;
-    private String latestVersion;
-    private String updatePrompt;
-    private String loginToken;
-
-    public CliConfig(
-            String version,
-            String servicesUrl,
-            String clientId,
-            String latestVersion,
-            String updatePrompt,
-            String loginToken) {
-        this.version = version;
-        this.servicesUrl = servicesUrl;
-        this.clientId = clientId;
-        this.latestVersion = latestVersion;
-        this.updatePrompt = updatePrompt;
-        this.loginToken = loginToken;
-    }
-
     public String getVersion() {
         return version;
     }
@@ -162,6 +166,14 @@ public class CliConfig {
 
     public void setUpdatePrompt(String updatePrompt) {
         this.updatePrompt = updatePrompt;
+    }
+
+    public boolean isTelemetryDisabled() {
+        return disableTelemetry;
+    }
+
+    public void setTelemetryDisabled(boolean disableTelemetry) {
+        this.disableTelemetry = disableTelemetry;
     }
 
     public void save() throws IOException {

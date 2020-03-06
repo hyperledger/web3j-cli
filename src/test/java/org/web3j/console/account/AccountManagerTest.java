@@ -60,7 +60,8 @@ public class AccountManagerTest {
         Call call = mock(Call.class);
         ConnectionPool connectionPool = mock(ConnectionPool.class);
         AccountManager accountManager =
-                new AccountManager(new CliConfig("", "", "", "", "", ""), mockedOkHttpClient);
+                new AccountManager(
+                        new CliConfig("", "", "", "", "", "", false), mockedOkHttpClient);
         Request request =
                 accountManager.createRequest(accountManager.createRequestBody("test@gmail.com"));
         Response response =

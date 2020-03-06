@@ -60,7 +60,7 @@ public class Runner {
             Telemetry.uploadAnalytics(config, args);
             updater.onlineUpdateCheck();
             exitSuccess("Update Check Succeeded");
-        } else {
+        } else if (!config.isTelemetryDisabled()) {
             Telemetry.invokeAnalyticsUpload(args);
         }
 

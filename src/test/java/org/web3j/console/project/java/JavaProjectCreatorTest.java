@@ -99,8 +99,10 @@ public class JavaProjectCreatorTest extends ClassExecutor {
     public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         final String[] args = {"--java", "-n=", "-p="};
         ProjectCreator.main(args);
-        assertEquals(
-                outContent.toString(), "Please make sure the required parameters are not empty.\n");
+        assertTrue(
+                outContent
+                        .toString()
+                        .contains("Please make sure the required parameters are not empty"));
     }
 
     @Test

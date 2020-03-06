@@ -60,7 +60,8 @@ public class TelemetryTest {
                                         UUID.randomUUID().toString(),
                                         Version.getVersion(),
                                         null,
-                                        null)
+                                        null,
+                                        false)
                                 .defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
         Telemetry.uploadAnalytics(

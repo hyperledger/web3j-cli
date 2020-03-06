@@ -86,6 +86,7 @@ public class UpdaterTest {
                                         "http://localhost:8081",
                                         UUID.randomUUID().toString(),
                                         Version.getVersion(),
+                                        null,
                                         null)
                                 .defaultAnswer(Mockito.CALLS_REAL_METHODS));
 
@@ -99,7 +100,8 @@ public class UpdaterTest {
                                                             config.getServicesUrl(),
                                                             config.getClientId(),
                                                             config.getLatestVersion(),
-                                                            config.getUpdatePrompt()));
+                                                            config.getUpdatePrompt(),
+                                                            null));
                             Files.write(
                                     tempWeb3jSettingsPath,
                                     jsonToWrite.getBytes(Charset.defaultCharset()));

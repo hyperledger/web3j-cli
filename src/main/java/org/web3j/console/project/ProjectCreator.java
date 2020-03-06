@@ -13,6 +13,7 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
+import org.web3j.console.account.AccountManager;
+import org.web3j.console.config.CliConfig;
 import org.web3j.console.project.java.JavaBuilder;
 import org.web3j.console.project.java.JavaProjectCreatorCLIRunner;
 import org.web3j.console.project.kotlin.KotlinBuilder;
@@ -48,7 +51,7 @@ public class ProjectCreator {
         this.root = root;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final List<String> stringOptions = new ArrayList<>();
         if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
@@ -61,7 +64,8 @@ public class ProjectCreator {
     }
 
     @NotNull
-    private static String[] getValues(String[] args, List<String> stringOptions) {
+    private static String[] getValues(String[] args, List<String> stringOptions)
+            throws IOException {
         String projectName;
         if (args.length == 0) {
             stringOptions.add("-n");
@@ -75,6 +79,22 @@ public class ProjectCreator {
                                 stringOptions.add("-o");
                                 stringOptions.add(projectDest);
                             });
+            if (InteractiveOptions.configFileExists()) {
+                if (!InteractiveOptions.userHasWeb3jAccount()) {
+                    if (InteractiveOptions.userWantsWeb3jAccount()) {
+                        AccountManager.main(
+                                CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile()),
+                                new String[] {"create"});
+                    }
+                }
+            } else {
+                if (InteractiveOptions.userWantsWeb3jAccount()) {
+                    AccountManager.main(
+                            CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile()),
+                            new String[] {"create"});
+                }
+            }
+
             args = stringOptions.toArray(new String[0]);
         }
         return args;

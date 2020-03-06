@@ -69,6 +69,12 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         projectWallet =
                 new ProjectWallet(
                         ProjectUtils.generateWalletPassword(), projectStructure.getWalletPath());
+
+        ProjectWriter.writeResourceFile(
+                projectWallet.getPasswordFileName(),
+                ".gitignore",
+                projectStructure.getWalletPath());
+
         ProjectWriter.writeResourceFile(
                 projectWallet.getWalletPassword(),
                 projectWallet.getPasswordFileName(),

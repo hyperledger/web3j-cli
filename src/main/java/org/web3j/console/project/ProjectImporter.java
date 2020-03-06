@@ -36,10 +36,10 @@ public class ProjectImporter extends ProjectCreator {
         if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
             args = getValues(args, stringOptions);
-            CommandLine.run(new JavaProjectImporterCLIRunner(), args);
+            new CommandLine(new JavaProjectImporterCLIRunner()).execute(args);
         } else {
             args = getValues(args, stringOptions);
-            CommandLine.run(new KotlinProjectImporterCLIRunner(), args);
+            new CommandLine(new KotlinProjectImporterCLIRunner()).execute(args);
         }
     }
 

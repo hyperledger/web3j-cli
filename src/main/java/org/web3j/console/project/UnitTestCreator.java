@@ -43,10 +43,10 @@ public class UnitTestCreator {
         if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
             args = getValue(args);
-            CommandLine.run(new JavaTestCLIRunner(), args);
+            new CommandLine(new JavaTestCLIRunner()).execute(args);
         } else {
             args = getValue(args);
-            CommandLine.run(new KotlinTestCLIRunner(), args);
+            new CommandLine(new KotlinTestCLIRunner()).execute(args);
         }
     }
 

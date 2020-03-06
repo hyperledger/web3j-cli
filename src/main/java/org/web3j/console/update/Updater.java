@@ -36,8 +36,8 @@ public class Updater {
         if (config.isUpdateAvailable()) {
             System.out.println(
                     String.format(
-                            "A new Web3j update is available. To update, run: %s",
-                            config.getUpdatePrompt()));
+                            "A new Web3j update is available (version %s). To update, run: %s",
+                            config.getLatestVersion(), config.getUpdatePrompt()));
         }
     }
 

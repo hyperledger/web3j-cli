@@ -25,6 +25,7 @@ import org.web3j.console.telemetry.Telemetry;
 import org.web3j.console.update.Updater;
 import org.web3j.utils.Version;
 
+import static org.web3j.codegen.Console.exitSuccess;
 import static org.web3j.codegen.SolidityFunctionWrapperGenerator.COMMAND_SOLIDITY;
 import static org.web3j.console.project.ProjectCreator.COMMAND_NEW;
 import static org.web3j.console.project.ProjectImporter.COMMAND_IMPORT;
@@ -52,18 +53,17 @@ public class Runner {
         System.out.println(LOGO);
 
         CliConfig config = CliConfig.getConfig(CliConfig.getConfigPath().toFile());
+        Updater updater = new Updater(config);
 
         if (Arrays.asList(args).contains("--telemetry")) {
             Telemetry.uploadAnalytics(config, args);
+            updater.onlineUpdateCheck();
+            exitSuccess("Update Check Succeeded");
         } else {
             Telemetry.invokeAnalyticsUpload(args);
         }
 
-        Updater updater = new Updater(config);
         updater.promptIfUpdateAvailable();
-        Thread updateThread = new Thread(updater::onlineUpdateCheck);
-        updateThread.setDaemon(true);
-        updateThread.start();
 
         if (args.length < 1) {
             Console.exitError(USAGE);
@@ -85,7 +85,7 @@ public class Runner {
                     ProjectImporter.main(tail(args));
                     break;
                 case "version":
-                    Console.exitSuccess(
+                    exitSuccess(
                             "Version: "
                                     + Version.getVersion()
                                     + "\n"

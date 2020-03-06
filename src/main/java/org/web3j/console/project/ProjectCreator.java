@@ -53,10 +53,10 @@ public class ProjectCreator {
         if (args.length > 0 && args[0].toLowerCase().equals(COMMAND_JAVA)) {
             args = tail(args);
             args = getValues(args, stringOptions);
-            CommandLine.run(new JavaProjectCreatorCLIRunner(), args);
+            new CommandLine(new JavaProjectCreatorCLIRunner()).execute(args);
         } else {
             args = getValues(args, stringOptions);
-            CommandLine.run(new KotlinProjectCreatorCLIRunner(), args);
+            new CommandLine(new KotlinProjectCreatorCLIRunner()).execute(args);
         }
     }
 

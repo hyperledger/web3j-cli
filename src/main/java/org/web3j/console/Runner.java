@@ -89,6 +89,5 @@ public class Runner {
             }
         }
         config.save();
-        Console.exitSuccess();
     }
 }

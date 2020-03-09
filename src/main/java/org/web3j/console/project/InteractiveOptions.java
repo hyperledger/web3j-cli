@@ -13,14 +13,10 @@
 package org.web3j.console.project;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.web3j.account.LocalWeb3jAccount;
 import org.web3j.console.project.utils.InputVerifier;
 
 import static java.io.File.separator;
@@ -115,20 +111,6 @@ public class InteractiveOptions {
                 : Optional.of(outputPath);
     }
 
-    public static Optional<String> setGeneratedTestLocationKotlin() {
-        print(
-                "Where would you like to save your tests ["
-                        + String.join(
-                                separator, System.getProperty("user.dir"), "src", "test", "kotlin")
-                        + "]");
-        String outputPath = getUserInput();
-        return outputPath.isEmpty()
-                ? Optional.of(
-                        String.join(
-                                separator, System.getProperty("user.dir"), "src", "test", "kotlin"))
-                : Optional.of(outputPath);
-    }
-
     public static boolean userWantsTests() {
         print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
@@ -152,25 +134,5 @@ public class InteractiveOptions {
         print("Looks like the project exists. Would you like to overwrite it [y/N] ?");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y");
-    }
-
-    public static boolean userHasWeb3jAccount() throws IOException {
-        if (LocalWeb3jAccount.configExists()) {
-            ObjectNode objectNode = LocalWeb3jAccount.readConfigAsJson();
-            return LocalWeb3jAccount.loginTokenExists(objectNode);
-        }
-        return false;
-    }
-
-    public static boolean configFileExists() {
-        return LocalWeb3jAccount.configExists();
-    }
-
-    public static boolean userWantsWeb3jAccount() throws IOException {
-
-        print("It looks like you don’t have a Web3j account, would you like to create one?");
-        print("This will provide free access to the Ethereum network [Y/n]");
-        String userAnswer = getUserInput();
-        return userAnswer.toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 }

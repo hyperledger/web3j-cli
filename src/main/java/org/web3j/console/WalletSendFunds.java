@@ -34,7 +34,7 @@ import org.web3j.utils.Convert;
 import static org.web3j.codegen.Console.exitError;
 
 /** Simple class for creating a wallet file. */
-public class WalletSendFunds extends WalletManager {
+class WalletSendFunds extends WalletManager {
 
     private static final String USAGE = "send <walletfile> <destination-address>";
 

@@ -15,7 +15,6 @@ package org.web3j.console;
 import org.web3j.codegen.Console;
 import org.web3j.codegen.SolidityFunctionWrapperGenerator;
 import org.web3j.codegen.TruffleJsonFunctionWrapperGenerator;
-import org.web3j.console.account.AccountManager;
 import org.web3j.console.config.CliConfig;
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.ProjectImporter;
@@ -33,7 +32,7 @@ import static org.web3j.utils.Collection.tail;
 public class Runner {
 
     private static final String USAGE =
-            "Usage: web3j version|wallet|solidity|new|import|generate-tests|audit|account ...";
+            "Usage: web3j version|wallet|solidity|new|import|generate-tests...";
 
     private static final String LOGO =
             "\n" // generated at http://patorjk.com/software/taag
@@ -82,12 +81,6 @@ public class Runner {
                                     + "Build timestamp: "
                                     + Version.getTimestamp());
                     break;
-                case "audit":
-                    ContractAuditor.main(tail(args));
-                    break;
-                case "account":
-                    AccountManager.main(config, tail(args));
-                    break;
                 case COMMAND_GENERATE_TESTS:
                     UnitTestCreator.main(tail(args));
                     break;
@@ -96,6 +89,5 @@ public class Runner {
             }
         }
         config.save();
-        Console.exitSuccess();
     }
 }

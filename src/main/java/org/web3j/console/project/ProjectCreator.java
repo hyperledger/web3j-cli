@@ -23,8 +23,6 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
-import org.web3j.console.account.AccountManager;
-import org.web3j.console.config.CliConfig;
 import org.web3j.console.project.java.JavaBuilder;
 import org.web3j.console.project.java.JavaProjectCreatorCLIRunner;
 import org.web3j.console.project.kotlin.KotlinBuilder;
@@ -40,7 +38,6 @@ public class ProjectCreator {
     public static final String COMMAND_NEW = "new";
     public static final String COMMAND_JAVA = "--java";
     public static final String COMMAND_KOTLIN = "kotlin";
-    public static final String USAGE = "new java|kotlin";
     private final String root;
     private final String packageName;
     private final String projectName;
@@ -79,21 +76,6 @@ public class ProjectCreator {
                                 stringOptions.add("-o");
                                 stringOptions.add(projectDest);
                             });
-            if (InteractiveOptions.configFileExists()) {
-                if (!InteractiveOptions.userHasWeb3jAccount()) {
-                    if (InteractiveOptions.userWantsWeb3jAccount()) {
-                        AccountManager.main(
-                                CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile()),
-                                new String[] {"create"});
-                    }
-                }
-            } else {
-                if (InteractiveOptions.userWantsWeb3jAccount()) {
-                    AccountManager.main(
-                            CliConfig.getConfig(CliConfig.getWeb3jConfigPath().toFile()),
-                            new String[] {"create"});
-                }
-            }
 
             args = stringOptions.toArray(new String[0]);
         }

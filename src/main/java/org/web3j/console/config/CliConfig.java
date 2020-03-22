@@ -26,7 +26,7 @@ import org.web3j.utils.Version;
 public class CliConfig {
     private static final Path web3jConfigPath =
             Paths.get(System.getProperty("user.home"), ".web3j", ".config");
-    private static final String defaultServicesUrl = "https://auth.epirus.io";
+    private static final String defaultServicesUrl = "https://internal.services.web3labs.com";
 
     public static Path getWeb3jConfigPath() {
         return web3jConfigPath;
@@ -49,7 +49,6 @@ public class CliConfig {
     private static CliConfig getSavedConfig(File configFile) throws IOException {
         String configContents = new String(Files.readAllBytes(configFile.toPath()));
         CliConfig config = new Gson().fromJson(configContents, CliConfig.class);
-        config.setVersion(Version.getVersion());
         return config;
     }
 

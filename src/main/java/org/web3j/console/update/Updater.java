@@ -12,6 +12,8 @@
  */
 package org.web3j.console.update;
 
+import java.io.IOException;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -32,19 +34,22 @@ public class Updater {
         this.config = config;
     }
 
-    public void promptIfUpdateAvailable() {
+    public void promptIfUpdateAvailable() throws IOException, IOException {
 
         if (config.isUpdateAvailable()) {
             System.out.println(
                     String.format(
-                            "A new Web3j update is available. To update, run: %s",
+                            "Your current Web3j version is: "
+                                    + config.getVersion()
+                                    + ". The latest Version is: "
+                                    + config.getLatestVersion()
+                                    + ". To update, run: %s",
                             config.getUpdatePrompt()));
         }
     }
 
     public void onlineUpdateCheck() {
         OkHttpClient client = new OkHttpClient();
-
         RequestBody updateBody =
                 new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)

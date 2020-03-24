@@ -65,12 +65,14 @@ public class ProjectCreator {
             throws IOException {
         String projectName;
         if (args.length == 0) {
+            InteractiveOptions interactiveOptions = new InteractiveOptions();
             stringOptions.add("-n");
-            projectName = InteractiveOptions.getProjectName();
+            projectName = interactiveOptions.getProjectName();
             stringOptions.add(projectName);
             stringOptions.add("-p");
-            stringOptions.add(InteractiveOptions.getPackageName());
-            InteractiveOptions.getProjectDestination(projectName)
+            stringOptions.add(interactiveOptions.getPackageName());
+            interactiveOptions
+                    .getProjectDestination(projectName)
                     .ifPresent(
                             projectDest -> {
                                 stringOptions.add("-o");

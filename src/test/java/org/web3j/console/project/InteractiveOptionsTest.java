@@ -31,8 +31,6 @@ public class InteractiveOptionsTest {
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
     private String tempDirPath;
 
@@ -54,21 +52,20 @@ public class InteractiveOptionsTest {
                         + "y"
                         + "\n";
         inputStream = new ByteArrayInputStream(input.getBytes());
-        System.setIn(inputStream);
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
     }
 
     @Test
     public void runInteractiveModeTest() {
-        assertEquals("Test", InteractiveOptions.getProjectName());
-        assertEquals("org.com", InteractiveOptions.getPackageName());
-        assertEquals(formattedPath, InteractiveOptions.getSolidityProjectPath());
-        assertEquals(tempDirPath, InteractiveOptions.getProjectDestination("Test").get());
-        assertTrue(InteractiveOptions.userWantsTests());
+        InteractiveOptions interactiveOptions =
+                new InteractiveOptions(inputStream, new PrintStream(new ByteArrayOutputStream()));
+        assertEquals("Test", interactiveOptions.getProjectName());
+        assertEquals("org.com", interactiveOptions.getPackageName());
+        assertEquals(formattedPath, interactiveOptions.getSolidityProjectPath());
+        assertEquals(tempDirPath, interactiveOptions.getProjectDestination("Test").get());
+        assertTrue(interactiveOptions.userWantsTests());
         assertEquals(
                 String.join(separator, System.getProperty("user.dir"), "src", "test", "java"),
-                InteractiveOptions.setGeneratedTestLocationJava().get());
-        assertTrue(InteractiveOptions.overrideExistingProject());
+                interactiveOptions.setGeneratedTestLocationJava().get());
+        assertTrue(interactiveOptions.overrideExistingProject());
     }
 }

@@ -19,7 +19,6 @@ import picocli.CommandLine;
 import org.web3j.console.project.utils.InputVerifier;
 
 import static org.web3j.codegen.Console.exitError;
-import static org.web3j.console.project.InteractiveOptions.overrideExistingProject;
 import static org.web3j.console.project.utils.ProjectUtils.deleteFolder;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
@@ -47,7 +46,7 @@ public abstract class ProjectCreatorCLIRunner implements Runnable {
     public void run() {
         if (inputIsValid(projectName, packageName)) {
             if (InputVerifier.projectExists(new File(projectName))) {
-                if (overrideExistingProject()) {
+                if (new InteractiveOptions().overrideExistingProject()) {
                     deleteFolder(new File(projectName).toPath());
                     createProject();
                 } else {

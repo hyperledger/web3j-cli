@@ -13,6 +13,8 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Scanner;
@@ -24,9 +26,20 @@ import static org.web3j.codegen.Console.exitError;
 import static org.web3j.console.project.utils.ProjectUtils.deleteFolder;
 
 public class InteractiveOptions {
-    static Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
+    private PrintStream writer;
 
-    public static String getProjectName() {
+    public InteractiveOptions() {
+        scanner = new Scanner(System.in);
+        writer = System.out;
+    }
+
+    public InteractiveOptions(InputStream inputStream, PrintStream printStream) {
+        scanner = new Scanner(inputStream);
+        writer = printStream;
+    }
+
+    public String getProjectName() {
         print("Please enter the project name [Web3App]:");
         String projectName = getUserInput();
         if (projectName.trim().isEmpty()) {
@@ -38,7 +51,7 @@ public class InteractiveOptions {
         return projectName;
     }
 
-    public static String getPackageName() {
+    public String getPackageName() {
         print("Please enter the package name for your project [io.web3j]:");
         String packageName = getUserInput();
         if (packageName.trim().isEmpty()) {
@@ -50,7 +63,7 @@ public class InteractiveOptions {
         return packageName;
     }
 
-    public static Optional<String> getProjectDestination(final String projectName) {
+    public Optional<String> getProjectDestination(final String projectName) {
         print(
                 "Please enter the destination of your project ["
                         + System.getProperty("user.dir")
@@ -69,7 +82,7 @@ public class InteractiveOptions {
         return projectDest.isEmpty() ? Optional.empty() : Optional.of(projectDest);
     }
 
-    public static Optional<String> getGeneratedWrapperLocation() {
+    public Optional<String> getGeneratedWrapperLocation() {
         print(
                 "Please enter the path of the generated contract wrappers ["
                         + String.join(
@@ -97,7 +110,7 @@ public class InteractiveOptions {
                 : Optional.of(pathToTheWrappers);
     }
 
-    public static Optional<String> setGeneratedTestLocationJava() {
+    public Optional<String> setGeneratedTestLocationJava() {
         print(
                 "Where would you like to save your tests ["
                         + String.join(
@@ -111,28 +124,28 @@ public class InteractiveOptions {
                 : Optional.of(outputPath);
     }
 
-    public static boolean userWantsTests() {
+    public boolean userWantsTests() {
         print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
         return userAnswer.trim().toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 
-    public static String getSolidityProjectPath() {
-        System.out.println("Please enter the path to your solidity file/folder [Required Field]: ");
+    public String getSolidityProjectPath() {
+        print("Please enter the path to your solidity file/folder [Required Field]: ");
         return getUserInput();
     }
 
-    static String getUserInput() {
-        return scanner.nextLine();
-    }
-
-    private static void print(final String text) {
-        System.out.println(text);
-    }
-
-    public static boolean overrideExistingProject() {
+    public boolean overrideExistingProject() {
         print("Looks like the project exists. Would you like to overwrite it [y/N] ?");
         String userAnswer = getUserInput();
         return userAnswer.toLowerCase().equals("y");
+    }
+
+    private String getUserInput() {
+        return scanner.nextLine();
+    }
+
+    private void print(final String text) {
+        writer.println(text);
     }
 }

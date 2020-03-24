@@ -69,7 +69,10 @@ public class JavaTestCreatorTest extends ClassExecutor {
                         .getCanonicalPath();
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectImporter.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();
@@ -79,7 +82,8 @@ public class JavaTestCreatorTest extends ClassExecutor {
                 executeClassAsSubProcessAndReturnProcess(
                                 UnitTestCreator.class,
                                 Collections.emptyList(),
-                                Arrays.asList(unitTestsArgs))
+                                Arrays.asList(unitTestsArgs),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();

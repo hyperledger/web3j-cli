@@ -13,29 +13,45 @@
 package org.web3j.console.project.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.eclipse.jetty.io.RuntimeIOException;
+
 public class ClassExecutor {
     public ProcessBuilder executeClassAsSubProcessAndReturnProcess(
-            Class classToExecute, List<String> jvmArgs, List<String> args) {
+            Class classToExecute, List<String> jvmArgs, List<String> args, boolean suppressOutput) {
 
-        return new ProcessBuilder(
-                concatenate(
-                        Collections.singletonList(
-                                System.getProperty("java.home")
-                                        + File.separator
-                                        + "bin"
-                                        + File.separator
-                                        + "java"),
-                        jvmArgs,
-                        Collections.singletonList("-cp"),
-                        Collections.singletonList(System.getProperty("java.class.path")),
-                        Collections.singletonList(classToExecute.getName()),
-                        args));
+        ProcessBuilder pb =
+                new ProcessBuilder(
+                        concatenate(
+                                Collections.singletonList(
+                                        System.getProperty("java.home")
+                                                + File.separator
+                                                + "bin"
+                                                + File.separator
+                                                + "java"),
+                                jvmArgs,
+                                Collections.singletonList("-cp"),
+                                Collections.singletonList(System.getProperty("java.class.path")),
+                                Collections.singletonList(classToExecute.getName()),
+                                args));
+
+        if (suppressOutput) {
+            try {
+                pb.redirectError(ProcessBuilder.Redirect.to(File.createTempFile("process", "err")));
+                pb.redirectOutput(
+                        ProcessBuilder.Redirect.to(File.createTempFile("process", "out")));
+            } catch (IOException ex) {
+                throw new RuntimeIOException(ex);
+            }
+        }
+
+        return pb;
     }
 
     @SafeVarargs

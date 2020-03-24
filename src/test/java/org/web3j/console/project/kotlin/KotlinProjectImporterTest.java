@@ -60,7 +60,10 @@ public class KotlinProjectImporterTest extends ClassExecutor {
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectImporter.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();
@@ -87,11 +90,11 @@ public class KotlinProjectImporterTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
         final String[] args = {"-p=", "-n=", "-s="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
-                        ProjectImporter.class, Collections.emptyList(), Arrays.asList(args));
+                        ProjectImporter.class, Collections.emptyList(), Arrays.asList(args), false);
         pb.redirectErrorStream(true);
         Process process = pb.start();
         try (BufferedReader reader =
@@ -105,5 +108,6 @@ public class KotlinProjectImporterTest extends ClassExecutor {
                                                     "Please make sure the required parameters are not empty."))
                             .count());
         }
+        process.waitFor();
     }
 }

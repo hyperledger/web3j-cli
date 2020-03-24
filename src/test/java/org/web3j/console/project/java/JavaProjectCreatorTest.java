@@ -55,7 +55,10 @@ public class JavaProjectCreatorTest extends ClassExecutor {
         final String[] args = {"--java", "-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectCreator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();
@@ -83,11 +86,11 @@ public class JavaProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
         final String[] args = {"--java", "-n=", "-p="};
         ProcessBuilder pb =
                 executeClassAsSubProcessAndReturnProcess(
-                        ProjectCreator.class, Collections.emptyList(), Arrays.asList(args));
+                        ProjectCreator.class, Collections.emptyList(), Arrays.asList(args), false);
         pb.redirectErrorStream(true);
         Process process = pb.start();
         try (BufferedReader reader =
@@ -101,6 +104,7 @@ public class JavaProjectCreatorTest extends ClassExecutor {
                                                     "Please make sure the required parameters are not empty."))
                             .count());
         }
+        process.waitFor();
     }
 
     @Test
@@ -109,7 +113,10 @@ public class JavaProjectCreatorTest extends ClassExecutor {
         final String[] args = {"new", "--java"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectCreator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .start();
         BufferedWriter writer =
                 new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));

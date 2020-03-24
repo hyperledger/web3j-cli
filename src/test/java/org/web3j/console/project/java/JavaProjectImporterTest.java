@@ -12,10 +12,7 @@
  */
 package org.web3j.console.project.java;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -33,8 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaProjectImporterTest extends ClassExecutor {
-    private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     static String tempDirPath;
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
@@ -42,8 +37,6 @@ public class JavaProjectImporterTest extends ClassExecutor {
 
     @BeforeAll
     public static void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
         tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
@@ -94,12 +87,23 @@ public class JavaProjectImporterTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException {
         final String[] args = {"--java", "-p=", "-n=", "-s="};
-        ProjectImporter.main(args);
-        assertTrue(
-                outContent
-                        .toString()
-                        .contains("Please make sure the required parameters are not empty"));
+        ProcessBuilder pb =
+                executeClassAsSubProcessAndReturnProcess(
+                        ProjectImporter.class, Collections.emptyList(), Arrays.asList(args));
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            assertEquals(
+                    1L,
+                    reader.lines()
+                            .filter(
+                                    l ->
+                                            l.contains(
+                                                    "Please make sure the required parameters are not empty."))
+                            .count());
+        }
     }
 }

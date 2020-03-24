@@ -12,13 +12,7 @@
  */
 package org.web3j.console.project.kotlin;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -36,15 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KotlinProjectCreatorTest extends ClassExecutor {
-    private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    private InputStream inputStream;
     private static String tempDirPath;
 
     @BeforeAll
     static void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
         tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
@@ -96,9 +85,22 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
     @Test
     public void testWithPicoCliWhenArgumentsAreEmpty() throws Exception {
         final String[] args = {"-n=", "-p="};
-        ProjectCreator.main(args);
-        assertEquals(
-                outContent.toString(), "Please make sure the required parameters are not empty.\n");
+        ProcessBuilder pb =
+                executeClassAsSubProcessAndReturnProcess(
+                        ProjectCreator.class, Collections.emptyList(), Arrays.asList(args));
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            assertEquals(
+                    1L,
+                    reader.lines()
+                            .filter(
+                                    l ->
+                                            l.contains(
+                                                    "Please make sure the required parameters are not empty."))
+                            .count());
+        }
     }
 
     @Test

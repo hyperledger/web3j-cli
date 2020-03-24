@@ -104,7 +104,7 @@ public class ProjectCreator {
 
             Project javaProject = javaBuilder.build();
             javaProject.createProject();
-            onSuccess(javaProject);
+            onSuccess(javaProject, "java");
         } catch (final Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -133,7 +133,7 @@ public class ProjectCreator {
             solidityFile.map(File::getAbsolutePath).ifPresent(kotlinBuilder::withSolidityFile);
             Project kotlinProject = kotlinBuilder.build();
             kotlinProject.createProject();
-            onSuccess(kotlinProject);
+            onSuccess(kotlinProject, "kotlin");
         } catch (final Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -141,12 +141,13 @@ public class ProjectCreator {
         }
     }
 
-    private void onSuccess(Project javaProject) {
+    private void onSuccess(Project project, String projectType) {
+        String fileExtension = projectType.equals("kotlin") ? "kt" : "java";
         String address =
-                javaProject.getProjectWallet() == null
+                project.getProjectWallet() == null
                         ? ""
                         : ("\nYour wallet address is: "
-                                + javaProject.getProjectWallet().getWalletAddress());
+                                + project.getProjectWallet().getWalletAddress());
 
         exitSuccess(
                 "\n"
@@ -154,11 +155,19 @@ public class ProjectCreator {
                         + " has been created in "
                         + this.root
                         + "\n"
-                        + "To test your smart contracts (./src/test/java/io/web3j/generated/contracts/HelloWorldTest.java): ./gradlew test"
+                        + "To test your smart contracts (./src/test/"
+                        + projectType
+                        + "/io/web3j/generated/contracts/HelloWorldTest."
+                        + fileExtension
+                        + "): ./gradlew test"
                         + "\n"
-                        + "To run your Web3 app (./src/main/java/io/web3j/"
+                        + "To run your Web3 app (./src/main/"
+                        + projectType
+                        + "/io/web3j/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
-                        + ".java): java -DNODE_URL=<URL_TO_NODE> -jar ./build/libs/"
+                        + "."
+                        + fileExtension
+                        + "): java -DNODE_URL=<URL_TO_NODE> -jar ./build/libs/"
                         + InputVerifier.capitalizeFirstLetter(this.projectName)
                         + "-0.1.0-all.jar\nTo fund your wallet on the Rinkeby test network go to: https://rinkeby.faucet.epirus.io/"
                         + address);

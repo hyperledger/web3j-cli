@@ -17,11 +17,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+
+import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,8 +37,8 @@ public class InteractiveOptionsTest {
     private String tempDirPath;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        tempDirPath = temp.toString();
+    void setup() {
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
         final String input =
                 "Test\norg.com\n"
                         + formattedPath

@@ -19,18 +19,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.utils.ClassExecutor;
+import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,13 +40,12 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
     private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private InputStream inputStream;
     private static String tempDirPath;
-    @TempDir static Path temp;
 
     @BeforeAll
     static void setUpStreams() {
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
-        tempDirPath = temp.toString();
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test

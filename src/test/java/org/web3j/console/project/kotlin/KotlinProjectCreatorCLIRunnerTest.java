@@ -12,20 +12,19 @@
  */
 package org.web3j.console.project.kotlin;
 
-import java.nio.file.Path;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
+
+import org.web3j.console.project.utils.Folders;
 
 public class KotlinProjectCreatorCLIRunnerTest {
     private String tempDirPath;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        tempDirPath = temp.toString();
+    void setup() {
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test

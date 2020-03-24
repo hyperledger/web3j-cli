@@ -25,12 +25,12 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import org.web3j.console.config.CliConfig;
+import org.web3j.console.project.utils.Folders;
 import org.web3j.console.update.Updater;
 import org.web3j.utils.Version;
 
@@ -53,8 +53,8 @@ public class UpdaterTest {
     private static WireMockServer wireMockServer;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        tempWeb3jSettingsPath = Paths.get(temp.toString(), ".config");
+    void setup() {
+        tempWeb3jSettingsPath = Paths.get(Folders.tempBuildFolder().getAbsolutePath(), ".config");
         wireMockServer = new WireMockServer(wireMockConfig().port(8081));
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());

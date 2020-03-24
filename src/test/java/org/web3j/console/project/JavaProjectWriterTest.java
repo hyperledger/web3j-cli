@@ -14,14 +14,13 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import org.web3j.console.project.templates.java.JavaTemplateBuilder;
 import org.web3j.console.project.templates.java.JavaTemplateProvider;
+import org.web3j.console.project.utils.Folders;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,8 +34,8 @@ public class JavaProjectWriterTest {
     private String tempDirPath;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        tempDirPath = temp.toString();
+    void setup() {
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test

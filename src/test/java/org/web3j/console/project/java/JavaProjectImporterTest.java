@@ -16,18 +16,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.utils.ClassExecutor;
+import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,13 +39,12 @@ public class JavaProjectImporterTest extends ClassExecutor {
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
-    @TempDir static Path temp;
 
     @BeforeAll
     public static void setUpStreams() {
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
-        tempDirPath = temp.toString();
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test

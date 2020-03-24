@@ -13,13 +13,12 @@
 package org.web3j.console.project.java;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import org.web3j.console.project.ProjectStructure;
+import org.web3j.console.project.utils.Folders;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,8 +26,8 @@ public class JavaProjectTest {
     private ProjectStructure projectStructure;
 
     @BeforeEach
-    public void setUpProject(@TempDir Path tempDirPath) throws Exception {
-        final String rootDirectory = tempDirPath.toFile().getPath();
+    public void setUpProject() throws Exception {
+        final String rootDirectory = Folders.tempBuildFolder().getAbsolutePath();
         projectStructure = new JavaProjectStructure(rootDirectory, "test", "test");
         JavaProject javaProject =
                 new JavaBuilder()

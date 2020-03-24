@@ -12,10 +12,9 @@
  */
 package org.web3j.console;
 
-import java.nio.file.Path;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+
+import org.web3j.console.project.utils.Folders;
 
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.startsWith;
@@ -30,26 +29,27 @@ public class KeyImporterTest {
     IODevice console = mock(IODevice.class);
 
     @Test
-    public void testSpecifyPrivateKey(@TempDir Path tempDirPath) {
-        prepareWalletCreation(SampleKeys.PRIVATE_KEY_STRING, tempDirPath);
+    public void testSpecifyPrivateKey() {
+        prepareWalletCreation(
+                SampleKeys.PRIVATE_KEY_STRING, Folders.tempBuildFolder().getAbsolutePath());
     }
 
     @Test
-    public void testLoadPrivateKeyFromFile(@TempDir Path tempDirPath) {
+    public void testLoadPrivateKeyFromFile() {
         prepareWalletCreation(
                 KeyImporterTest.class
                         .getResource("/keyfiles/" + "sample-private-key.txt")
                         .getFile(),
-                tempDirPath);
+                Folders.tempBuildFolder().getAbsolutePath());
     }
 
-    private void prepareWalletCreation(String input, Path tempDirPath) {
+    private void prepareWalletCreation(String input, String tempDirPath) {
         when(console.readLine(startsWith("Please enter the hex encoded private key")))
                 .thenReturn(input);
         when(console.readPassword(contains("password")))
                 .thenReturn(WALLET_PASSWORD, WALLET_PASSWORD);
         when(console.readLine(contains("Please enter a destination directory location")))
-                .thenReturn(tempDirPath.toString());
+                .thenReturn(tempDirPath);
 
         KeyImporter.main(console);
 

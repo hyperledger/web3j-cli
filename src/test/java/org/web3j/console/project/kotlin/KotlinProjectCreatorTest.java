@@ -12,42 +12,34 @@
  */
 package org.web3j.console.project.kotlin;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 import org.web3j.console.project.ProjectCreator;
 import org.web3j.console.project.utils.ClassExecutor;
+import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KotlinProjectCreatorTest extends ClassExecutor {
-    private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    private InputStream inputStream;
     private static String tempDirPath;
-    @TempDir static Path temp;
 
     @BeforeAll
     static void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
-        tempDirPath = temp.toString();
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test
@@ -68,7 +60,10 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
         final String[] args = {"-p", "org.com", "-n", "Test", "-o" + tempDirPath};
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectCreator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();
@@ -96,11 +91,25 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() throws Exception {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
         final String[] args = {"-n=", "-p="};
-        ProjectCreator.main(args);
-        assertEquals(
-                outContent.toString(), "Please make sure the required parameters are not empty.\n");
+        ProcessBuilder pb =
+                executeClassAsSubProcessAndReturnProcess(
+                        ProjectCreator.class, Collections.emptyList(), Arrays.asList(args), false);
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            assertEquals(
+                    1L,
+                    reader.lines()
+                            .filter(
+                                    l ->
+                                            l.contains(
+                                                    "Please make sure the required parameters are not empty."))
+                            .count());
+        }
+        process.waitFor();
     }
 
     @Test
@@ -109,7 +118,10 @@ public class KotlinProjectCreatorTest extends ClassExecutor {
         final String[] args = {"new", "kotlin"};
         Process process =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectCreator.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectCreator.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .start();
         BufferedWriter writer =
                 new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));

@@ -52,14 +52,17 @@ public class UnitTestCreator {
 
     private static String[] getValue(String[] args) {
         if (args.length == 0) {
+            InteractiveOptions interactiveOptions = new InteractiveOptions();
             final List<String> listOfArgs = new ArrayList<>();
-            InteractiveOptions.getGeneratedWrapperLocation()
+            interactiveOptions
+                    .getGeneratedWrapperLocation()
                     .ifPresent(
                             wrappersPath -> {
                                 listOfArgs.add("-i");
                                 listOfArgs.add(wrappersPath);
                             });
-            InteractiveOptions.setGeneratedTestLocationJava()
+            interactiveOptions
+                    .setGeneratedTestLocationJava()
                     .ifPresent(
                             outputPath -> {
                                 listOfArgs.add("-o");

@@ -14,19 +14,18 @@ package org.web3j.console.project.java;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.UnitTestCreator;
 import org.web3j.console.project.utils.ClassExecutor;
+import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 
@@ -37,8 +36,8 @@ public class JavaTestCreatorTest extends ClassExecutor {
     private String tempDirPath;
 
     @BeforeEach
-    void setup(@TempDir Path temp) {
-        this.tempDirPath = temp.toString();
+    void setup() {
+        this.tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test
@@ -70,7 +69,10 @@ public class JavaTestCreatorTest extends ClassExecutor {
                         .getCanonicalPath();
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectImporter.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();
@@ -80,7 +82,8 @@ public class JavaTestCreatorTest extends ClassExecutor {
                 executeClassAsSubProcessAndReturnProcess(
                                 UnitTestCreator.class,
                                 Collections.emptyList(),
-                                Arrays.asList(unitTestsArgs))
+                                Arrays.asList(unitTestsArgs),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();

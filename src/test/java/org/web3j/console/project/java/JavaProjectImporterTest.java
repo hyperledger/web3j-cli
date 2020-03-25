@@ -12,41 +12,35 @@
  */
 package org.web3j.console.project.java;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Path;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
 
 import org.web3j.console.project.ProjectImporter;
 import org.web3j.console.project.utils.ClassExecutor;
+import org.web3j.console.project.utils.Folders;
 
 import static java.io.File.separator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaProjectImporterTest extends ClassExecutor {
-    private static ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private static ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     static String tempDirPath;
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
-    @TempDir static Path temp;
 
     @BeforeAll
     public static void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-        System.setErr(new PrintStream(errContent));
-        tempDirPath = temp.toString();
+        tempDirPath = Folders.tempBuildFolder().getAbsolutePath();
     }
 
     @Test
@@ -69,7 +63,10 @@ public class JavaProjectImporterTest extends ClassExecutor {
         };
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class, Collections.emptyList(), Arrays.asList(args))
+                                ProjectImporter.class,
+                                Collections.emptyList(),
+                                Arrays.asList(args),
+                                true)
                         .inheritIO()
                         .start()
                         .waitFor();
@@ -96,12 +93,24 @@ public class JavaProjectImporterTest extends ClassExecutor {
     }
 
     @Test
-    public void testWithPicoCliWhenArgumentsAreEmpty() {
+    public void testWithPicoCliWhenArgumentsAreEmpty() throws IOException, InterruptedException {
         final String[] args = {"--java", "-p=", "-n=", "-s="};
-        ProjectImporter.main(args);
-        assertTrue(
-                outContent
-                        .toString()
-                        .contains("Please make sure the required parameters are not empty"));
+        ProcessBuilder pb =
+                executeClassAsSubProcessAndReturnProcess(
+                        ProjectImporter.class, Collections.emptyList(), Arrays.asList(args), false);
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            assertEquals(
+                    1L,
+                    reader.lines()
+                            .filter(
+                                    l ->
+                                            l.contains(
+                                                    "Please make sure the required parameters are not empty."))
+                            .count());
+        }
+        process.waitFor();
     }
 }

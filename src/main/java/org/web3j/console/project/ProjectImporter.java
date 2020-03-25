@@ -21,7 +21,6 @@ import picocli.CommandLine;
 import org.web3j.console.project.java.JavaProjectImporterCLIRunner;
 import org.web3j.console.project.kotlin.KotlinProjectImporterCLIRunner;
 
-import static org.web3j.console.project.InteractiveOptions.*;
 import static org.web3j.utils.Collection.tail;
 
 public class ProjectImporter extends ProjectCreator {
@@ -47,21 +46,22 @@ public class ProjectImporter extends ProjectCreator {
     private static String[] getValues(String[] args, List<String> stringOptions) {
         String projectName;
         if (args.length == 0) {
-
+            InteractiveOptions interactiveOptions = new InteractiveOptions();
             stringOptions.add("-n");
-            projectName = getProjectName();
+            projectName = interactiveOptions.getProjectName();
             stringOptions.add(projectName);
             stringOptions.add("-p");
-            stringOptions.add(getPackageName());
+            stringOptions.add(interactiveOptions.getPackageName());
             stringOptions.add("-s");
-            stringOptions.add(getSolidityProjectPath());
-            getProjectDestination(projectName)
+            stringOptions.add(interactiveOptions.getSolidityProjectPath());
+            interactiveOptions
+                    .getProjectDestination(projectName)
                     .ifPresent(
                             projectDest -> {
                                 stringOptions.add("-o");
                                 stringOptions.add(projectDest);
                             });
-            if (userWantsTests()) {
+            if (interactiveOptions.userWantsTests()) {
                 stringOptions.add("-t");
             }
 

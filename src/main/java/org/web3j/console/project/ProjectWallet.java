@@ -55,6 +55,10 @@ public class ProjectWallet {
     }
 
     public String getWalletAddress() {
-        return this.walletAddress;
+        return prefixWalletAddress();
+    }
+
+    private String prefixWalletAddress() {
+        return "0x" + this.walletAddress;
     }
 }

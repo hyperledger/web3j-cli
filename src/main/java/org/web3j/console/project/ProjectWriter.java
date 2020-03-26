@@ -50,9 +50,16 @@ public class ProjectWriter {
     public static final void importSolidityProject(
             final File solidityImportPath, final String destination) throws IOException {
         if (solidityImportPath != null && solidityImportPath.exists()) {
-            Files.walkFileTree(
-                    solidityImportPath.toPath(),
-                    new ProjectVisitor(solidityImportPath.getAbsolutePath(), destination));
+            if (solidityImportPath.isFile() && solidityImportPath.getName().endsWith(".sol")) {
+                Files.copy(
+                        solidityImportPath.toPath(),
+                        Paths.get(destination + File.separator + solidityImportPath.getName()),
+                        StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                Files.walkFileTree(
+                        solidityImportPath.toPath(),
+                        new ProjectVisitor(solidityImportPath.getAbsolutePath(), destination));
+            }
         }
     }
 

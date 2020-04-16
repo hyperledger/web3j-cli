@@ -17,7 +17,6 @@ web3j-cli: Web3j Command Line Tools
    :target: https://gitter.im/web3j/web3j
    :alt: Join the chat at https://gitter.im/web3j/web3j
 
-
 About
 =====
 The Web3j command line tools enable developers to interact with blockchains more easily. The Web3j command line tools allow allow you to use some of the key functionality of web3j from your terminal, including:
@@ -30,6 +29,7 @@ The Web3j command line tools enable developers to interact with blockchains more
 * Generation of Solidity smart contract wrappers
 * Smart contract auditing
 
+**N.B.** For version prior to 4.5.7 go to web3j/web3j `releases <https://github.com/web3j/web3j/releases>`_
 
 Installation
 =====

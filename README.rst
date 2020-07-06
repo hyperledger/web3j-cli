@@ -1,3 +1,8 @@
+** Deprecated **
+
+The Web3j CLI has been renamed to the Epirus CLI. Please head [here](https://github.com/epirus-io/epirus-cli) for the new repo.
+
+
 web3j-cli: Web3j Command Line Tools
 ==================================
 

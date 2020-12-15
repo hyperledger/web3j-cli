@@ -18,32 +18,23 @@ import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.AbstractProject;
 import org.web3j.console.project.Project;
 import org.web3j.console.project.ProjectStructure;
-import org.web3j.console.project.UnitTestCreator;
 import org.web3j.console.project.templates.java.JavaTemplateBuilder;
 import org.web3j.console.project.templates.java.JavaTemplateProvider;
 
 public class JavaProject extends AbstractProject<JavaProject> implements Project {
 
-    protected JavaProject(
+    public JavaProject(
             boolean withTests,
             boolean withFatJar,
-            boolean withWallet,
             boolean withSampleCode,
             String command,
             String solidityImportPath,
             ProjectStructure projectStructure) {
-        super(
-                withTests,
-                withFatJar,
-                withWallet,
-                withSampleCode,
-                command,
-                solidityImportPath,
-                projectStructure);
+        super(withTests, withFatJar, withSampleCode, command, solidityImportPath, projectStructure);
     }
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
-        new UnitTestCreator(
+        new JavaTestCLIRunner(
                         projectStructure.getGeneratedJavaWrappers(),
                         projectStructure.getPathToTestDirectory())
                 .generateJava();
@@ -59,38 +50,33 @@ public class JavaProject extends AbstractProject<JavaProject> implements Project
                 new JavaTemplateBuilder()
                         .withProjectNameReplacement(projectStructure.projectName)
                         .withPackageNameReplacement(projectStructure.packageName)
-                        .withGradleBatScript("gradlew.bat.template")
-                        .withGradleScript("gradlew.template")
-                        .withGradleSettings("settings.gradle.template")
-                        .withWrapperGradleSettings("gradlew-wrapper.properties.template")
+                        .withGradleBatScript("project/gradlew.bat.template")
+                        .withGradleScript("project/gradlew.template")
+                        .withGradleSettings("project/settings.gradle.template")
+                        .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar");
 
-        if (projectWallet != null) {
-
-            templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
-            templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
-        }
         if (command.equals("new")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradle.template"
-                                    : "build.gradleJava11.template")
-                    .withSolidityProject("HelloWorld.sol");
+                                    ? "project/build.gradle.template"
+                                    : "project/build.gradleJava11.template")
+                    .withSolidityProject("contracts/HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradleImport.template"
-                                    : "build.gradleImportJava11.template")
+                                    ? "project/build.gradleImport.template"
+                                    : "project/build.gradleImportJava11.template")
                     .withPathToSolidityFolder(solidityImportPath);
         }
 
         if (withSampleCode) {
-            templateBuilder.withMainJavaClass("Java.template");
+            templateBuilder.withMainJavaClass("project/Java.template");
         } else {
-            templateBuilder.withMainJavaClass("EmptyJava.template");
+            templateBuilder.withMainJavaClass("project/EmptyJava.template");
         }
 
         return templateBuilder.build();

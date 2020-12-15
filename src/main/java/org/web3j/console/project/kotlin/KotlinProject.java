@@ -13,45 +13,29 @@
 package org.web3j.console.project.kotlin;
 
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.AbstractProject;
 import org.web3j.console.project.Project;
 import org.web3j.console.project.ProjectStructure;
-import org.web3j.console.project.ProjectWallet;
-import org.web3j.console.project.ProjectWriter;
-import org.web3j.console.project.UnitTestCreator;
 import org.web3j.console.project.templates.kotlin.KotlinTemplateBuilder;
 import org.web3j.console.project.templates.kotlin.KotlinTemplateProvider;
-import org.web3j.console.project.utils.ProjectUtils;
-import org.web3j.crypto.CipherException;
 
 public class KotlinProject extends AbstractProject<KotlinProject> implements Project {
 
     protected KotlinProject(
             boolean withTests,
             boolean withFatJar,
-            boolean withWallet,
             boolean withSampleCode,
             String command,
             String solidityImportPath,
             ProjectStructure projectStructure) {
-        super(
-                withTests,
-                withFatJar,
-                withWallet,
-                withSampleCode,
-                command,
-                solidityImportPath,
-                projectStructure);
+        super(withTests, withFatJar, withSampleCode, command, solidityImportPath, projectStructure);
     }
 
     protected void generateTests(ProjectStructure projectStructure) throws IOException {
 
-        new UnitTestCreator(
+        new KotlinTestCLIRunner(
                         projectStructure.getGeneratedJavaWrappers(),
                         projectStructure.getPathToTestDirectory())
                 .generateKotlin();
@@ -62,61 +46,38 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         return this;
     }
 
-    protected void generateWallet()
-            throws CipherException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
-                    NoSuchProviderException, IOException {
-        projectStructure.createWalletDirectory();
-        projectWallet =
-                new ProjectWallet(
-                        ProjectUtils.generateWalletPassword(), projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getPasswordFileName(),
-                ".gitignore",
-                projectStructure.getWalletPath());
-
-        ProjectWriter.writeResourceFile(
-                projectWallet.getWalletPassword(),
-                projectWallet.getPasswordFileName(),
-                projectStructure.getWalletPath());
-    }
-
     public KotlinTemplateProvider getTemplateProvider() {
         KotlinTemplateBuilder templateBuilder =
                 new KotlinTemplateBuilder()
                         .withProjectNameReplacement(projectStructure.projectName)
                         .withPackageNameReplacement(projectStructure.packageName)
-                        .withGradleBatScript("gradlew.bat.template")
-                        .withGradleScript("gradlew.template")
-                        .withGradleSettings("settings.gradle.template")
-                        .withWrapperGradleSettings("gradlew-wrapper.properties.template")
+                        .withGradleBatScript("project/gradlew.bat.template")
+                        .withGradleScript("project/gradlew.template")
+                        .withGradleSettings("project/settings.gradle.template")
+                        .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                         .withGradlewWrapperJar("gradle-wrapper.jar");
 
-        if (projectWallet != null) {
-            templateBuilder.withWalletNameReplacement(projectWallet.getWalletName());
-            templateBuilder.withPasswordFileName(projectWallet.getPasswordFileName());
-        }
         if (command.equals("new")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradle.template"
-                                    : "build.gradleJava11.template")
-                    .withSolidityProject("HelloWorld.sol");
+                                    ? "project/build.gradle.template"
+                                    : "project/build.gradleJava11.template")
+                    .withSolidityProject("contracts/HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder
                     .withGradleBuild(
                             JavaVersion.getJavaVersionAsDouble() < 11
-                                    ? "build.gradleImport.template"
-                                    : "build.gradleImportJava11.template")
+                                    ? "project/build.gradleImport.template"
+                                    : "project/build.gradleImportJava11.template")
                     .withPathToSolidityFolder(solidityImportPath);
         }
 
         if (withSampleCode) {
-            templateBuilder.withMainKotlinClass("Kotlin.template");
+            templateBuilder.withMainKotlinClass("project/Kotlin.template");
         } else {
-            templateBuilder.withMainKotlinClass("EmptyKotlin.template");
+            templateBuilder.withMainKotlinClass("project/EmptyKotlin.template");
         }
 
         return templateBuilder.build();

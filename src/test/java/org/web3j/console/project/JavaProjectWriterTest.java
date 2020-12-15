@@ -26,8 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaProjectWriterTest {
 
-    private static final org.web3j.console.project.ProjectWriter ProjectWriter =
-            new ProjectWriter();
     private static final JavaTemplateProvider templateProvider =
             new JavaTemplateBuilder().withGradlewWrapperJar("gradle-wrapper.jar").build();
 
@@ -40,7 +38,7 @@ public class JavaProjectWriterTest {
 
     @Test
     public void writeResourceFileTest() throws Exception {
-        ProjectWriter.writeResourceFile("HelloWorld.sol", "HelloWorld.sol", tempDirPath);
+        ProjectWriter.writeResourceFile("contracts/HelloWorld.sol", "HelloWorld.sol", tempDirPath);
         assertTrue(new File(tempDirPath + File.separator + "HelloWorld.sol").exists());
     }
 
@@ -57,7 +55,7 @@ public class JavaProjectWriterTest {
         final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
         file.mkdirs();
         ProjectWriter.writeResourceFile(
-                "HelloWorld.sol",
+                "contracts/HelloWorld.sol",
                 "HelloWorld.sol",
                 tempDirPath + File.separator + "tempSolidityDir");
         ProjectWriter.importSolidityProject(
@@ -75,23 +73,30 @@ public class JavaProjectWriterTest {
 
     @Test
     public void importSolidityProjectTestSingleContract() throws IOException {
-        final File file = new File(tempDirPath + File.separator + "tempSingleSolidityDir");
+        final File file = new File(tempDirPath + File.separator + "tempSolidityDir");
         file.mkdirs();
         final File destination =
                 new File(tempDirPath + File.separator + "tempSoliditySingleImport");
         destination.mkdirs();
         ProjectWriter.writeResourceFile(
+                "contracts/HelloWorld.sol",
                 "HelloWorld.sol",
-                "HelloWorld.sol",
-                tempDirPath + File.separator + "tempSingleSolidityDir");
+                tempDirPath + File.separator + "tempSolidityDir");
         ProjectWriter.importSolidityProject(
                 new File(
                         tempDirPath
                                 + File.separator
-                                + "tempSingleSolidityDir"
+                                + "tempSolidityDir"
                                 + File.separator
                                 + "HelloWorld.sol"),
                 destination.getAbsolutePath());
-        assertTrue(new File(destination + File.separator + "HelloWorld.sol").exists());
+        assertTrue(
+                new File(
+                                tempDirPath
+                                        + File.separator
+                                        + "tempSoliditySingleImport"
+                                        + File.separator
+                                        + "HelloWorld.sol")
+                        .exists());
     }
 }

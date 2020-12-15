@@ -15,28 +15,40 @@ package org.web3j.console.project;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.web3j.console.account.AccountUtils;
 import org.web3j.console.project.utils.InputVerifier;
+import org.web3j.console.project.utils.ProjectUtils;
 
 import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
-import static org.web3j.console.project.utils.ProjectUtils.deleteFolder;
+import static org.web3j.console.config.ConfigManager.config;
 
 public class InteractiveOptions {
-    private Scanner scanner;
-    private PrintStream writer;
+
+    private final InputVerifier inputVerifier;
+    private final Scanner scanner;
+    private final PrintStream outputStream;
 
     public InteractiveOptions() {
-        scanner = new Scanner(System.in);
-        writer = System.out;
+        this(System.out);
     }
 
-    public InteractiveOptions(InputStream inputStream, PrintStream printStream) {
-        scanner = new Scanner(inputStream);
-        writer = printStream;
+    public InteractiveOptions(PrintStream printStream) {
+        this(System.in, printStream);
+    }
+
+    public InteractiveOptions(InputStream inputStream, PrintStream outputStream) {
+        this.scanner = new Scanner(inputStream);
+        this.outputStream = outputStream;
+        this.inputVerifier = new InputVerifier(outputStream);
     }
 
     public String getProjectName() {
@@ -45,19 +57,19 @@ public class InteractiveOptions {
         if (projectName.trim().isEmpty()) {
             return "Web3App";
         }
-        while (!InputVerifier.classNameIsValid(projectName)) {
+        while (!inputVerifier.classNameIsValid(projectName)) {
             projectName = getUserInput();
         }
         return projectName;
     }
 
     public String getPackageName() {
-        print("Please enter the package name for your project [io.web3j]:");
+        print("Please enter the package name for your project [io.epirus]:");
         String packageName = getUserInput();
         if (packageName.trim().isEmpty()) {
-            return "io.web3j";
+            return "io.epirus";
         }
-        while (!InputVerifier.packageNameIsValid(packageName)) {
+        while (!inputVerifier.packageNameIsValid(packageName)) {
             packageName = getUserInput();
         }
         return packageName;
@@ -73,13 +85,64 @@ public class InteractiveOptions {
         if (new File(projectPath).exists()) {
             if (overrideExistingProject()) {
                 Path path = new File(projectPath).toPath();
-                deleteFolder(path);
+                ProjectUtils.deleteFolder(path);
                 return Optional.of(projectDest);
             } else {
                 exitError("Project creation was canceled.");
             }
         }
         return projectDest.isEmpty() ? Optional.empty() : Optional.of(projectDest);
+    }
+
+    public String createWallet(final String walletPath) {
+        print("Please enter a wallet password.");
+        String walletPassword = getUserInput();
+        return createWallet(walletPath, walletPassword);
+    }
+
+    public String createWallet(final String walletPath, final String walletPassword) {
+        return AccountUtils.accountDefaultWalletInit(walletPath, walletPassword);
+    }
+
+    public Map<String, String> getWalletLocation(final String defaultWalletPath) {
+        Map<String, String> walletCredentials = new HashMap<>();
+        if (userAnsweredYes("Would you like to use the default global wallet [Y/n] ?")) {
+            if (!defaultWalletPath.isEmpty()) {
+                walletCredentials.put("path", defaultWalletPath);
+                walletCredentials.put("password", "");
+                return walletCredentials;
+            } else {
+                if (userAnsweredYes(
+                        "Looks like you don't have any global wallets. Would you like to generate one [Y/n] ?")) {
+                    createWallet(defaultWalletPath, "");
+                    walletCredentials.put("path", defaultWalletPath);
+                    walletCredentials.put("password", "");
+                    return walletCredentials;
+                }
+            }
+        } else {
+            print("Please enter your wallet path: ");
+            String walletPath = getUserInput();
+            if (walletPath.isEmpty() || !Files.exists(Paths.get(walletPath))) {
+                print("Wallet path is invalid. Exiting ...");
+                System.exit(1);
+            }
+            print(
+                    "Please ente r your wallet password [Leave empty if your wallet is not password protected]");
+            String walletPassword = getUserInput();
+            walletCredentials.put("path", walletPath);
+            walletCredentials.put("password", walletPassword);
+            return walletCredentials;
+        }
+        return walletCredentials;
+    }
+
+    public boolean userAnsweredYes(String message) {
+        print(message);
+        String answer = getUserInput();
+        return answer.trim().isEmpty()
+                || answer.trim().toLowerCase().equals("y")
+                || answer.trim().toLowerCase().equals("yes");
     }
 
     public Optional<String> getGeneratedWrapperLocation() {
@@ -124,15 +187,31 @@ public class InteractiveOptions {
                 : Optional.of(outputPath);
     }
 
+    public Optional<String> setGeneratedTestLocationKotlin() {
+        print(
+                "Where would you like to save your tests ["
+                        + String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin")
+                        + "]");
+        String outputPath = getUserInput();
+        return outputPath.isEmpty()
+                ? Optional.of(
+                        String.join(
+                                separator, System.getProperty("user.dir"), "src", "test", "kotlin"))
+                : Optional.of(outputPath);
+    }
+
     public boolean userWantsTests() {
-        print("Would you like to generate unit test for your solidity contracts [Y/n] ? ");
+        print("Would you like to generate unit test for your Solidity contracts [Y/n] ? ");
         String userAnswer = getUserInput();
         return userAnswer.trim().toLowerCase().equals("y") || userAnswer.trim().equals("");
     }
 
     public String getSolidityProjectPath() {
-        print("Please enter the path to your solidity file/folder [Required Field]: ");
-        return getUserInput();
+        print("Please enter the path to your Solidity file/folder [Required Field]: ");
+        File file = new File(getUserInput());
+
+        return file.getAbsolutePath();
     }
 
     public boolean overrideExistingProject() {
@@ -141,11 +220,68 @@ public class InteractiveOptions {
         return userAnswer.toLowerCase().equals("y");
     }
 
+    public boolean isUserLoggedIn() {
+        return config.getClientId() != null && config.getClientId().length() > 0;
+    }
+
+    public boolean doesUserWantEpirusAccount() {
+        print("It looks like you don’t have a Web3j account, would you like to create one?");
+        print("This will provide free access to the Ethereum network [Y/n]");
+        String userAnswer = getUserInput();
+        return userAnswer.toLowerCase().equals("y") || userAnswer.trim().equals("");
+    }
+
+    public String getEmail() {
+        print("Please enter your email address: ");
+        return getUserInput();
+    }
+
+    public String getTokenName(String defaultValue) {
+        print("Please enter the token name [" + defaultValue + "]: ");
+        String tokenName = getUserInput();
+        if (tokenName.isEmpty()) {
+            return defaultValue;
+        } else {
+            return tokenName;
+        }
+    }
+
+    public String getTokenSymbol(String defaultValue) {
+        print("Please enter the token symbol [" + defaultValue + "]: ");
+        String tokenSymbol = getUserInput();
+        if (tokenSymbol.isEmpty()) {
+            return defaultValue;
+        } else {
+            return tokenSymbol;
+        }
+    }
+
+    public String getTokenInitialSupply(String defaultValue) {
+        print("Please enter the token initial supply in Wei [" + defaultValue + "]: ");
+        String supply = getUserInput();
+        if (supply.isEmpty()) {
+            return defaultValue;
+        } else {
+            return supply;
+        }
+    }
+
+    public String[] getTokenDefaultOperators() {
+        print(
+                "Please enter the token default operators [your wallet address] (0x prefixed and ; separated): ");
+        String operators = getUserInput();
+        if (operators.isEmpty()) {
+            return null;
+        } else {
+            return operators.split(";");
+        }
+    }
+
     private String getUserInput() {
         return scanner.nextLine();
     }
 
     private void print(final String text) {
-        writer.println(text);
+        outputStream.println(text);
     }
 }

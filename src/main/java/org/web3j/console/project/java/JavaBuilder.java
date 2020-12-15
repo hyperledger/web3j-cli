@@ -35,7 +35,6 @@ public class JavaBuilder extends AbstractProjectBuilder<JavaBuilder> implements 
         return new JavaProject(
                 withTests,
                 withFatJar,
-                withWallet,
                 withSampleCode,
                 command,
                 solidityImportPath,

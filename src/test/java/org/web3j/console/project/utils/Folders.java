@@ -13,12 +13,34 @@
 package org.web3j.console.project.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.jetty.io.RuntimeIOException;
 
 import static java.io.File.separator;
 
 public class Folders {
+    private static List<File> filesToCleanUp = new ArrayList<>();
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(Folders::removeGeneratedTestFiles));
+    }
+
+    private static void removeGeneratedTestFiles() {
+        filesToCleanUp.forEach(
+                f -> {
+                    try {
+                        System.out.printf("Removing temporary test directory: %s\n", f.getName());
+                        FileUtils.deleteDirectory(f);
+                    } catch (IOException ignored) {
+                    }
+                });
+    }
+
     public static File tempBuildFolder() {
         File tmpTestLocation =
                 new File(
@@ -27,10 +49,14 @@ public class Folders {
                                 "build",
                                 "tmp",
                                 "testing",
-                                Long.toString(System.currentTimeMillis())));
+                                String.format(
+                                        "%d%s",
+                                        System.currentTimeMillis(),
+                                        RandomStringUtils.random(10, true, true))));
         if (!tmpTestLocation.mkdirs())
             throw new RuntimeIOException(
                     "Unable to create folder at " + tmpTestLocation.getAbsolutePath());
+        filesToCleanUp.add(tmpTestLocation);
         return tmpTestLocation;
     }
 }

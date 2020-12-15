@@ -26,8 +26,6 @@ public class KotlinTemplateBuilder implements TemplateBuilder {
     protected String gradlewWrapperJar;
     protected String packageNameReplacement;
     protected String projectNameReplacement;
-    protected String passwordFileName;
-    protected String walletNameReplacement;
     protected String pathToSolidityFolder;
 
     public KotlinTemplateBuilder withMainKotlinClass(String mainKotlinClass) {
@@ -85,16 +83,6 @@ public class KotlinTemplateBuilder implements TemplateBuilder {
         return this;
     }
 
-    public KotlinTemplateBuilder withPasswordFileName(String passwordFileName) {
-        this.passwordFileName = passwordFileName;
-        return this;
-    }
-
-    public KotlinTemplateBuilder withWalletNameReplacement(String walletNameReplacement) {
-        this.walletNameReplacement = walletNameReplacement;
-        return this;
-    }
-
     public KotlinTemplateProvider build() {
         return new KotlinTemplateProvider(
                 mainJavaClass,
@@ -107,8 +95,6 @@ public class KotlinTemplateBuilder implements TemplateBuilder {
                 gradlewScript,
                 gradlewWrapperJar,
                 packageNameReplacement,
-                projectNameReplacement,
-                passwordFileName,
-                walletNameReplacement);
+                projectNameReplacement);
     }
 }

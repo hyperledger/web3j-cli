@@ -14,12 +14,10 @@ package org.web3j.console.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import static org.web3j.console.project.utils.ProjectUtils.isSmartContract;
 
 public class ProjectVisitor extends SimpleFileVisitor<Path> {
     private final String source;
@@ -42,11 +40,13 @@ public class ProjectVisitor extends SimpleFileVisitor<Path> {
         File destFile =
                 new File(destination + File.separator + filePath.substring(sourcePath.length()));
 
-        if (!destFile.getParentFile().exists() && !destFile.getParentFile().mkdirs()) {
-            throw new IOException("Unable to create folder: " + destFile.getParent());
+        if (isSmartContract(path.toFile())) {
+            if (!destFile.getParentFile().exists() && !destFile.getParentFile().mkdirs()) {
+                throw new IOException("Unable to create folder: " + destFile.getParent());
+            }
+            Files.copy(path, destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
 
-        Files.copy(path, destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         return FileVisitResult.CONTINUE;
     }
 }

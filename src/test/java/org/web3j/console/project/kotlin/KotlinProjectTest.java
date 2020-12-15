@@ -13,12 +13,15 @@
 package org.web3j.console.project.kotlin;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.web3j.console.project.ProjectStructure;
 import org.web3j.console.project.utils.Folders;
+import org.web3j.crypto.WalletUtils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,6 +32,15 @@ public class KotlinProjectTest {
     public void setUpProject() throws Exception {
         final String rootDirectory = Folders.tempBuildFolder().getAbsolutePath();
         projectStructure = new KotlinProjectStructure(rootDirectory, "test", "test");
+        Map<String, String> walletCredentials = new HashMap<>();
+        final File testWalletDirectory = new File(rootDirectory + File.separator + "keystore");
+        testWalletDirectory.mkdirs();
+        String absoluteWalletPath =
+                testWalletDirectory
+                        + File.separator
+                        + WalletUtils.generateNewWalletFile("", testWalletDirectory);
+        walletCredentials.put("path", absoluteWalletPath);
+        walletCredentials.put("password", "");
         KotlinProject kotlinProject =
                 new KotlinBuilder()
                         .withProjectName(projectStructure.getProjectName())

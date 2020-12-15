@@ -52,7 +52,7 @@ public abstract class ProjectStructure {
                         projectName,
                         "build",
                         "generated",
-                        "source",
+                        "sources",
                         "web3j",
                         "main",
                         "java");

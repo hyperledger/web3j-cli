@@ -20,7 +20,7 @@ import org.web3j.console.project.ProjectStructure;
 import org.web3j.console.project.ProjectWriter;
 import org.web3j.console.project.templates.TemplateProvider;
 import org.web3j.console.project.templates.TemplateReader;
-import org.web3j.console.project.utils.InputVerifier;
+import org.web3j.console.project.utils.ProjectUtils;
 
 public class KotlinTemplateProvider implements TemplateProvider {
     private final String mainKotlinClass;
@@ -34,8 +34,6 @@ public class KotlinTemplateProvider implements TemplateProvider {
     private final String gradlewJar;
     private final Optional<String> packageNameReplacement;
     private final Optional<String> projectNameReplacement;
-    private final Optional<String> passwordFileName;
-    private final Optional<String> walletNameReplacement;
 
     protected KotlinTemplateProvider(
             final String mainKotlinClass,
@@ -48,9 +46,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
             final String gradlewScript,
             final String gradlewJar,
             String packageNameReplacement,
-            String projectNameReplacement,
-            String passwordFileName,
-            String walletNameReplacement) {
+            String projectNameReplacement) {
         this.mainKotlinClass = mainKotlinClass;
         this.solidityContract = solidityContract;
         this.pathToSolidityFolder = pathToSolidityFolder;
@@ -62,8 +58,6 @@ public class KotlinTemplateProvider implements TemplateProvider {
         this.gradlewJar = gradlewJar;
         this.packageNameReplacement = Optional.ofNullable(packageNameReplacement);
         this.projectNameReplacement = Optional.ofNullable(projectNameReplacement);
-        this.passwordFileName = Optional.ofNullable(passwordFileName);
-        this.walletNameReplacement = Optional.ofNullable(walletNameReplacement);
     }
 
     public String getSolidityContract() {
@@ -102,10 +96,9 @@ public class KotlinTemplateProvider implements TemplateProvider {
         return TemplateReader.readFile(mainKotlinClass)
                 .replaceAll(
                         "<project_name>",
-                        InputVerifier.capitalizeFirstLetter(projectNameReplacement.orElse("")))
+                        ProjectUtils.capitalizeFirstLetter(projectNameReplacement.orElse("")))
                 .replaceAll("<package_name>", packageNameReplacement.orElse(""))
-                .replaceAll("<wallet_name>", walletNameReplacement.orElse(""))
-                .replaceAll("<password_file_name>", passwordFileName.orElse(""));
+                .replaceAll("<project_language>", "java");
     }
 
     public String loadGradleBuild() throws IOException {
@@ -141,7 +134,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
     public void generateFiles(ProjectStructure projectStructure) throws IOException {
         ProjectWriter.writeResourceFile(
                 loadMainKotlinClass(),
-                InputVerifier.capitalizeFirstLetter(projectStructure.getProjectName() + ".kt"),
+                ProjectUtils.capitalizeFirstLetter(projectStructure.getProjectName() + ".kt"),
                 projectStructure.getMainPath());
         ProjectWriter.writeResourceFile(
                 loadGradleBuild(), "build.gradle", projectStructure.getProjectRoot());
@@ -155,6 +148,10 @@ public class KotlinTemplateProvider implements TemplateProvider {
                     new File(pathToSolidityFolder), projectStructure.getSolidityPath());
         }
         ProjectWriter.writeResourceFile(
+                TemplateReader.readFile("project/Dockerfile.template"),
+                "Dockerfile",
+                projectStructure.getProjectRoot());
+        ProjectWriter.writeResourceFile(
                 loadGradlewWrapperSettings(),
                 "gradle-wrapper.properties",
                 projectStructure.getWrapperPath());
@@ -164,6 +161,7 @@ public class KotlinTemplateProvider implements TemplateProvider {
                 loadGradlewBatScript(), "gradlew.bat", projectStructure.getProjectRoot());
         ProjectWriter.copyResourceFile(
                 getGradlewJar(),
-                projectStructure.getWrapperPath() + File.separator + "gradle-wrapper.jar");
+                new File(projectStructure.getWrapperPath(), "gradle-wrapper.jar")
+                        .getAbsolutePath());
     }
 }

@@ -25,7 +25,7 @@ public class ProgressCounter {
         this.isLoading = isLoading;
     }
 
-    public void processing(String message) {
+    public synchronized void processing(String message) {
         Thread th =
                 new Thread(
                         () -> {

@@ -12,39 +12,101 @@
  */
 package org.web3j.console.project.kotlin;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-import picocli.CommandLine;
+import com.google.common.annotations.VisibleForTesting;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
-import org.web3j.codegen.Console;
-import org.web3j.console.project.UnitTestCreator;
+import org.web3j.codegen.unit.gen.ClassProvider;
+import org.web3j.codegen.unit.gen.kotlin.KotlinClassGenerator;
+import org.web3j.console.Web3jVersionProvider;
+import org.web3j.console.openapi.utils.PrettyPrinter;
+import org.web3j.console.openapi.utils.SimpleFileLogger;
+import org.web3j.console.project.InteractiveOptions;
 
-@CommandLine.Command(
-        name = "generate-tests",
+@Command(
+        name = "kotlin",
+        description = "Generate Kotlin tests for a Web3j Java smart contract wrapper",
+        showDefaultValues = true,
+        abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
-        version = "4.0",
-        sortOptions = false)
+        versionProvider = Web3jVersionProvider.class,
+        synopsisHeading = "%n",
+        descriptionHeading = "%nDescription:%n%n",
+        optionListHeading = "%nOptions:%n",
+        footerHeading = "%n",
+        footer = "Web3j CLI is licensed under the Apache License 2.0")
 public class KotlinTestCLIRunner implements Runnable {
-    @CommandLine.Option(
+    @Option(
             names = {"-i", "--java-wrapper-directory"},
-            description = "The class path of your generated wrapper.",
-            required = true)
+            description = "The class path of your generated wrapper.")
     public String javaWrapperDir;
 
-    @CommandLine.Option(
+    @Option(
             names = {"-o", "--output-directory"},
-            description = "The path where the unit tests will be generated.",
-            required = true)
+            description = "The path where the unit tests will be generated.")
     public String unitTestOutputDir;
+
+    @VisibleForTesting
+    public KotlinTestCLIRunner(final String javaWrapperDir, final String unitTestOutputDir) {
+        this.javaWrapperDir = javaWrapperDir;
+        this.unitTestOutputDir = unitTestOutputDir;
+    }
+
+    @VisibleForTesting
+    public KotlinTestCLIRunner() {}
 
     @Override
     public void run() {
+        if (javaWrapperDir == null && unitTestOutputDir == null) {
+            buildInteractively();
+        }
         try {
-            new UnitTestCreator(javaWrapperDir, unitTestOutputDir).generateKotlin();
-            Console.exitSuccess(
+            generateKotlin();
+            System.out.println(
                     "Unit tests were generated successfully at location: " + unitTestOutputDir);
         } catch (IOException e) {
-            Console.exitError(e);
+            e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
+            PrettyPrinter.INSTANCE.onFailed();
+            System.exit(1);
         }
+    }
+
+    private void buildInteractively() {
+        InteractiveOptions interactiveOptions = new InteractiveOptions();
+        interactiveOptions
+                .getGeneratedWrapperLocation()
+                .ifPresent(wrappersPath -> javaWrapperDir = wrappersPath);
+        interactiveOptions
+                .setGeneratedTestLocationJava()
+                .ifPresent(outputPath -> unitTestOutputDir = outputPath);
+    }
+
+    @VisibleForTesting
+    public void generateKotlin() throws IOException {
+        List<Class> compiledClasses = new ClassProvider(new File(javaWrapperDir)).getClasses();
+        compiledClasses.forEach(
+                compiledClass -> {
+                    try {
+                        new KotlinClassGenerator(
+                                        compiledClass,
+                                        compiledClass
+                                                .getCanonicalName()
+                                                .substring(
+                                                        0,
+                                                        compiledClass
+                                                                .getCanonicalName()
+                                                                .lastIndexOf(".")),
+                                        unitTestOutputDir)
+                                .writeClass();
+                    } catch (Exception e) {
+                        e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
+                        PrettyPrinter.INSTANCE.onFailed();
+                        System.exit(1);
+                    }
+                });
     }
 }

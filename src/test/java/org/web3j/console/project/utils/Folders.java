@@ -26,9 +26,9 @@ import static java.io.File.separator;
 public class Folders {
     private static List<File> filesToCleanUp = new ArrayList<>();
 
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(Folders::removeGeneratedTestFiles));
-    }
+//    static {
+//        Runtime.getRuntime().addShutdownHook(new Thread(Folders::removeGeneratedTestFiles));
+//    }
 
     private static void removeGeneratedTestFiles() {
         filesToCleanUp.forEach(

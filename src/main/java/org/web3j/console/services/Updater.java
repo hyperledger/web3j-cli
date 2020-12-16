@@ -36,7 +36,7 @@ public class Updater {
                 && !version.contains("SNAPSHOT")) {
             System.out.println(
                     String.format(
-                            "Your current Epirus version is: "
+                            "Your current Web3j version is: "
                                     + version
                                     + ". The latest Version is: "
                                     + config.getLatestVersion()

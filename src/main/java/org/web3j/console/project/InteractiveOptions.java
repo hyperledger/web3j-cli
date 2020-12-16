@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.web3j.console.account.AccountUtils;
 import org.web3j.console.project.utils.InputVerifier;
 import org.web3j.console.project.utils.ProjectUtils;
 
@@ -63,10 +64,10 @@ public class InteractiveOptions {
     }
 
     public String getPackageName() {
-        print("Please enter the package name for your project [io.epirus]:");
+        print("Please enter the package name for your project [org.web3j]:");
         String packageName = getUserInput();
         if (packageName.trim().isEmpty()) {
-            return "io.epirus";
+            return "org.web3j";
         }
         while (!inputVerifier.packageNameIsValid(packageName)) {
             packageName = getUserInput();

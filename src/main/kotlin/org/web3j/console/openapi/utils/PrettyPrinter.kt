@@ -42,7 +42,7 @@ object PrettyPrinter {
         commandPrinter.println("Run your application manually")
         instructionPrinter.print(String.format("%-40s", "epirus run rinkeby|ropsten"))
         commandPrinter.println("Runs your application")
-        instructionPrinter.print(String.format("%-40s", "epirus docker run rinkeby|ropsten"))
+        instructionPrinter.print(String.format("%-40s", "web3j docker run rinkeby|ropsten"))
         commandPrinter.println("Runs your application in a docker container")
     }
 

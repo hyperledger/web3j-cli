@@ -36,7 +36,7 @@ import java.io.File
     descriptionHeading = "%nDescription:%n%n",
     optionListHeading = "%nOptions:%n",
     footerHeading = "%n",
-    footer = ["Epirus CLI is licensed under the Apache License 2.0"]
+    footer = ["Web3j CLI is licensed under the Apache License 2.0"]
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 

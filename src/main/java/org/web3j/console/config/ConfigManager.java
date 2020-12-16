@@ -63,8 +63,8 @@ public class ConfigManager {
     }
 
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
-        File epirusHome = new File(configFile.getParent());
-        if (!epirusHome.exists() && !epirusHome.mkdirs()) {
+        File web3jHome = new File(configFile.getParent());
+        if (!web3jHome.exists() && !web3jHome.mkdirs()) {
             throw new IOException("Failed to create Web3j home directory");
         }
         return new CliConfig(UUID.randomUUID().toString(), null, null, null, null, null, false);

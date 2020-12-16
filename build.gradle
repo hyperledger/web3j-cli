@@ -12,9 +12,6 @@ plugins {
     id "de.marcphilipp.nexus-publish" version "0.4.0"
     id 'io.codearte.nexus-staging' version '0.21.1'
     id "com.jfrog.bintray" version "1.8.4"
-
-
-
 }
 
 description 'Web3j command line tools'

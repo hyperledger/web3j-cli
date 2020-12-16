@@ -27,7 +27,7 @@ public class BaseProjectOptions {
             names = {"-p", "--package"},
             description = "Base package name.",
             showDefaultValue = ALWAYS)
-    public String packageName = "io.epirus";
+    public String packageName = "org.web3j";
 
     @Option(
             names = {"-o", "--output-dir"},

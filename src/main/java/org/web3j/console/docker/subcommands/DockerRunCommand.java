@@ -47,7 +47,7 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         descriptionHeading = "%nDescription:%n%n",
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
+        footer = "Web3j CLI is licensed under the Apache License 2.0")
 public class DockerRunCommand implements DockerOperations, Runnable {
 
     @Option(names = {"-t", "--tag"})
@@ -115,7 +115,7 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                             args,
                             "-v",
                             String.format(
-                                    "%s/.epirus:/root/.epirus", System.getProperty("user.home")));
+                                    "%s/.web3j:/root/.web3j", System.getProperty("user.home")));
         }
 
         args = ArrayUtils.addAll(args, tag);

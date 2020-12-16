@@ -14,6 +14,6 @@ package org.web3j.console.config;
 
 public class ConfigException extends RuntimeException {
     public ConfigException(Exception e) {
-        super("Epirus CLI configuration failed to initialize: ", e);
+        super("Web3j CLI configuration failed to initialize: ", e);
     }
 }

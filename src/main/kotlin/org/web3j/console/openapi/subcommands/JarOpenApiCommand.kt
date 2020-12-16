@@ -40,7 +40,7 @@ import java.nio.file.StandardCopyOption
     descriptionHeading = "%nDescription:%n%n",
     optionListHeading = "%nOptions:%n",
     footerHeading = "%n",
-    footer = ["Epirus CLI is licensed under the Apache License 2.0"]
+    footer = ["Web3j CLI is licensed under the Apache License 2.0"]
 )
 class JarOpenApiCommand : AbstractOpenApiCommand() {
 
@@ -51,10 +51,10 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
     var solidityImportPath: String? = null
 
     /**
-     * Path to the `.epirus` folder
+     * Path to the `.web3j` folder
      */
-    private val epirusHomeFolder: Path =
-        Paths.get(System.getenv(if (System.getProperty("os.name").toLowerCase().startsWith("win")) "USERPROFILE" else "HOME"), ".epirus")
+    private val web3jHomeFolder: Path =
+        Paths.get(System.getenv(if (System.getProperty("os.name").toLowerCase().startsWith("win")) "USERPROFILE" else "HOME"), ".web3j")
 
     override fun generate(projectFolder: File) {
         if (solidityImportPath == null) {
@@ -122,6 +122,6 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
         val folderNameHashCode = contracts.sorted().joinToString("") {
             it.toFile().nameWithoutExtension
         }.hashCode().toString()
-        return epirusHomeFolder.resolve("projects").resolve(folderNameHashCode)
+        return web3jHomeFolder.resolve("projects").resolve(folderNameHashCode)
     }
 }

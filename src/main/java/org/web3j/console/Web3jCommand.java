@@ -29,7 +29,6 @@ import org.web3j.console.project.ImportProjectCommand;
 import org.web3j.console.project.InteractiveOptions;
 import org.web3j.console.project.NewProjectCommand;
 import org.web3j.console.project.testing.ProjectTestCommand;
-import org.web3j.console.run.RunCommand;
 import org.web3j.console.security.ContractAuditCommand;
 import org.web3j.console.services.Telemetry;
 import org.web3j.console.services.Updater;
@@ -50,7 +49,6 @@ import static org.web3j.console.config.ConfigManager.config;
             ImportProjectCommand.class,
             NewProjectCommand.class,
             OpenApiCommand.class,
-            RunCommand.class,
             ProjectTestCommand.class,
             WalletCommand.class,
         },
@@ -67,7 +65,7 @@ import static org.web3j.console.config.ConfigManager.config;
 public class Web3jCommand implements Runnable {
 
     public static final String DEFAULT_WALLET_FOLDER =
-            System.getProperty("user.home") + separator + ".epirus" + separator + "keystore";
+            System.getProperty("user.home") + separator + ".web3j" + separator + "keystore";
 
     private static final String LOGO =
             "\n" // generated at http://patorjk.com/software/taag
@@ -100,7 +98,6 @@ public class Web3jCommand implements Runnable {
         commandLine.setCaseInsensitiveEnumValuesAllowed(true);
         commandLine.setParameterExceptionHandler(this::handleParseException);
         commandLine.setDefaultValueProvider(new EnvironmentVariableDefaultProvider(environment));
-
         System.out.println(LOGO);
         try {
             ConfigManager.setProduction();

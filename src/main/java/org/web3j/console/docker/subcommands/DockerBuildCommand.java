@@ -33,7 +33,7 @@ import org.web3j.console.docker.DockerOperations;
         descriptionHeading = "%nDescription:%n%n",
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
+        footer = "Web3j CLI is licensed under the Apache License 2.0")
 public class DockerBuildCommand implements DockerOperations, Runnable {
 
     @Option(names = {"-d", "--directory"})

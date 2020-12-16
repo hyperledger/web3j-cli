@@ -36,7 +36,7 @@ import static picocli.CommandLine.Help.Visibility.ALWAYS;
         descriptionHeading = "%nDescription:%n%n",
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
+        footer = "Web3j CLI is licensed under the Apache License 2.0")
 public class SolidityGenerateCommand implements Runnable {
 
     static final String JAVA_TYPES_ARG = "--javaTypes";

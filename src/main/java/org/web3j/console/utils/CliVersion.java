@@ -42,7 +42,7 @@ public class CliVersion {
         InputStream is =
                 propertiesFile.exists()
                         ? new FileInputStream(propertiesFile)
-                        : CliVersion.class.getResourceAsStream("/epirus-version.properties");
+                        : CliVersion.class.getResourceAsStream("/web3j-version.properties");
         properties.load(is);
         return properties;
     }

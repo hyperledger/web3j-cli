@@ -22,9 +22,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
-import org.web3j.console.account.AccountCommand;
-import org.web3j.console.account.subcommands.LoginCommand;
-import org.web3j.console.account.subcommands.LogoutCommand;
 import org.web3j.console.config.ConfigManager;
 import org.web3j.console.docker.DockerCommand;
 import org.web3j.console.openapi.OpenApiCommand;
@@ -46,14 +43,11 @@ import static org.web3j.console.config.ConfigManager.config;
 @Command(
         name = "web3j",
         subcommands = {
-            AccountCommand.class,
             ContractAuditCommand.class,
             DockerCommand.class,
             GenerateCommand.class,
             CommandLine.HelpCommand.class,
             ImportProjectCommand.class,
-            LoginCommand.class,
-            LogoutCommand.class,
             NewProjectCommand.class,
             OpenApiCommand.class,
             RunCommand.class,
@@ -76,14 +70,15 @@ public class Web3jCommand implements Runnable {
             System.getProperty("user.home") + separator + ".epirus" + separator + "keystore";
 
     private static final String LOGO =
-            "  ______       _                \n"
-                    + " |  ____|     (_)               \n"
-                    + " | |__   _ __  _ _ __ _   _ ___ \n"
-                    + " |  __| | '_ \\| | '__| | | / __|\n"
-                    + " | |____| |_) | | |  | |_| \\__ \\\n"
-                    + " |______| .__/|_|_|   \\__,_|___/\n"
-                    + "        | |                     \n"
-                    + "        |_|                     ";
+            "\n" // generated at http://patorjk.com/software/taag
+                    + "              _      _____ _     _        \n"
+                    + "             | |    |____ (_)   (_)       \n"
+                    + "__      _____| |__      / /_     _   ___  \n"
+                    + "\\ \\ /\\ / / _ \\ '_ \\     \\ \\ |   | | / _ \\ \n"
+                    + " \\ V  V /  __/ |_) |.___/ / | _ | || (_) |\n"
+                    + "  \\_/\\_/ \\___|_.__/ \\____/| |(_)|_| \\___/ \n"
+                    + "                         _/ |             \n"
+                    + "                        |__/              \n";
 
     private final CommandLine commandLine;
     private final Map<String, String> environment;

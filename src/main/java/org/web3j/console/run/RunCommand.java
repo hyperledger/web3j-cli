@@ -59,7 +59,7 @@ import static org.web3j.utils.Convert.Unit.ETHER;
         descriptionHeading = "%nDescription:%n%n",
         optionListHeading = "%nOptions:%n",
         footerHeading = "%n",
-        footer = "Epirus CLI is licensed under the Apache License 2.0")
+        footer = "Web3j CLI is licensed under the Apache License 2.0")
 public class RunCommand implements Runnable {
     @Mixin CredentialsOptions credentialsOptions;
 
@@ -137,7 +137,7 @@ public class RunCommand implements Runnable {
                     .deploy();
         } catch (Exception e) {
             printErrorAndExit(
-                    "Epirus failed to deploy the project. For more information please see the log file.");
+                    "Web3j failed to deploy the project. For more information please see the log file.");
         }
     }
 

@@ -14,7 +14,7 @@ package org.web3j.console;
 
 public class EnvironmentVariablesProperties {
     public static final String WEB3J_VAR_PREFIX = "WEB3J_";
-    public static final String WEB3J_CLI_VAR_PREFIX = "EPIRUS_";
+    public static final String WEB3J_CLI_VAR_PREFIX = "WEB3J_";
     public static final String WEB3J_OPENAPI_VAR_PREFIX = "WEB3J_OPENAPI_";
     public static final String[] OPENAPI_SPECIFIC_VARIABLES =
             new String[] {

@@ -9,6 +9,12 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "com.diffplug.gradle.spotless" version "3.25.0"
     id "de.undercouch.download" version "4.0.0"
+    id "de.marcphilipp.nexus-publish" version "0.4.0"
+    id 'io.codearte.nexus-staging' version '0.21.1'
+    id "com.jfrog.bintray" version "1.8.4"
+
+
+
 }
 
 description 'Web3j command line tools'
@@ -41,6 +47,7 @@ apply {
         'java',
         'javadoc',
         'repositories',
+        'publish',
         'spotless'
     ].each { buildScript ->
         download {

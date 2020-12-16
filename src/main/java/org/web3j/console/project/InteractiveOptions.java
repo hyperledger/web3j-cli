@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
-import org.web3j.console.account.AccountUtils;
 import org.web3j.console.project.utils.InputVerifier;
 import org.web3j.console.project.utils.ProjectUtils;
 

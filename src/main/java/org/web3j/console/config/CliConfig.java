@@ -103,7 +103,7 @@ public class CliConfig {
         String jsonToWrite = new Gson().toJson(this);
         try {
             Files.write(
-                    ConfigManager.DEFAULT_EPIRUS_CONFIG_PATH,
+                    ConfigManager.DEFAULT_WEB3J_CONFIG_PATH,
                     jsonToWrite.getBytes(Charset.defaultCharset()));
         } catch (IOException e) {
             throw new ConfigException(e);

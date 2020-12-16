@@ -23,23 +23,23 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 
 public class ConfigManager {
-    protected static final Path DEFAULT_EPIRUS_CONFIG_PATH =
-            Paths.get(System.getProperty("user.home"), ".epirus", ".config");
+    protected static final Path DEFAULT_WEB3J_CONFIG_PATH =
+            Paths.get(System.getProperty("user.home"), ".web3j", ".config");
 
     public static CliConfig config;
 
     public static void setProduction() throws IOException {
-        CliConfig productionConfig = getDefaultConfig(DEFAULT_EPIRUS_CONFIG_PATH.toFile());
+        CliConfig productionConfig = getDefaultConfig(DEFAULT_WEB3J_CONFIG_PATH.toFile());
         productionConfig.setPersistent(true);
         config = productionConfig;
-        if (!DEFAULT_EPIRUS_CONFIG_PATH.toFile().exists()) {
+        if (!DEFAULT_WEB3J_CONFIG_PATH.toFile().exists()) {
             config.save();
         }
     }
 
     @VisibleForTesting
     public static void setDevelopment() throws IOException {
-        config = getDefaultConfig(DEFAULT_EPIRUS_CONFIG_PATH.toFile());
+        config = getDefaultConfig(DEFAULT_WEB3J_CONFIG_PATH.toFile());
     }
 
     @VisibleForTesting
@@ -65,7 +65,7 @@ public class ConfigManager {
     private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
         File epirusHome = new File(configFile.getParent());
         if (!epirusHome.exists() && !epirusHome.mkdirs()) {
-            throw new IOException("Failed to create Epirus home directory");
+            throw new IOException("Failed to create Web3j home directory");
         }
         return new CliConfig(UUID.randomUUID().toString(), null, null, null, null, null, false);
     }

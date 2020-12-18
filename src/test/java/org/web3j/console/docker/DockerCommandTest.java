@@ -19,17 +19,18 @@ import picocli.CommandLine;
 
 import org.web3j.console.ProjectTest;
 import org.web3j.console.Web3jCommand;
-import org.web3j.console.account.AccountUtils;
 import org.web3j.console.config.ConfigManager;
+import org.web3j.console.project.InteractiveOptions;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DockerCommandTest extends ProjectTest {
 
     @BeforeEach
     public void setupWallet() {
+
         final String walletPath =
-                AccountUtils.accountDefaultWalletInit(Web3jCommand.DEFAULT_WALLET_FOLDER, "");
-        ConfigManager.setDevelopment("", "", "", "<login_token>", walletPath, "", true);
+                new InteractiveOptions().createWallet(Web3jCommand.DEFAULT_WALLET_FOLDER, "");
+        ConfigManager.setDevelopment("", "", "", walletPath, "", true);
     }
 
     @Disabled("must have a login token & docker installed")

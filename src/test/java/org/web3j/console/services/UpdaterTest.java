@@ -40,13 +40,7 @@ public class UpdaterTest {
         wireMockServer.start();
         WireMock.configureFor("localhost", wireMockServer.port());
         ConfigManager.setDevelopment(
-                UUID.randomUUID().toString(),
-                CliVersion.getVersion(),
-                null,
-                null,
-                null,
-                null,
-                false);
+                UUID.randomUUID().toString(), CliVersion.getVersion(), null, null, null, false);
     }
 
     @AfterEach

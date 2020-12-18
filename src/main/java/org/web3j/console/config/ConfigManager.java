@@ -47,7 +47,6 @@ public class ConfigManager {
             String clientId,
             String latestVersion,
             String updatePrompt,
-            String loginToken,
             String defaultWalletPath,
             String defaultWalletPassword,
             boolean telemetryDisabled) {
@@ -56,7 +55,6 @@ public class ConfigManager {
                         clientId,
                         latestVersion,
                         updatePrompt,
-                        loginToken,
                         defaultWalletPath,
                         defaultWalletPassword,
                         telemetryDisabled);
@@ -67,7 +65,7 @@ public class ConfigManager {
         if (!web3jHome.exists() && !web3jHome.mkdirs()) {
             throw new IOException("Failed to create Web3j home directory");
         }
-        return new CliConfig(UUID.randomUUID().toString(), null, null, null, null, null, false);
+        return new CliConfig(UUID.randomUUID().toString(), null, null, null, null, false);
     }
 
     private static CliConfig getSavedConfig(File configFile) throws IOException {

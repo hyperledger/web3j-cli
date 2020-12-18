@@ -101,7 +101,6 @@ public class DockerRunCommand implements DockerOperations, Runnable {
                     "docker",
                     "run",
                     "--env",
-                    String.format(WEB3J_CLI_VAR_PREFIX + "LOGIN_TOKEN=%s", config.getLoginToken()),
                     "--env",
                     String.format(WEB3J_CLI_VAR_PREFIX + "DEPLOY=%s", true)
                 };

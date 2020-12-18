@@ -29,7 +29,6 @@ import org.web3j.console.project.utils.ProjectUtils;
 
 import static java.io.File.separator;
 import static org.web3j.codegen.Console.exitError;
-import static org.web3j.console.config.ConfigManager.config;
 
 public class InteractiveOptions {
 
@@ -128,7 +127,7 @@ public class InteractiveOptions {
                 System.exit(1);
             }
             print(
-                    "Please ente r your wallet password [Leave empty if your wallet is not password protected]");
+                    "Please enter your wallet password [Leave empty if your wallet is not password protected]");
             String walletPassword = getUserInput();
             walletCredentials.put("path", walletPath);
             walletCredentials.put("password", walletPassword);
@@ -220,22 +219,6 @@ public class InteractiveOptions {
         return userAnswer.toLowerCase().equals("y");
     }
 
-    public boolean isUserLoggedIn() {
-        return config.getClientId() != null && config.getClientId().length() > 0;
-    }
-
-    public boolean doesUserWantEpirusAccount() {
-        print("It looks like you don’t have a Web3j account, would you like to create one?");
-        print("This will provide free access to the Ethereum network [Y/n]");
-        String userAnswer = getUserInput();
-        return userAnswer.toLowerCase().equals("y") || userAnswer.trim().equals("");
-    }
-
-    public String getEmail() {
-        print("Please enter your email address: ");
-        return getUserInput();
-    }
-
     public String getTokenName(String defaultValue) {
         print("Please enter the token name [" + defaultValue + "]: ");
         String tokenName = getUserInput();
@@ -277,11 +260,11 @@ public class InteractiveOptions {
         }
     }
 
-    private String getUserInput() {
+    protected String getUserInput() {
         return scanner.nextLine();
     }
 
-    private void print(final String text) {
+    protected void print(final String text) {
         outputStream.println(text);
     }
 }

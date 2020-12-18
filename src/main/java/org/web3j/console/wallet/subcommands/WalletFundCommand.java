@@ -78,9 +78,6 @@ public class WalletFundCommand extends WalletManager implements Runnable {
             if (fund.toUpperCase().equals("N")) {
                 exitError("Operation was cancelled by user.");
             }
-            if (token == null) {
-                token = config.getLoginToken();
-            }
 
             String transactionHash = fundWallet(destinationAddress, selectedFaucet, token);
             System.out.printf(

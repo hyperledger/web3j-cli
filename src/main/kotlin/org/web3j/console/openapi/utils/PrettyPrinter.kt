@@ -14,10 +14,9 @@ package org.web3j.console.openapi.utils
 
 import com.diogonunes.jcdp.color.ColoredPrinter
 import com.diogonunes.jcdp.color.api.Ansi
+import org.web3j.console.project.utils.InstructionsPrinter
 
 object PrettyPrinter {
-    private val gradleCommand = if (System.getProperty("os.name").toLowerCase().startsWith("windows")) "./gradlew.bat" else "./gradlew"
-
     private val cp = ColoredPrinter.Builder(0, false)
         .foreground(Ansi.FColor.WHITE)
         .background(Ansi.BColor.GREEN)
@@ -32,18 +31,9 @@ object PrettyPrinter {
     private val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
 
     fun onOpenApiProjectSuccess() {
-        print(System.lineSeparator())
-        cp.println("Project Created Successfully")
-        print(System.lineSeparator())
-
-        instructionPrinter.println(
-            "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK)
-        instructionPrinter.print(String.format("%-40s", "$gradleCommand run"))
-        commandPrinter.println("Run your application manually")
-        instructionPrinter.print(String.format("%-40s", "epirus run rinkeby|ropsten"))
-        commandPrinter.println("Runs your application")
-        instructionPrinter.print(String.format("%-40s", "web3j docker run rinkeby|ropsten"))
-        commandPrinter.println("Runs your application in a docker container")
+        InstructionsPrinter.getContextPrinterInstance().contextPrinter.printInstructionsOnSuccessOpenApi(
+            instructionPrinter, commandPrinter
+        )
     }
 
     fun onJarSuccess() {
@@ -52,7 +42,8 @@ object PrettyPrinter {
         print(System.lineSeparator())
 
         instructionPrinter.println(
-            "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK)
+            "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK
+        )
         instructionPrinter.print(String.format("%-45s", "java -jar <jar_name> <args>"))
         commandPrinter.println("Run your Jar")
         instructionPrinter.print(String.format("%-45s", "java -jar <jar_name> --help"))

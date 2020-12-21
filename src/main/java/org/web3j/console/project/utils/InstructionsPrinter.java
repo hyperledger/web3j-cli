@@ -23,11 +23,10 @@ public class InstructionsPrinter {
         this.printer = printer;
     }
 
-    public static InstructionsPrinter initContextPrinter(Printer printer) {
+    public static void initContextPrinter(Printer printer) {
         if (instructionsPrinterSession == null) {
             instructionsPrinterSession = new InstructionsPrinter(printer);
         }
-        return instructionsPrinterSession;
     }
 
     public static InstructionsPrinter getContextPrinterInstance() {

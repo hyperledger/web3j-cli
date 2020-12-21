@@ -18,4 +18,7 @@ public abstract class Printer {
 
     public abstract void printInstructionsOnSuccess(
             ColoredPrinter instructionPrinter, ColoredPrinter commandPrinter);
+
+    public abstract void printInstructionsOnSuccessOpenApi(
+            ColoredPrinter instructionPrinter, ColoredPrinter commandPrinter);
 }

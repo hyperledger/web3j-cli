@@ -27,6 +27,26 @@ public class Web3jPrinter extends Printer {
         instructionPrinter.println(
                 "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
         instructionPrinter.print(String.format("%-40s", gradleCommand + " test"));
+        commandPrinter.println("Test your application");
+        instructionPrinter.print(String.format("%-40s", "web3j docker run rinkeby|ropsten"));
+        commandPrinter.println("Runs your application in a docker container");
+    }
+
+    @Override
+    public void printInstructionsOnSuccessOpenApi(
+            ColoredPrinter instructionPrinter, ColoredPrinter commandPrinter) {
+        String gradleCommand =
+                System.getProperty("os.name").toLowerCase().startsWith("windows")
+                        ? "./gradlew.bat"
+                        : "./gradlew";
+        System.out.println(System.lineSeparator());
+        commandPrinter.println("Project Created Successfully");
+        System.out.println(System.lineSeparator());
+
+        instructionPrinter.println(
+                "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
+        instructionPrinter.print(String.format("%-40s", gradleCommand + " run"));
+        commandPrinter.println("Run your application manually");
         instructionPrinter.print(String.format("%-40s", "web3j docker run rinkeby|ropsten"));
         commandPrinter.println("Runs your application in a docker container");
     }

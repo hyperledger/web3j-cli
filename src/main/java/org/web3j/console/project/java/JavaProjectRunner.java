@@ -46,7 +46,7 @@ public abstract class JavaProjectRunner extends ProjectRunner {
             solidityFile.map(File::getAbsolutePath).ifPresent(javaBuilder::withSolidityFile);
             Project javaProject = javaBuilder.build();
             javaProject.createProject();
-            onSuccess(javaProject, "java");
+            onSuccess(javaProject);
         } catch (final Exception e) {
             e.printStackTrace(SimpleFileLogger.INSTANCE.getFilePrintStream());
             PrettyPrinter.INSTANCE.onFailed();

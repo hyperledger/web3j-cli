@@ -29,6 +29,8 @@ import org.web3j.console.project.ImportProjectCommand;
 import org.web3j.console.project.InteractiveOptions;
 import org.web3j.console.project.NewProjectCommand;
 import org.web3j.console.project.testing.ProjectTestCommand;
+import org.web3j.console.project.utils.InstructionsPrinter;
+import org.web3j.console.project.utils.printer.Web3jPrinter;
 import org.web3j.console.security.ContractAuditCommand;
 import org.web3j.console.services.Telemetry;
 import org.web3j.console.services.Updater;
@@ -68,15 +70,22 @@ public class Web3jCommand implements Runnable {
             System.getProperty("user.home") + separator + ".web3j" + separator + "keystore";
 
     private static final String LOGO =
-            "\n" // generated at http://patorjk.com/software/taag
-                    + "              _      _____ _     _        \n"
-                    + "             | |    |____ (_)   (_)       \n"
-                    + "__      _____| |__      / /_     _   ___  \n"
-                    + "\\ \\ /\\ / / _ \\ '_ \\     \\ \\ |   | | / _ \\ \n"
-                    + " \\ V  V /  __/ |_) |.___/ / | _ | || (_) |\n"
-                    + "  \\_/\\_/ \\___|_.__/ \\____/| |(_)|_| \\___/ \n"
-                    + "                         _/ |             \n"
-                    + "                        |__/              \n";
+            // generated at http://patorjk.com/software/taag
+            " __          __  _    ____  _                                   \n"
+                    + " \\ \\        / / | |  |___ \\(_)                                  \n"
+                    + "  \\ \\  /\\  / /__| |__  __) |_                                   \n"
+                    + "   \\ \\/  \\/ / _ \\ '_ \\|__ <| |                                  \n"
+                    + "    \\  /\\  /  __/ |_) |__) | |                                  \n"
+                    + "     \\/  \\/ \\___|_.__/____/| |                                  \n"
+                    + "                          _/ |                                  \n"
+                    + "  _            __        |__/  _    ____  _           _         \n"
+                    + " | |           \\ \\        / / | |  |___ \\| |         | |        \n"
+                    + " | |__  _   _   \\ \\  /\\  / /__| |__  __) | |     __ _| |__  ___ \n"
+                    + " | '_ \\| | | |   \\ \\/  \\/ / _ \\ '_ \\|__ <| |    / _` | '_ \\/ __|\n"
+                    + " | |_) | |_| |    \\  /\\  /  __/ |_) |__) | |___| (_| | |_) \\__ \\\n"
+                    + " |_.__/ \\__, |     \\/  \\/ \\___|_.__/____/|______\\__,_|_.__/|___/\n"
+                    + "         __/ |                                                  \n"
+                    + "        |___/                                                   ";
 
     private final CommandLine commandLine;
     private final Map<String, String> environment;
@@ -92,6 +101,7 @@ public class Web3jCommand implements Runnable {
         this.commandLine = new CommandLine(this);
         this.environment = environment;
         this.args = args;
+        InstructionsPrinter.initContextPrinter(new Web3jPrinter());
     }
 
     public int parse() {

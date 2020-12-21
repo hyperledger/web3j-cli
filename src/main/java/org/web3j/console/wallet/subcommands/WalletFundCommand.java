@@ -20,7 +20,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -31,7 +35,6 @@ import org.web3j.console.wallet.WalletManager;
 import org.web3j.utils.Numeric;
 
 import static org.web3j.codegen.Console.exitError;
-import static org.web3j.console.config.ConfigManager.config;
 import static org.web3j.crypto.Hash.sha256;
 
 @Command(
@@ -63,7 +66,7 @@ public class WalletFundCommand extends WalletManager implements Runnable {
     String destinationAddress;
 
     @Option(names = {"-t", "--token"})
-    String token;
+    protected String token;
 
     @Override
     public void run() {
@@ -78,7 +81,7 @@ public class WalletFundCommand extends WalletManager implements Runnable {
             if (fund.toUpperCase().equals("N")) {
                 exitError("Operation was cancelled by user.");
             }
-
+            setTokenIfAvailable();
             String transactionHash = fundWallet(destinationAddress, selectedFaucet, token);
             System.out.printf(
                     "Your wallet was successfully funded. You can view the associated transaction here, after it has been mined: https://%s.epirus.io/transactions/%s%n",
@@ -216,6 +219,10 @@ public class WalletFundCommand extends WalletManager implements Runnable {
                     "The fund operation failed - this may be due to an issue with the remote server. Please try again.",
                     ex);
         }
+    }
+
+    public String setTokenIfAvailable() {
+        return null;
     }
 }
 

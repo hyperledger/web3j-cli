@@ -28,7 +28,7 @@ public class CliConfig {
     private boolean telemetryDisabled;
 
     @Expose(serialize = false, deserialize = false)
-    private transient boolean isPersistent = false;
+    protected transient boolean isPersistent = false;
 
     protected CliConfig(
             String clientId,

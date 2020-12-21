@@ -48,7 +48,7 @@ public abstract class KotlinProjectRunner extends ProjectRunner {
             solidityFile.map(File::getAbsolutePath).ifPresent(kotlinBuilder::withSolidityFile);
             Project kotlinProject = kotlinBuilder.build();
             kotlinProject.createProject();
-            onSuccess(kotlinProject, "kotlin");
+            onSuccess(kotlinProject);
         } catch (final Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));

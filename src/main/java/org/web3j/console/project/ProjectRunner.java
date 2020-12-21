@@ -20,6 +20,7 @@ import com.diogonunes.jcdp.color.api.Ansi;
 import org.web3j.console.project.java.JavaProject;
 import org.web3j.console.project.java.JavaProjectRunner;
 import org.web3j.console.project.java.JavaTestCLIRunner;
+import org.web3j.console.project.utils.InstructionsPrinter;
 import org.web3j.console.project.utils.ProgressCounter;
 import org.web3j.console.project.utils.ProjectCreationUtils;
 
@@ -39,18 +40,7 @@ public abstract class ProjectRunner implements Runnable {
         this.withTests = projectCreatorConfig.getWithTests();
     }
 
-    @Override
-    public void run() {
-        createProject();
-    }
-
-    protected abstract void createProject();
-
-    public static void onSuccess(Project project, String projectType) {
-        String gradleCommand =
-                System.getProperty("os.name").toLowerCase().startsWith("windows")
-                        ? "./gradlew.bat"
-                        : "./gradlew";
+    public static void onSuccess(Project project) {
         System.out.print(System.lineSeparator());
         ColoredPrinter cp =
                 new ColoredPrinter.Builder(0, false)
@@ -84,15 +74,17 @@ public abstract class ProjectRunner implements Runnable {
                     Ansi.BColor.BLACK);
             System.out.print(System.lineSeparator());
         }
-        instructionPrinter.println(
-                "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
-        instructionPrinter.print(String.format("%-40s", gradleCommand + " test"));
-        commandPrinter.println("Test your application");
-        instructionPrinter.print(String.format("%-40s", "epirus run rinkeby|ropsten"));
-        commandPrinter.println("Runs your application");
-        instructionPrinter.print(String.format("%-40s", "epirus docker run rinkeby|ropsten"));
-        commandPrinter.println("Runs your application in a docker container");
+        InstructionsPrinter.getContextPrinterInstance()
+                .getContextPrinter()
+                .printInstructionsOnSuccess(instructionPrinter, commandPrinter);
     }
+
+    @Override
+    public void run() {
+        createProject();
+    }
+
+    protected abstract void createProject();
 
     public void buildProject(ProjectStructure projectStructure, ProgressCounter progressCounter)
             throws IOException, InterruptedException {
@@ -109,6 +101,6 @@ public abstract class ProjectRunner implements Runnable {
 
         progressCounter.setLoading(false);
         JavaProjectRunner.onSuccess(
-                new JavaProject(withTests, withJar, true, "new", "", projectStructure), "java");
+                new JavaProject(withTests, withJar, true, "new", "", projectStructure));
     }
 }

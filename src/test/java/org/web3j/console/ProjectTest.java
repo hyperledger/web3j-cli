@@ -31,7 +31,7 @@ public class ProjectTest extends ClassExecutor {
     protected String absoluteWalletPath;
 
     @BeforeEach
-    public void createEpirusProject()
+    public void createWeb3jProject()
             throws IOException, NoSuchAlgorithmException, NoSuchProviderException,
                     InvalidAlgorithmParameterException, CipherException {
         ConfigManager.setDevelopment();

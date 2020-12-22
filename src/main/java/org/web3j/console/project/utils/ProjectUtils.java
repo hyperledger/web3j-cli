@@ -17,13 +17,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.diogonunes.jcdp.color.api.Ansi;
 import okhttp3.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -33,10 +31,6 @@ import org.web3j.console.openapi.utils.SimpleFileLogger;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
-import org.web3j.protocol.Network;
-
-import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;
-import static org.web3j.console.utils.PrinterUtilities.printInformationPairWithStatus;
 
 public class ProjectUtils {
 
@@ -124,58 +118,6 @@ public class ProjectUtils {
             Console.exitError(e.getMessage());
         }
         return null;
-    }
-
-    public static void uploadSolidityMetadata(Network network, Path workingDirectory) {
-        File pathToMetadata =
-                new File(
-                        String.join(
-                                File.separator,
-                                workingDirectory.toString(),
-                                "build",
-                                "resources",
-                                "main",
-                                "solidity"));
-        if (pathToMetadata.exists()) {
-            Arrays.stream(pathToMetadata.listFiles())
-                    .filter(file -> file.getName().contains("_meta"))
-                    .forEach(
-                            file -> {
-                                try {
-                                    uploadFile(file, network);
-                                } catch (IOException e) {
-                                    printErrorAndExit(e.getMessage());
-                                }
-                            });
-            printInformationPairWithStatus("Uploading metadata", 20, "DONE", Ansi.FColor.GREEN);
-            System.out.print(System.lineSeparator());
-        } else {
-            printInformationPairWithStatus("Uploading metadata", 20, "FAILED", Ansi.FColor.RED);
-            System.out.print(System.lineSeparator());
-            printErrorAndExit(
-                    "Could not find the metadata files in :" + pathToMetadata.getAbsolutePath());
-        }
-    }
-
-    private static void uploadFile(File file, Network network) throws IOException {
-
-        String uploadURL =
-                System.getenv()
-                        .getOrDefault(
-                                "METADATA_ENDPOINT",
-                                "https://" + network.getNetworkName() + ".api.epirus.io/metadata");
-        OkHttpClient okHttpClient = new OkHttpClient();
-        RequestBody requestBody =
-                new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart(
-                                "file",
-                                file.getName(),
-                                RequestBody.create(file, MediaType.parse("application/json")))
-                        .build();
-        Request request = new Request.Builder().url(uploadURL).post(requestBody).build();
-        Call call = okHttpClient.newCall(request);
-        call.execute();
     }
 
     /**

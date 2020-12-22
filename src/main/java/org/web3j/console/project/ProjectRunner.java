@@ -74,6 +74,7 @@ public abstract class ProjectRunner implements Runnable {
                     Ansi.BColor.BLACK);
             System.out.print(System.lineSeparator());
         }
+
         InstructionsPrinter.getContextPrinterInstance()
                 .getContextPrinter()
                 .printInstructionsOnSuccess(instructionPrinter, commandPrinter);

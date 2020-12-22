@@ -23,7 +23,6 @@ import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 import org.web3j.console.config.ConfigManager;
-import org.web3j.console.docker.DockerCommand;
 import org.web3j.console.openapi.OpenApiCommand;
 import org.web3j.console.project.ImportProjectCommand;
 import org.web3j.console.project.InteractiveOptions;
@@ -45,7 +44,6 @@ import static org.web3j.console.config.ConfigManager.config;
         name = "web3j",
         subcommands = {
             ContractAuditCommand.class,
-            DockerCommand.class,
             GenerateCommand.class,
             CommandLine.HelpCommand.class,
             ImportProjectCommand.class,
@@ -78,14 +76,8 @@ public class Web3jCommand implements Runnable {
                     + "    \\  /\\  /  __/ |_) |__) | |                                  \n"
                     + "     \\/  \\/ \\___|_.__/____/| |                                  \n"
                     + "                          _/ |                                  \n"
-                    + "  _            __        |__/  _    ____  _           _         \n"
-                    + " | |           \\ \\        / / | |  |___ \\| |         | |        \n"
-                    + " | |__  _   _   \\ \\  /\\  / /__| |__  __) | |     __ _| |__  ___ \n"
-                    + " | '_ \\| | | |   \\ \\/  \\/ / _ \\ '_ \\|__ <| |    / _` | '_ \\/ __|\n"
-                    + " | |_) | |_| |    \\  /\\  /  __/ |_) |__) | |___| (_| | |_) \\__ \\\n"
-                    + " |_.__/ \\__, |     \\/  \\/ \\___|_.__/____/|______\\__,_|_.__/|___/\n"
-                    + "         __/ |                                                  \n"
-                    + "        |___/                                                   ";
+                    + "                         |__/                     \n"
+                    + "BY WEB3LABS";
 
     private final CommandLine commandLine;
     private final Map<String, String> environment;

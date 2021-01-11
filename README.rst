@@ -1,11 +1,3 @@
-**********
-Deprecated
-**********
-
-The Web3j CLI has been renamed to the Web3j CLI. Please head `here <https://github.com/web3j/web3j-cli>`_ for the new repo.
-
-
-
 web3j-cli: Web3j Command Line Tools
 ===================================
 
@@ -58,7 +50,7 @@ On Windows, in PowerShell, run the following command:
 Docs
 =====
 
-https://docs.web3j.io/command_line_tools/
+https://docs.web3j.io/latest/command_line_tools/
 
 
 Credits

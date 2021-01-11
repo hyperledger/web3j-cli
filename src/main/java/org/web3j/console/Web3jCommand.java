@@ -71,15 +71,15 @@ public class Web3jCommand implements Runnable {
 
     private static final String LOGO =
             // generated at http://patorjk.com/software/taag
-            " __          __  _    ____  _                                   \n"
-                    + " \\ \\        / / | |  |___ \\(_)                                  \n"
-                    + "  \\ \\  /\\  / /__| |__  __) |_                                   \n"
-                    + "   \\ \\/  \\/ / _ \\ '_ \\|__ <| |                                  \n"
-                    + "    \\  /\\  /  __/ |_) |__) | |                                  \n"
-                    + "     \\/  \\/ \\___|_.__/____/| |                                  \n"
-                    + "                          _/ |                                  \n"
-                    + "                         |__/                     \n"
-                    + "BY WEB3LABS";
+            "              _      _____ _ \n"
+                    + "             | |    |____ (_)\n"
+                    + "__      _____| |__      / /_ \n"
+                    + "\\ \\ /\\ / / _ \\ '_ \\     \\ \\ |\n"
+                    + " \\ V  V /  __/ |_) |.___/ / |\n"
+                    + "  \\_/\\_/ \\___|_.__/ \\____/| |\n"
+                    + "                         _/ |\n"
+                    + "                        |__/ "
+                    + "\nBY WEB3LABS";
 
     private final CommandLine commandLine;
     private final Map<String, String> environment;

@@ -66,7 +66,7 @@ public class UpdaterTest {
                         "{\n"
                                 + "  \"latest\": {\n"
                                 + "    \"version\": \"%s\",\n"
-                                + "    \"install_unix\": \"curl -L get.epirus.io | sh\",\n"
+                                + "    \"install_unix\": \"curl -L get.web3j.io | sh\",\n"
                                 + "    \"install_win\": \"Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/epirus/epirus-installer/master/installer.ps1'))\"\n"
                                 + "  }\n"
                                 + "}",

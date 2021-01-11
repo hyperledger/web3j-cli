@@ -13,6 +13,7 @@
 package org.web3j.console.project.utils;
 
 import org.web3j.console.project.utils.printer.Printer;
+import org.web3j.console.project.utils.printer.Web3jPrinter;
 
 public class InstructionsPrinter {
 
@@ -25,7 +26,12 @@ public class InstructionsPrinter {
 
     public static void initContextPrinter(Printer printer) {
         if (instructionsPrinterSession == null) {
-            instructionsPrinterSession = new InstructionsPrinter(printer);
+            if (printer == null) {
+                instructionsPrinterSession = new InstructionsPrinter(new Web3jPrinter());
+            } else {
+
+                instructionsPrinterSession = new InstructionsPrinter(printer);
+            }
         }
     }
 

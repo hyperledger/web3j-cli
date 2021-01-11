@@ -19,9 +19,9 @@ mainClassName = 'org.web3j.console.Web3j'
 applicationName = 'web3j'
 
 ext {
-    web3jVersion = '4.8.1'
+    web3jVersion = '4.8.3'
     picocli = '4.0.4'
-    slf4jVersion = '1.7.+'
+    slf4jVersion = '1.7.30'
     junitVersion = '5.+'
     mockitoVersion = '3.+'
     gsonVersion = '2.8.6'
@@ -50,7 +50,7 @@ apply {
         download {
             src "https://raw.githubusercontent.com/web3j/build-tools/master/gradle/$buildScript/build.gradle"
             dest "$rootDir/gradle/$buildScript/build.gradle"
-            overwrite true
+            overwrite false
             quiet true
             onlyIfModified true
         }
@@ -59,7 +59,6 @@ apply {
 }
 
 repositories {
-
     jcenter()
     mavenCentral()
     maven { url "https://dl.bintray.com/ethereum/maven/" }

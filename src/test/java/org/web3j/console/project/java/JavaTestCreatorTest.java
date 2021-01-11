@@ -29,7 +29,7 @@ import org.web3j.console.project.utils.Folders;
 import static java.io.File.separator;
 
 public class JavaTestCreatorTest extends ClassExecutor {
-    private String formattedPath =
+    private final String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();
     private String tempDirPath;

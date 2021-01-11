@@ -88,7 +88,7 @@ public class JavaTestCLIRunner implements Runnable {
 
     @VisibleForTesting
     public void generateJava() throws IOException {
-        List<Class> compiledClasses = new ClassProvider(new File(javaWrapperDir)).getClasses();
+        List<Class<?>> compiledClasses = new ClassProvider(new File(javaWrapperDir)).getClasses();
 
         compiledClasses.forEach(
                 compiledClass -> {

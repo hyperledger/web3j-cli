@@ -24,14 +24,12 @@ web3j {
 ext {
     web3jVersion = '4.8.2'
     logbackVersion = '1.2.3'
-    web3jEpirusVersion = '0.0.7'
 }
 
 dependencies {
     implementation "org.web3j:core:$web3jVersion",
             "ch.qos.logback:logback-core:$logbackVersion",
-            "ch.qos.logback:logback-classic:$logbackVersion",
-            "io.epirus:epirus-web3j:$web3jEpirusVersion"
+            "ch.qos.logback:logback-classic:$logbackVersion"
     implementation("org.web3j:web3j-unit:$web3jVersion")
     implementation("org.web3j:web3j-evm:$web3jVersion")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
@@ -63,9 +61,5 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "11"
 }
 
-sourceSets {
-    main.kotlin.srcDirs += "${web3j.generatedFilesBaseDir}/main/java"
-    test.kotlin.srcDirs += "${web3j.generatedFilesBaseDir}/test/java"
-}
 
 

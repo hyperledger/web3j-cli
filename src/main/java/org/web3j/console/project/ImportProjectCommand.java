@@ -44,6 +44,7 @@ public class ImportProjectCommand extends AbstractProjectCommand implements Runn
 
     @Override
     public void run() {
+
         setupProject();
         if (solidityImportPath == null) {
             buildInteractively();

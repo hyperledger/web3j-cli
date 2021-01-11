@@ -28,6 +28,11 @@ public class Web3jPrinter extends Printer {
                 "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
         instructionPrinter.print(String.format("%-40s", gradleCommand + " test"));
         commandPrinter.println("Test your application");
+        instructionPrinter.print(String.format("%-40s", "web3j run"));
+        commandPrinter.print("Runs your application");
+        System.out.println(System.lineSeparator());
+        instructionPrinter.print(String.format("%-40s", "web3j docker run"));
+        commandPrinter.print("Runs your application in docker");
     }
 
     @Override

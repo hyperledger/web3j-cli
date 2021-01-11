@@ -75,6 +75,7 @@ public abstract class ProjectRunner implements Runnable {
             System.out.print(System.lineSeparator());
         }
 
+        InstructionsPrinter.initContextPrinter(null);
         InstructionsPrinter.getContextPrinterInstance()
                 .getContextPrinter()
                 .printInstructionsOnSuccess(instructionPrinter, commandPrinter);

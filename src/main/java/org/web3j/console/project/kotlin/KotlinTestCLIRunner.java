@@ -87,7 +87,7 @@ public class KotlinTestCLIRunner implements Runnable {
 
     @VisibleForTesting
     public void generateKotlin() throws IOException {
-        List<Class> compiledClasses = new ClassProvider(new File(javaWrapperDir)).getClasses();
+        List<Class<?>> compiledClasses = new ClassProvider(new File(javaWrapperDir)).getClasses();
         compiledClasses.forEach(
                 compiledClass -> {
                     try {

@@ -16,20 +16,20 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 import org.web3j.console.config.ConfigManager;
+import org.web3j.console.docker.DockerCommand;
 import org.web3j.console.openapi.OpenApiCommand;
 import org.web3j.console.project.ImportProjectCommand;
-import org.web3j.console.project.InteractiveOptions;
 import org.web3j.console.project.NewProjectCommand;
 import org.web3j.console.project.testing.ProjectTestCommand;
 import org.web3j.console.project.utils.InstructionsPrinter;
 import org.web3j.console.project.utils.printer.Web3jPrinter;
+import org.web3j.console.run.RunCommand;
 import org.web3j.console.security.ContractAuditCommand;
 import org.web3j.console.services.Telemetry;
 import org.web3j.console.services.Updater;
@@ -43,6 +43,7 @@ import static org.web3j.console.config.ConfigManager.config;
 @Command(
         name = "web3j",
         subcommands = {
+            RunCommand.class,
             ContractAuditCommand.class,
             GenerateCommand.class,
             CommandLine.HelpCommand.class,
@@ -50,6 +51,7 @@ import static org.web3j.console.config.ConfigManager.config;
             NewProjectCommand.class,
             OpenApiCommand.class,
             ProjectTestCommand.class,
+            DockerCommand.class,
             WalletCommand.class,
         },
         showDefaultValues = true,
@@ -103,7 +105,6 @@ public class Web3jCommand implements Runnable {
         System.out.println(LOGO);
         try {
             ConfigManager.setProduction();
-            maybeCreateDefaultWallet();
             Updater.promptIfUpdateAvailable();
         } catch (IOException e) {
             Console.exitError("Failed to initialise the CLI");
@@ -124,21 +125,6 @@ public class Web3jCommand implements Runnable {
     @Override
     public void run() {
         performTelemetryUpload();
-    }
-
-    private void maybeCreateDefaultWallet() {
-        if (config.getDefaultWalletPath() == null || config.getDefaultWalletPath().isEmpty()) {
-            final String walletPassword = RandomStringUtils.randomAlphanumeric(8);
-            final String walletPath =
-                    new InteractiveOptions().createWallet(DEFAULT_WALLET_FOLDER, walletPassword);
-            config.setDefaultWalletPath(walletPath);
-            config.setDefaultWalletPassword(walletPassword);
-        }
-
-        if (config.getDefaultWalletPassword() == null) {
-            // default wallet password was introduced in v1.2.0
-            config.setDefaultWalletPassword("");
-        }
     }
 
     private void performTelemetryUpload() {

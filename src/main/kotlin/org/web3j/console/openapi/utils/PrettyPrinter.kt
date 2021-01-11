@@ -31,6 +31,7 @@ object PrettyPrinter {
     private val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
 
     fun onOpenApiProjectSuccess() {
+        InstructionsPrinter.initContextPrinter(null)
         InstructionsPrinter.getContextPrinterInstance().contextPrinter.printInstructionsOnSuccessOpenApi(
             instructionPrinter, commandPrinter
         )

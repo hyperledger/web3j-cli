@@ -7,6 +7,11 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 
+/**
+ * <p>This is the generated class for <code>web3j new helloworld</code></p>
+ * <p>It deploys the Hello World contract in src/main/solidity/ and prints its address</p>
+ * <p>For more information on how to run this project, please refer to our <a href="https://docs.web3j.io/quickstart/#deployment">documentation</a></p>
+ */
 public class <project_name> {
 
    private static final String nodeUrl = System.getenv().getOrDefault("WEB3J_NODE_URL", "<node_url>");

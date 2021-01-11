@@ -79,7 +79,7 @@ public class Web3jCommand implements Runnable {
                     + "  \\_/\\_/ \\___|_.__/ \\____/| |\n"
                     + "                         _/ |\n"
                     + "                        |__/ "
-                    + "\nby web3labs";
+                    + "\nby Web3Labs";
 
     private final CommandLine commandLine;
     private final Map<String, String> environment;

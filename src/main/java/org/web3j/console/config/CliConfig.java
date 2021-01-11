@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Web3 Labs Ltd.
+ * Copyright 2020 Web3 Labs Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -12,160 +12,97 @@
  */
 package org.web3j.console.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 import com.google.gson.Gson;
-
-import org.web3j.utils.Version;
+import com.google.gson.annotations.Expose;
 
 public class CliConfig {
-    private static final Path web3jConfigPath =
-            Paths.get(System.getProperty("user.home"), ".web3j", ".config");
-    private static final String defaultServicesUrl = "https://internal.services.web3labs.com";
-
-    public static Path getWeb3jConfigPath() {
-        return web3jConfigPath;
-    }
-
-    private static CliConfig initializeDefaultConfig(File configFile) throws IOException {
-        File web3jHome = new File(configFile.getParent());
-        if (!web3jHome.exists() && !web3jHome.mkdirs()) {
-            throw new IOException("Failed to create Web3j home directory");
-        }
-        return new CliConfig(
-                Version.getVersion(),
-                defaultServicesUrl,
-                UUID.randomUUID().toString(),
-                Version.getVersion(),
-                null,
-                null);
-    }
-
-    private static CliConfig getSavedConfig(File configFile) throws IOException {
-        String configContents = new String(Files.readAllBytes(configFile.toPath()));
-        CliConfig config = new Gson().fromJson(configContents, CliConfig.class);
-        return config;
-    }
-
-    public static CliConfig getConfig(File configFile) throws IOException {
-        if (configFile.exists()) {
-            return getSavedConfig(configFile);
-        } else {
-            return initializeDefaultConfig(configFile);
-        }
-    }
-
-    public enum OS {
-        DARWIN,
-        FREEBSD,
-        OPENBSD,
-        LINUX,
-        SOLARIS,
-        WINDOWS,
-        AIX,
-        UNKNOWN;
-
-        @Override
-        public String toString() {
-            return name().toLowerCase();
-        }
-    }
-
-    public static OS determineOS() {
-        String osName = System.getProperty("os.name").split(" ")[0].toLowerCase();
-        if (osName.startsWith("mac") || osName.startsWith("darwin")) {
-            return OS.DARWIN;
-        } else if (osName.startsWith("linux")) {
-            return OS.LINUX;
-        } else if (osName.startsWith("sunos") || osName.startsWith("solaris")) {
-            return OS.SOLARIS;
-        } else if (osName.startsWith("aix")) {
-            return OS.AIX;
-        } else if (osName.startsWith("openbsd")) {
-            return OS.OPENBSD;
-        } else if (osName.startsWith("freebsd")) {
-            return OS.FREEBSD;
-        } else if (osName.startsWith("windows")) {
-            return OS.WINDOWS;
-        } else {
-            return OS.UNKNOWN;
-        }
-    }
-
-    public String getLatestVersion() {
-        return latestVersion;
-    }
-
-    public void setLatestVersion(String latestVersion) {
-        this.latestVersion = latestVersion;
-    }
-
-    public boolean isUpdateAvailable() {
-        return !version.equals(latestVersion);
-    }
-
-    public String getLoginToken() {
-        return loginToken;
-    }
-
-    public void setLoginToken(final String loginToken) {
-        this.loginToken = loginToken;
-    }
-
-    public void setVersion(final String version) {
-        this.version = version;
-    }
-
-    private String version;
-    private String servicesUrl;
     private String clientId;
     private String latestVersion;
     private String updatePrompt;
-    private String loginToken;
+    private String defaultWalletPath;
+    private String defaultWalletPassword;
+    private boolean telemetryDisabled;
 
-    public CliConfig(
-            String version,
-            String servicesUrl,
+    @Expose(serialize = false, deserialize = false)
+    protected transient boolean isPersistent = false;
+
+    protected CliConfig(
             String clientId,
             String latestVersion,
             String updatePrompt,
-            String loginToken) {
-        this.version = version;
-        this.servicesUrl = servicesUrl;
+            String defaultWalletPath,
+            String defaultWalletPassword,
+            boolean telemetryDisabled) {
         this.clientId = clientId;
         this.latestVersion = latestVersion;
         this.updatePrompt = updatePrompt;
-        this.loginToken = loginToken;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String getServicesUrl() {
-        return servicesUrl;
+        this.defaultWalletPath = defaultWalletPath;
+        this.defaultWalletPassword = defaultWalletPassword;
+        this.telemetryDisabled = telemetryDisabled;
     }
 
     public String getClientId() {
         return clientId;
     }
 
+    public String getLatestVersion() {
+        return latestVersion;
+    }
+
     public String getUpdatePrompt() {
         return updatePrompt;
     }
 
-    public void setUpdatePrompt(String updatePrompt) {
-        this.updatePrompt = updatePrompt;
+    public String getDefaultWalletPath() {
+        return defaultWalletPath;
     }
 
-    public void save() throws IOException {
+    public boolean isTelemetryDisabled() {
+        return telemetryDisabled;
+    }
+
+    public void setLatestVersion(String latestVersion) {
+        this.latestVersion = latestVersion;
+        save();
+    }
+
+    public void setUpdatePrompt(String updatePrompt) {
+        this.updatePrompt = updatePrompt;
+        save();
+    }
+
+    public void setDefaultWalletPath(final String defaultWalletPath) {
+        this.defaultWalletPath = defaultWalletPath;
+        save();
+    }
+
+    public void setDefaultWalletPassword(final String defaultWalletPassword) {
+        this.defaultWalletPassword = defaultWalletPassword;
+        save();
+    }
+
+    public void save() {
+        if (!isPersistent) return;
+
         String jsonToWrite = new Gson().toJson(this);
-        Files.write(web3jConfigPath, jsonToWrite.getBytes(Charset.defaultCharset()));
+        try {
+            Files.write(
+                    ConfigManager.DEFAULT_WEB3J_CONFIG_PATH,
+                    jsonToWrite.getBytes(Charset.defaultCharset()));
+        } catch (IOException e) {
+            throw new ConfigException(e);
+        }
+    }
+
+    public void setPersistent(boolean persistent) {
+        isPersistent = persistent;
+    }
+
+    public String getDefaultWalletPassword() {
+        return defaultWalletPassword;
     }
 }

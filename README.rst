@@ -2,7 +2,7 @@
 Deprecated
 **********
 
-The Web3j CLI has been renamed to the Epirus CLI. Please head `here <https://github.com/epirus-io/epirus-cli>`_ for the new repo.
+The Web3j CLI has been renamed to the Web3j CLI. Please head `here <https://github.com/web3j/web3j-cli>`_ for the new repo.
 
 
 

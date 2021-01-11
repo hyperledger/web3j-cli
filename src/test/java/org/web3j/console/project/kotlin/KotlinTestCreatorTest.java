@@ -22,8 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
-import org.web3j.console.project.ProjectImporter;
-import org.web3j.console.project.UnitTestCreator;
+import org.web3j.console.Web3j;
 import org.web3j.console.project.utils.ClassExecutor;
 import org.web3j.console.project.utils.Folders;
 
@@ -52,7 +51,12 @@ public class KotlinTestCreatorTest extends ClassExecutor {
     @Test
     public void verifyThatTestsAreGenerated() throws IOException, InterruptedException {
         final String[] args = {
-            "-p=org.com", "-n=Testing", "-o=" + tempDirPath, "-s=" + formattedPath
+            "import",
+            "--kotlin",
+            "-p=org.com",
+            "-n=Testing",
+            "-o=" + tempDirPath,
+            "-s=" + formattedPath
         };
         final String pathToJavaWrappers =
                 new File(
@@ -62,25 +66,24 @@ public class KotlinTestCreatorTest extends ClassExecutor {
                                         "Testing",
                                         "build",
                                         "generated",
-                                        "source",
+                                        "sources",
                                         "web3j",
                                         "main",
                                         "java"))
                         .getCanonicalPath();
         int exitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                ProjectImporter.class,
-                                Collections.emptyList(),
-                                Arrays.asList(args),
-                                true)
+                                Web3j.class, Collections.emptyList(), Arrays.asList(args), true)
                         .inheritIO()
                         .start()
                         .waitFor();
         Assertions.assertEquals(0, exitCode);
-        final String[] unitTestsArgs = {"-i=" + pathToJavaWrappers, "-o=" + tempDirPath};
+        final String[] unitTestsArgs = {
+            "generate", "tests", "kotlin", "-i=" + pathToJavaWrappers, "-o=" + tempDirPath
+        };
         int testsExitCode =
                 executeClassAsSubProcessAndReturnProcess(
-                                UnitTestCreator.class,
+                                Web3j.class,
                                 Collections.emptyList(),
                                 Arrays.asList(unitTestsArgs),
                                 true)

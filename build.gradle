@@ -1,25 +1,40 @@
+import java.text.SimpleDateFormat
+
 plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
     id "application"
     id "distribution"
     id "idea"
     id "jacoco"
-    id "com.github.johnrengelman.shadow" version "5.1.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
     id "com.diffplug.gradle.spotless" version "3.25.0"
     id "de.undercouch.download" version "4.0.0"
+    id "de.marcphilipp.nexus-publish" version "0.4.0"
+    id 'io.codearte.nexus-staging' version '0.21.1'
+    id "com.jfrog.bintray" version "1.8.4"
 }
 
-description 'web3j command line tools'
-mainClassName = 'org.web3j.console.Runner'
+description 'Web3j command line tools'
+mainClassName = 'org.web3j.console.Web3j'
 applicationName = 'web3j'
 
 ext {
-    web3jVersion = project.property('version')
+    web3jVersion = '4.8.3'
     picocli = '4.0.4'
-    slf4jVersion = "1.7.+"
+    slf4jVersion = '1.7.30'
     junitVersion = '5.+'
-    mockitoVersion = "3.+"
-    gsonVersion = "2.8.6"
-    wireMockVersion = "2.25.1"
+    mockitoVersion = '3.+'
+    gsonVersion = '2.8.6'
+    wireMockVersion = '2.25.1'
+    kotlinLoggin = '1.7.9'
+    dockerJavaVersion = '3.2.5'
+    web3jEpirusVersion = '0.0.7'
+    jaxbVersion = '2.2.11'
+    activationVersion = '1.1.1'
+    log4jVersion = '1.2.17'
+    semverVersion = '0.9.0'
+    commonsLangVersion = '3.9'
+    jcdpVersion = '4.0.1'
 }
 
 
@@ -29,12 +44,13 @@ apply {
         'java',
         'javadoc',
         'repositories',
+        'publish',
         'spotless'
     ].each { buildScript ->
         download {
             src "https://raw.githubusercontent.com/web3j/build-tools/master/gradle/$buildScript/build.gradle"
             dest "$rootDir/gradle/$buildScript/build.gradle"
-            overwrite true
+            overwrite false
             quiet true
             onlyIfModified true
         }
@@ -43,8 +59,11 @@ apply {
 }
 
 repositories {
-
+    jcenter()
+    mavenCentral()
     maven { url "https://dl.bintray.com/ethereum/maven/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
 }
 
 test {
@@ -63,26 +82,100 @@ distTar {
 }
 
 dependencies {
+    api "org.web3j:abi:$web3jVersion"
+
     implementation "org.web3j:codegen:$web3jVersion",
             "org.web3j:contracts:$web3jVersion",
             "org.web3j:core:$web3jVersion",
             "org.web3j:crypto:$web3jVersion",
             "org.web3j:hosted-providers:$web3jVersion",
+            "io.epirus:epirus-web3j:$web3jEpirusVersion",
             "info.picocli:picocli:$picocli",
             files('libs/smartcheck.jar'),
-            "javax.xml.bind:jaxb-api:2.2.11",
-            "com.sun.xml.bind:jaxb-core:2.2.11",
-            "com.sun.xml.bind:jaxb-impl:2.2.11",
-            "javax.activation:activation:1.1.1",
-            "org.web3j:hosted-providers:$web3jVersion",
+            "javax.xml.bind:jaxb-api:$jaxbVersion",
+            "com.sun.xml.bind:jaxb-core:$jaxbVersion",
+            "com.sun.xml.bind:jaxb-impl:$jaxbVersion",
+            "javax.activation:activation:$activationVersion",
             "com.google.code.gson:gson:$gsonVersion",
-            "javax.activation:activation:1.1.1",
-            "org.apache.commons:commons-lang3:3.9"
+            "org.apache.commons:commons-lang3:$commonsLangVersion",
+            "com.github.zafarkhaja:java-semver:$semverVersion",
+            "log4j:log4j:$log4jVersion",
+            "io.github.microutils:kotlin-logging:$kotlinLoggin",
+            "com.github.docker-java:docker-java:$dockerJavaVersion",
+            "com.diogonunes:JCDP:$jcdpVersion"
 
-    runtime "org.slf4j:slf4j-nop:$slf4jVersion"
+    runtimeOnly "org.slf4j:slf4j-nop:$slf4jVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion",
+            "org.mockito:mockito-inline:$mockitoVersion",
             "com.github.tomakehurst:wiremock-jre8:$wireMockVersion"
-    testImplementation 'org.mockito:mockito-inline:3.3.0'
+}
+
+
+task createProperties(dependsOn: processResources) doLast {
+    // if resources dir is empty we need to create this ourselves
+    new File("$buildDir/resources/main/").mkdirs()
+
+    new File("$buildDir/resources/main/web3j-version.properties").withWriter { w ->
+        Properties p = new Properties()
+        p['version'] = project.version.toString()
+        p['timestamp'] = getTimestamp()
+        p.store w, null
+    }
+}
+
+def getTimestamp() {
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S z")
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(today)
+}
+classes { dependsOn createProperties }
+
+task shadowBugWorkaround(type: Jar) {
+    archiveBaseName = 'nested-gradle-jar'
+    from files(file("${rootDir}/gradle/wrapper/gradle-wrapper.jar"))
+    destinationDir file('build/shadow-bug-workaround')
+}
+
+shadowJar {
+    dependsOn shadowBugWorkaround
+    zip64 = true
+    // Shadow plugin bug: explodes the nested jar.
+    // Workaround: double-nest the jar.
+    // Refer https://github.com/johnrengelman/shadow/issues/111
+    from shadowBugWorkaround
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+sourceCompatibility = 1.8
+
+def generatedResources = "$buildDir/generated-resources/main"
+
+sourceSets {
+    main {
+        // Register an output folder on the main source set:
+        output.dir(generatedResources, builtBy: 'generateVersionProperties')
+    }
+}
+
+task generateVersionProperties {
+    description 'Creates a version.properties file with build info that is added to the root of the JAR'
+    doLast {
+        new File(generatedResources).mkdirs()
+        def generated = new File(generatedResources, "version.properties")
+        generated.write("version=$rootProject.version\n")
+        generated.append("timestamp=${System.currentTimeMillis()}\n")
+    }
 }

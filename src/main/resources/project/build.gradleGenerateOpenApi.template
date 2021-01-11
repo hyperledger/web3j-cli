@@ -1,0 +1,20 @@
+plugins {
+  id "org.web3j.openapi" version "4.8.2"
+}
+
+group '<package_name>'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+// For more options, check: https://github.com/web3j/web3j-openapi-gradle-plugin
+web3j {
+    generatedPackageName = '<package_name>'
+    addressBitLength = <address_length>
+    openapi {
+        contextPath = '<context_path>'
+        generateServer = <generate_server>
+    }
+}

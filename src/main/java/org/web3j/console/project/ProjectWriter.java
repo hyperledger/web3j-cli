@@ -17,27 +17,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Objects;
-
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.WalletUtils;
 
 public class ProjectWriter {
 
-    public static final void writeResourceFile(
+    /**
+     * Writes file content into the output directory. Can be used with <code>
+     * TemplateReader.readFile()</code> to get the file content from JAR.
+     *
+     * @param file File content to be written.
+     * @param fileName output file name
+     * @param writeLocation output location
+     * @throws IOException when file is not found
+     */
+    public static void writeResourceFile(
             final String file, final String fileName, final String writeLocation)
             throws IOException {
-        Files.write(Paths.get(writeLocation + File.separator + fileName), getBytes(file));
+        Files.write(Paths.get(writeLocation, fileName), getBytes(file));
     }
 
     private static byte[] getBytes(final String file) {
         return file.getBytes();
     }
 
-    public static final void copyResourceFile(final String file, final String destinationPath)
+    public static void copyResourceFile(final String file, final String destinationPath)
             throws IOException {
 
         Files.copy(
@@ -47,13 +50,13 @@ public class ProjectWriter {
                 StandardCopyOption.REPLACE_EXISTING);
     }
 
-    public static final void importSolidityProject(
+    public static void importSolidityProject(
             final File solidityImportPath, final String destination) throws IOException {
         if (solidityImportPath != null && solidityImportPath.exists()) {
             if (solidityImportPath.isFile() && solidityImportPath.getName().endsWith(".sol")) {
                 Files.copy(
                         solidityImportPath.toPath(),
-                        Paths.get(destination + File.separator + solidityImportPath.getName()),
+                        Paths.get(destination, solidityImportPath.getName()),
                         StandardCopyOption.REPLACE_EXISTING);
             } else {
                 Files.walkFileTree(
@@ -61,11 +64,5 @@ public class ProjectWriter {
                         new ProjectVisitor(solidityImportPath.getAbsolutePath(), destination));
             }
         }
-    }
-
-    static final String createWallet(String walletPassword, String walletPath)
-            throws NoSuchAlgorithmException, NoSuchProviderException,
-                    InvalidAlgorithmParameterException, CipherException, IOException {
-        return WalletUtils.generateNewWalletFile(walletPassword, new File(walletPath));
     }
 }

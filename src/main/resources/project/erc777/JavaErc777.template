@@ -1,0 +1,50 @@
+package <package_name>;
+
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
+import org.web3j.generated.contracts.ERC777Token;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.DefaultGasProvider;
+
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * <p>Auto generated code.
+ * <p><strong>Do not modify!</strong>
+ * <p>This is the generated class for <code>web3j new erc777</code></p>
+ * <p>It deploys the ERC777 contract in src/main/solidity/ and prints its address</p>
+ * <p>For more information on how to run this project, please refer to our <a href="https://docs.web3j.io/quickstart/#deployment">documentation</a></p>
+ */
+public class <project_name> {
+
+    // ERC777 token deployment parameters
+    private static final String NAME = "<NAME>";
+    private static final String SYMBOL = "<SYMBOL>";
+    private static final List<String> DEFAULT_OPERATORS = <DEFAULT_OPERATORS>;
+    private static final BigInteger INITIAL_SUPPLY = <INITIAL_SUPPLY>;
+
+    private static final String nodeUrl = System.getenv().getOrDefault("WEB3J_NODE_URL", "<node_url>");
+    private static final String walletPassword = System.getenv().getOrDefault("WEB3J_WALLET_PASSWORD", "<wallet_password>");
+    private static final String walletPath = System.getenv().getOrDefault("WEB3J_WALLET_PATH", "<wallet_path>");
+
+
+    public static void main(String[] args) throws Exception {
+        Credentials credentials = WalletUtils.loadCredentials(walletPassword, walletPath);
+        Web3j web3j = Web3j.build(new HttpService(nodeUrl));
+        System.out.println("Deploying ERC777 contract ...");
+        ERC777Token erc777Token = deployErc777(web3j, credentials, new DefaultGasProvider());
+        System.out.println("Contract address: " + erc777Token.getContractAddress());
+    }
+
+    private static ERC777Token deployErc777(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) throws Exception {
+        if (DEFAULT_OPERATORS.size() == 0) {
+            return ERC777Token.deploy(web3j, credentials, contractGasProvider, NAME, SYMBOL, Collections.singletonList(WalletUtils.loadCredentials(walletPassword, walletPath).getAddress()), INITIAL_SUPPLY).send();
+        } else {
+            return ERC777Token.deploy(web3j, credentials, contractGasProvider, NAME, SYMBOL, DEFAULT_OPERATORS, INITIAL_SUPPLY).send();
+        }
+    }
+}

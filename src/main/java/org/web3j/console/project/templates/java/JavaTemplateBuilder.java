@@ -26,8 +26,6 @@ public class JavaTemplateBuilder implements TemplateBuilder {
     protected String gradlewWrapperJar;
     protected String packageNameReplacement;
     protected String projectNameReplacement;
-    protected String passwordFileName;
-    protected String walletNameReplacement;
     protected String pathToSolidityFolder;
 
     public JavaTemplateBuilder withMainJavaClass(String mainJavaClass) {
@@ -85,16 +83,6 @@ public class JavaTemplateBuilder implements TemplateBuilder {
         return this;
     }
 
-    public JavaTemplateBuilder withPasswordFileName(String passwordFileName) {
-        this.passwordFileName = passwordFileName;
-        return this;
-    }
-
-    public JavaTemplateBuilder withWalletNameReplacement(String walletNameReplacement) {
-        this.walletNameReplacement = walletNameReplacement;
-        return this;
-    }
-
     public JavaTemplateProvider build() {
         return new JavaTemplateProvider(
                 mainJavaClass,
@@ -108,7 +96,6 @@ public class JavaTemplateBuilder implements TemplateBuilder {
                 gradlewWrapperJar,
                 packageNameReplacement,
                 projectNameReplacement,
-                passwordFileName,
-                walletNameReplacement);
+                null);
     }
 }

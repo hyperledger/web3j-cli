@@ -1,0 +1,43 @@
+plugins {
+  id "org.web3j.openapi" version "4.8.2"
+  id "com.github.johnrengelman.shadow" version "5.2.0"
+}
+
+group '<package_name>'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+// For more options, check: https://github.com/web3j/web3j-openapi-gradle-plugin
+web3j {
+    generatedPackageName = '<package_name>'
+    addressBitLength = <address_length>
+    openapi {
+        contextPath = '<context_path>'
+    }
+}
+
+task clientJar(type: Jar) {
+    from "$buildDir/classes/kotlin/main"
+    include "**/core/**/*.class"
+    includeEmptyDirs false
+    archiveAppendix.set("openapi-client")
+}
+
+task serverJar(type: Jar) {
+    from "$buildDir/classes/java/main"
+    from("$buildDir/classes/kotlin/main") {
+        include "**/server/**/*.class"
+    }
+    from("$buildDir/resources/main") {
+        include "META-INF/services/*"
+    }
+    includeEmptyDirs false
+    archiveAppendix.set("openapi-server")
+}
+
+artifacts {
+    archives clientJar, serverJar
+}

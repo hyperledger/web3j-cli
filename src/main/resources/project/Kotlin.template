@@ -1,0 +1,36 @@
+package <package_name>;
+
+import org.web3j.crypto.WalletUtils
+import org.web3j.protocol.Web3j
+import org.web3j.tx.gas.DefaultGasProvider
+
+/**
+ * <p>Auto generated code.
+ * <p><strong>Do not modify!</strong>
+ * <p>This is the generated class for <code>web3j new helloworld</code></p>
+ * <p>It deploys the Hello World contract in src/main/solidity/ and prints its address</p>
+ * <p>The generated tests, if generated, are in src/test/<project_language></p>
+ * <p>For more information on how to run this project, please refer to our <a href="https://docs.web3j.io/quickstart/#deployment">documentation</a></p>
+ */
+class <project_name> {
+
+    private val nodeUrl = System.getenv().getOrDefault("WEB3J_NODE_URL", "<node_url>")
+    private val walletPassword = System.getenv().getOrDefault("WEB3J_WALLET_PASSWORD", "<wallet_password>")
+    private val walletPath = System.getenv().getOrDefault("WEB3J_WALLET_PATH", "<wallet_path>")
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            <project_name>().start(args)
+        }
+    }
+
+    fun start(args: Array<String>) {
+      var  credentials:Credentials? = WalletUtils.loadCredentials(Web3App.walletPassword, Web3App.walletPath)
+      var  web3j: Web3j? = Web3j.build(org.web3j.protocol.http.HttpService(Web3App.nodeUrl))
+      println("Deploying HelloWorld contract ...")
+      var  helloWorld: org.web3j.generated.contracts.HelloWorld? = org.web3j.generated.contracts.HelloWorld.deploy(web3j, credentials, DefaultGasProvider(), "Hello Blockchain World!").send()
+      println("Contract address: " + helloWorld.getContractAddress())
+      println("Greeting method result: " + helloWorld.greeting().send())
+    }
+}

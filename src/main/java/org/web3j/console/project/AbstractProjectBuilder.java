@@ -16,7 +16,6 @@ public abstract class AbstractProjectBuilder<T extends AbstractProjectBuilder<T>
     private T builder;
 
     protected String solidityImportPath;
-    protected boolean withWallet;
     protected boolean withTests;
     protected String projectName;
     protected String packageName;
@@ -33,11 +32,6 @@ public abstract class AbstractProjectBuilder<T extends AbstractProjectBuilder<T>
     public T withSolidityFile(final String solidityImportPath) {
         builder.solidityImportPath = solidityImportPath;
         return builder;
-    }
-
-    public T withWalletProvider(boolean withWalletProvider) {
-        builder.withWallet = withWalletProvider;
-        return this.builder;
     }
 
     public T withSampleCode(boolean withSampleCode) {

@@ -14,15 +14,17 @@ package org.web3j.console.project.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InputVerifierTest {
+
+    InputVerifier inputVerifier = new InputVerifier();
+
     @Test
     public void requiredArgumentsAreEmptyTest() {
         final String[] args = {"", "", ""};
-        assertFalse(InputVerifier.requiredArgsAreNotEmpty(args));
+        assertFalse(inputVerifier.requiredArgsAreNotEmpty(args));
     }
 
     @Test
@@ -30,36 +32,31 @@ public class InputVerifierTest {
         final String[] args = {
             "TestProjectName", "test.package.name",
         };
-        assertTrue(InputVerifier.requiredArgsAreNotEmpty(args));
+        assertTrue(inputVerifier.requiredArgsAreNotEmpty(args));
     }
 
     @Test
     public void classNameIsValidTest() {
-        assertTrue(InputVerifier.classNameIsValid("ClassNameTest"));
+        assertTrue(inputVerifier.classNameIsValid("ClassNameTest"));
     }
 
     @Test
     public void classNameIsNotValidWhenFirstCharacterIsNumberTest() {
-        assertFalse(InputVerifier.classNameIsValid("1BadClassName"));
+        assertFalse(inputVerifier.classNameIsValid("1BadClassName"));
     }
 
     @Test
     public void ClassNameIsNotValidWhenFirstCharacterIsSymbol() {
-        assertFalse(InputVerifier.classNameIsValid("!BadClassName"));
+        assertFalse(inputVerifier.classNameIsValid("!BadClassName"));
     }
 
     @Test
     public void packageNameIsValidTest() {
-        assertTrue(InputVerifier.packageNameIsValid("org.com"));
+        assertTrue(inputVerifier.packageNameIsValid("org.com"));
     }
 
     @Test
     public void packageNameIsNotValidTest() {
-        assertFalse(InputVerifier.packageNameIsValid("1.com"));
-    }
-
-    @Test
-    public void firstLetterIsCapitalizedTest() {
-        assertEquals("ClassName", InputVerifier.capitalizeFirstLetter("className"));
+        assertFalse(inputVerifier.packageNameIsValid("1.com"));
     }
 }

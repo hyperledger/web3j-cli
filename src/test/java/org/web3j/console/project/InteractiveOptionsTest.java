@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InteractiveOptionsTest {
+
     private String formattedPath =
             new File(String.join(separator, "src", "test", "resources", "Solidity"))
                     .getAbsolutePath();

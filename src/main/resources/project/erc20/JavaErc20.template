@@ -9,13 +9,6 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
 
-/**
- * <p>Auto generated code.
- * <p><strong>Do not modify!</strong>
- * <p>This is the generated class for <code>web3j new erc20</code></p>
- * <p>It deploys the ERC20 contract in src/main/solidity/ and prints its address</p>
- * <p>For more information on how to run this project, please refer to our <a href="https://docs.web3j.io/quickstart/#deployment">documentation</a></p>
- */
 public class <project_name> {
 
     // ERC20 token deployment parameters

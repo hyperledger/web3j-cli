@@ -22,7 +22,7 @@ web3j {
 }
 
 ext {
-    web3jVersion = '4.8.2'
+    web3jVersion = '4.8.4'
     logbackVersion = '1.2.3'
 }
 

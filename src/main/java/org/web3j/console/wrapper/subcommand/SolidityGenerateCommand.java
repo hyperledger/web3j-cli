@@ -26,7 +26,7 @@ import static org.web3j.codegen.Console.exitError;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Command(
-        name = "generate",
+        name = "solidity",
         description = "Generate Java smart contract wrappers from Solidity",
         showDefaultValues = true,
         abbreviateSynopsis = true,

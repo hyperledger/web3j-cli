@@ -22,7 +22,7 @@ web3j {
 }
 
 ext {
-    web3jVersion = '4.8.3'
+    web3jVersion = '4.8.4'
 }
 
 dependencies {

@@ -16,15 +16,15 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 import org.web3j.console.project.UnitTestCommand;
-import org.web3j.console.wrapper.SolidityFunctionWrapperGeneratorCommand;
-import org.web3j.console.wrapper.TruffleFunctionWrapperGeneratorCommand;
+import org.web3j.console.wrapper.subcommand.SolidityGenerateCommand;
+import org.web3j.console.wrapper.subcommand.TruffleGenerateCommand;
 
 @Command(
         name = "generate",
         subcommands = {
             CommandLine.HelpCommand.class,
-            SolidityFunctionWrapperGeneratorCommand.class,
-            TruffleFunctionWrapperGeneratorCommand.class,
+            SolidityGenerateCommand.class,
+            TruffleGenerateCommand.class,
             UnitTestCommand.class,
         },
         showDefaultValues = true,

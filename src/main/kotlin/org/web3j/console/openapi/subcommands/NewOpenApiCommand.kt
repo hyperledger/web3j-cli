@@ -12,13 +12,12 @@
  */
 package org.web3j.console.openapi.subcommands
 
+import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import org.web3j.console.openapi.project.OpenApiTemplateProvider
 import org.web3j.console.openapi.project.erc777.CopyUtils
 import org.web3j.console.openapi.utils.PrettyPrinter
-
-import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.project.TemplateType
 import org.web3j.console.project.utils.ProgressCounter
 import picocli.CommandLine.Command
@@ -40,7 +39,7 @@ import java.io.File
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 
-    @Parameters(description = ["HelloWorld, ERC20, ERC777"], defaultValue = "HelloWorld")
+    @Parameters(description = ["HelloWorld, ERC20, ERC777", "MRV"], defaultValue = "HelloWorld")
     var templateType = TemplateType.HelloWorld
 
     override fun generate(projectFolder: File) {
@@ -77,7 +76,8 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                 )
                 CopyUtils.copyFromResources(
                     "contracts/ERC777Token.sol",
-                    projectStructure.solidityPath)
+                    projectStructure.solidityPath
+                )
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
 
@@ -95,7 +95,26 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                 )
                 CopyUtils.copyFromResources(
                     "contracts/ERC20Token.sol",
-                    projectStructure.solidityPath)
+                    projectStructure.solidityPath
+                )
+                buildProject(projectStructure.projectRoot, withSwaggerUi = false)
+            }
+            TemplateType.MRV -> {
+                val projectStructure = createProjectStructure(
+                    openApiTemplateProvider = OpenApiTemplateProvider(
+                        solidityContract = "",
+                        pathToSolidityFolder = "",
+                        gradleBuild = "project/mrv/build.gradleOpenApiMRV.template",
+                        packageName = projectOptions.packageName,
+                        projectName = projectOptions.projectName,
+                        contextPath = contextPath,
+                        addressLength = (projectOptions.addressLength * 8).toString()
+                    ), outputDir = projectOptions.outputDir
+                )
+                CopyUtils.copyFromResources(
+                    "contracts/MRV.sol",
+                    projectStructure.solidityPath
+                )
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
         }

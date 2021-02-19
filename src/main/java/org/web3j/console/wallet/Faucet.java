@@ -15,7 +15,6 @@ package org.web3j.console.wallet;
 public enum Faucet {
     RINKEBY("Rinkeby", "https://rinkeby.faucet.epirus.io"),
     ROPSTEN("Ropsten", "https://ropsten.faucet.epirus.io");
-    //    LOCAL("Local", "http://localhost:8000");
 
     public final String name;
     public final String url;

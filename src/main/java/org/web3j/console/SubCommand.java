@@ -17,7 +17,6 @@ import picocli.CommandLine;
 public abstract class SubCommand implements Runnable {
     @Override
     public void run() {
-
         CommandLine.usage(this, System.out);
     }
 }

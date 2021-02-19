@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import okhttp3.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import org.web3j.codegen.Console;

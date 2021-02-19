@@ -16,7 +16,11 @@ import picocli.CommandLine.Command;
 
 import org.web3j.console.SubCommand;
 import org.web3j.console.Web3jVersionProvider;
-import org.web3j.console.wallet.subcommands.*;
+import org.web3j.console.wallet.subcommands.WalletCreateCommand;
+import org.web3j.console.wallet.subcommands.WalletFundCommand;
+import org.web3j.console.wallet.subcommands.WalletImportCommand;
+import org.web3j.console.wallet.subcommands.WalletSendCommand;
+import org.web3j.console.wallet.subcommands.WalletUpdateCommand;
 
 /** Class for managing our wallet command line utilities. */
 @Command(

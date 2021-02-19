@@ -20,7 +20,9 @@ import org.web3j.console.wallet.subcommands.WalletCreateCommand;
 
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.startsWith;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.web3j.console.wallet.WalletImportCommandTest.WALLET_PASSWORD;
 
 public class WalletCreateCommandTest {

@@ -1,5 +1,5 @@
 # ERC777 project
-This is a generated ERC777 project using the [Web3j-CLI](https://docs.web3j.io/).
+This is a generated ERC777 project using the [Web3j-CLI](https://docs.web3j.io/latest).
 
 ## Important
 This project is based on the [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts) contracts.

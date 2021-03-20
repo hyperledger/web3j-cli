@@ -2,7 +2,7 @@ package <package_name>;
 
 /**
  * <p>This is the generated class for <code>web3j import</code></p>
- * <p>For more information on how to run this project, please refer to our <a href="https://docs.web3j.io/quickstart/#deployment">documentation</a></p>
+ * <p>For more information on how to run this project, please refer to our <a href="https://docs.web3j.io/latest/command_line_tools/">documentation</a></p>
  */
 public class <project_name> {
 

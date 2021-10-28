@@ -12,15 +12,15 @@
  */
 package org.web3j.console.deploy;
 
-import org.web3j.codegen.Console;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Parameters;
-
-import org.web3j.console.Web3jVersionProvider;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
+
+import org.web3j.codegen.Console;
+import org.web3j.console.Web3jVersionProvider;
 
 import static org.web3j.console.utils.PrinterUtilities.coloredPrinter;
 import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;
@@ -69,11 +69,10 @@ public class DeployCommand implements Runnable {
     public void run() {
         coloredPrinter.println("Starting to deploy smart contracts");
         try {
-           runGradle(workingDirectory);
+            runGradle(workingDirectory);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private void runGradle(Path runLocation) throws Exception {
@@ -84,8 +83,15 @@ public class DeployCommand implements Runnable {
         } else {
             executeProcess(
                     new File(File.separator, runLocation.toString()),
-                    new String[] {"bash", "-c", "./gradlew deploy -Pprofile=\"" + profileName + "\" -Ppackage=\"" + packageName + "\" -q"});
-
+                    new String[] {
+                        "bash",
+                        "-c",
+                        "./gradlew deploy -Pprofile=\""
+                                + profileName
+                                + "\" -Ppackage=\""
+                                + packageName
+                                + "\" -q"
+                    });
         }
         Console.exitSuccess();
     }

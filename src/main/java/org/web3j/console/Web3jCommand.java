@@ -22,6 +22,7 @@ import picocli.CommandLine.Option;
 
 import org.web3j.codegen.Console;
 import org.web3j.console.config.ConfigManager;
+import org.web3j.console.deploy.DeployCommand;
 import org.web3j.console.docker.DockerCommand;
 import org.web3j.console.openapi.OpenApiCommand;
 import org.web3j.console.project.ImportProjectCommand;
@@ -53,6 +54,7 @@ import static org.web3j.console.config.ConfigManager.config;
             ProjectTestCommand.class,
             DockerCommand.class,
             WalletCommand.class,
+            DeployCommand.class
         },
         showDefaultValues = true,
         abbreviateSynopsis = true,

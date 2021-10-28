@@ -4,6 +4,7 @@ plugins {
     id 'application'
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id 'org.web3j' version '4.8.4'
+    id 'org.web3j.deploy' version '0.0.1'
 }
 
 group '<package_name>'
@@ -33,6 +34,7 @@ dependencies {
     implementation "org.web3j:web3j-unit:$web3jVersion"
     implementation "org.web3j:web3j-evm:$web3jVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.web3j:web3j-deployer:0.0.1"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

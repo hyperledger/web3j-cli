@@ -12,12 +12,18 @@
  */
 package org.web3j.console.deploy;
 
+import org.web3j.codegen.Console;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import org.web3j.console.Web3jVersionProvider;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.web3j.console.utils.PrinterUtilities.coloredPrinter;
+import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;
 
 @Command(
         name = "deploy",
@@ -46,6 +52,9 @@ public class DeployCommand implements Runnable {
             description = "Package name which contains the deployable and ordering",
             arity = "1")
     String packageName;
+
+    private final Path workingDirectory = Paths.get(System.getProperty("user.dir"));
+
     /**
      * When an object implementing interface <code>Runnable</code> is used to create a thread,
      * starting the thread causes the object's <code>run</code> method to be called in that
@@ -58,6 +67,41 @@ public class DeployCommand implements Runnable {
      */
     @Override
     public void run() {
-        coloredPrinter.println("Starting to deploy" + profileName + " " + packageName);
+        coloredPrinter.println("Starting to deploy smart contracts");
+        try {
+           runGradle(workingDirectory);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private void runGradle(Path runLocation) throws Exception {
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            executeProcess(
+                    new File(runLocation.toString()),
+                    new String[] {"cmd", "/c", ".\\gradlew.bat deploy", "-q"});
+        } else {
+            executeProcess(
+                    new File(File.separator, runLocation.toString()),
+                    new String[] {"bash", "-c", "./gradlew deploy -Pprofile=\"" + profileName + "\" -Ppackage=\"" + packageName + "\" -q"});
+
+        }
+        Console.exitSuccess();
+    }
+
+    private void executeProcess(File workingDir, String[] command) throws Exception {
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+
+        int exitCode =
+                processBuilder
+                        .directory(workingDir)
+                        .redirectErrorStream(true)
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .start()
+                        .waitFor();
+        if (exitCode != 0) {
+            printErrorAndExit("Could not deploy project.");
+        }
     }
 }

@@ -27,7 +27,7 @@ import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;
 
 @Command(
         name = "deploy",
-        description = "Deploy smart contracts on the given network",
+        description = "Deploy Ethereum smart contracts on the given network",
         showDefaultValues = true,
         abbreviateSynopsis = true,
         mixinStandardHelpOptions = true,
@@ -79,7 +79,15 @@ public class DeployCommand implements Runnable {
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             executeProcess(
                     new File(runLocation.toString()),
-                    new String[] {"cmd", "/c", ".\\gradlew.bat deploy", "-q"});
+                    new String[] {
+                        "cmd",
+                        "/c",
+                        ".\\gradlew.bat deploy -Pprofile=\""
+                                + profileName
+                                + "\" -Ppackage=\""
+                                + packageName
+                                + "\" -q"
+                    });
         } else {
             executeProcess(
                     new File(File.separator, runLocation.toString()),
@@ -107,7 +115,7 @@ public class DeployCommand implements Runnable {
                         .start()
                         .waitFor();
         if (exitCode != 0) {
-            printErrorAndExit("Could not deploy project.");
+            printErrorAndExit("Could not deploy contract.");
         }
     }
 }

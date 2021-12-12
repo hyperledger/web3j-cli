@@ -99,7 +99,7 @@ dependencies {
             "com.google.code.gson:gson:$gsonVersion",
             "org.apache.commons:commons-lang3:$commonsLangVersion",
             "com.github.zafarkhaja:java-semver:$semverVersion",
-            "log4j:log4j:$log4jVersion",
+            "org.apache.logging.log4j:log4j-core:$log4jVersion",
             "io.github.microutils:kotlin-logging:$kotlinLoggin",
             "com.github.docker-java:docker-java:$dockerJavaVersion",
             "com.diogonunes:JCDP:$jcdpVersion"

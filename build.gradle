@@ -31,7 +31,7 @@ ext {
     web3jEpirusVersion = '0.0.7'
     jaxbVersion = '2.2.11'
     activationVersion = '1.1.1'
-    log4jVersion = '1.2.17'
+    log4jVersion = '2.15.0'
     semverVersion = '0.9.0'
     commonsLangVersion = '3.9'
     jcdpVersion = '4.0.1'

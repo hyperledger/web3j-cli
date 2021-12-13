@@ -23,7 +23,7 @@ ext {
     picocli = '4.0.4'
     slf4jVersion = '1.7.30'
     junitVersion = '5.8.2'
-    mockitoVersion = '3.+'
+    mockitoVersion = '4.1.0'
     gsonVersion = '2.8.6'
     wireMockVersion = '2.25.1'
     kotlinLoggin = '1.7.9'

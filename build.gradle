@@ -22,7 +22,7 @@ ext {
     web3jVersion = '4.8.4'
     picocli = '4.0.4'
     slf4jVersion = '1.7.30'
-    junitVersion = '5.+'
+    junitVersion = '5.8.2'
     mockitoVersion = '3.+'
     gsonVersion = '2.8.6'
     wireMockVersion = '2.25.1'

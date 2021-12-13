@@ -22,8 +22,8 @@ ext {
     web3jVersion = '4.8.4'
     picocli = '4.0.4'
     slf4jVersion = '1.7.30'
-    junitVersion = '5.+'
-    mockitoVersion = '3.+'
+    junitVersion = '5.8.2'
+    mockitoVersion = '4.1.0'
     gsonVersion = '2.8.6'
     wireMockVersion = '2.25.1'
     kotlinLoggin = '1.7.9'
@@ -31,7 +31,7 @@ ext {
     web3jEpirusVersion = '0.0.7'
     jaxbVersion = '2.2.11'
     activationVersion = '1.1.1'
-    log4jVersion = '1.2.17'
+    log4jVersion = '2.15.0'
     semverVersion = '0.9.0'
     commonsLangVersion = '3.9'
     jcdpVersion = '4.0.1'
@@ -99,7 +99,7 @@ dependencies {
             "com.google.code.gson:gson:$gsonVersion",
             "org.apache.commons:commons-lang3:$commonsLangVersion",
             "com.github.zafarkhaja:java-semver:$semverVersion",
-            "log4j:log4j:$log4jVersion",
+            "org.apache.logging.log4j:log4j-core:$log4jVersion",
             "io.github.microutils:kotlin-logging:$kotlinLoggin",
             "com.github.docker-java:docker-java:$dockerJavaVersion",
             "com.diogonunes:JCDP:$jcdpVersion"

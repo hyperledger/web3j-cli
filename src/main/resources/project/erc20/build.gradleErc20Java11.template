@@ -21,6 +21,10 @@ web3j {
     includedContracts = ['ERC20Token']
 }
 
+node {
+    nodeProjectDir.set(file("$projectDir"))
+}
+
 ext {
     web3jVersion = '4.8.4'
     logbackVersion = '1.2.3'

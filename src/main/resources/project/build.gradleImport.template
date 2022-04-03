@@ -21,6 +21,10 @@ web3j {
     generatedPackageName = '<package_name>.generated.contracts'
 }
 
+node {
+    nodeProjectDir.set(file("$projectDir"))
+}
+
 ext {
     web3jVersion = '4.8.4'
     logbackVersion = '1.2.3'

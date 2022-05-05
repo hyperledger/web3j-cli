@@ -29,7 +29,7 @@ node {
 }
 
 ext {
-    web3jVersion = '4.9.0'
+    web3jVersion = '4.9.2'
     klaxonVersion = '5.5'
 }
 

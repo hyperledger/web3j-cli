@@ -1,5 +1,5 @@
 plugins {
-  id "org.web3j.openapi" version "4.8.3"
+  id "org.web3j.openapi" version "4.9.4"
   id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 

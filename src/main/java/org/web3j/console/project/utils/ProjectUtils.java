@@ -167,6 +167,7 @@ public class ProjectUtils {
      *
      * @param directory directory where to search for Solidity smart contracts
      * @return List of contracts paths
+     * @throws IOException if path is not available
      */
     public static List<Path> findSolidityContracts(Path directory) throws IOException {
         return Files.walk(directory)

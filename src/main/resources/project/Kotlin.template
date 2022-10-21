@@ -1,8 +1,12 @@
 package <package_name>;
 
+import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
+import org.web3j.protocol.http.HttpService
 import org.web3j.protocol.Web3j
 import org.web3j.tx.gas.DefaultGasProvider
+
+import <package_name>.generated.contracts.HelloWorld
 
 /**
  * <p>This is the generated class for <code>web3j new helloworld --kotlin</code></p>
@@ -23,11 +27,11 @@ class <project_name> {
     }
 
     fun start(args: Array<String>) {
-      var  credentials:Credentials? = WalletUtils.loadCredentials(Web3App.walletPassword, Web3App.walletPath)
-      var  web3j: Web3j? = Web3j.build(org.web3j.protocol.http.HttpService(Web3App.nodeUrl))
+      var credentials:Credentials? = WalletUtils.loadCredentials(this.walletPassword, this.walletPath)
+      var web3j: Web3j? = Web3j.build(HttpService(this.nodeUrl))
       println("Deploying HelloWorld contract ...")
-      var  helloWorld: org.web3j.generated.contracts.HelloWorld? = org.web3j.generated.contracts.HelloWorld.deploy(web3j, credentials, DefaultGasProvider(), "Hello Blockchain World!").send()
-      println("Contract address: " + helloWorld.getContractAddress())
-      println("Greeting method result: " + helloWorld.greeting().send())
+      var helloWorld: HelloWorld? = HelloWorld.deploy(web3j, credentials, DefaultGasProvider(), "Hello Blockchain World!").send()
+      println("Contract address: " + helloWorld?.contractAddress)
+      println("Greeting method result: " + helloWorld?.greeting()?.send())
     }
 }

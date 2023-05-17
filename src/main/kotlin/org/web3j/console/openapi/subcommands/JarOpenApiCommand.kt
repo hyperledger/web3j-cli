@@ -54,7 +54,7 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
      * Path to the `.web3j` folder
      */
     private val web3jHomeFolder: Path =
-        Paths.get(System.getenv(if (System.getProperty("os.name").toLowerCase().startsWith("win")) "USERPROFILE" else "HOME"), ".web3j")
+        Paths.get(System.getenv(if (System.getProperty("os.name").lowercase().startsWith("win")) "USERPROFILE" else "HOME"), ".web3j")
 
     override fun generate(projectFolder: File) {
         if (solidityImportPath == null) {

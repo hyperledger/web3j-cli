@@ -53,7 +53,7 @@ public class Erc777JavaProjectCreator extends ProjectRunner {
                     .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                     .withGradlewWrapperJar("gradle-wrapper.jar")
                     .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
+                            JavaVersion.getJavaVersionAsDouble() > 11
                                     ? "project/erc777/build.gradleErc777.template"
                                     : "project/erc777/build.gradleErc777Java11.template")
                     .withMainJavaClass("project/erc777/JavaErc777.template")

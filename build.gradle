@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
     id "application"
     id "distribution"
     id "idea"
@@ -19,7 +19,7 @@ mainClassName = 'org.web3j.console.Web3j'
 applicationName = 'web3j'
 
 ext {
-    web3jVersion = '4.9.4'
+    web3jVersion = '4.10.0'
     picocli = '4.6.0'
     slf4jVersion = '1.7.30'
     junitVersion = '5.8.2'
@@ -153,13 +153,13 @@ sourceSets {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "17"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "17"
 }
 
-sourceCompatibility = 1.8
+sourceCompatibility = 17
 
 def generatedResources = "$buildDir/generated-resources/main"
 

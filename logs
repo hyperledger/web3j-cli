@@ -1,0 +1,12 @@
+
+added 1 package, and audited 2 packages in 439ms
+
+found 0 vulnerabilities
+Warning: Visibility for constructor is ignored. If you want the contract to be non-deployable, making it "abstract" is sufficient.
+  --> src/main/solidity/ERC20Token.sol:17:5:
+   |
+17 |     constructor (
+   |     ^ (Relevant source part starts here and spans across multiple lines).
+
+Generating org.web3j.generated.contracts.ERC20Token ... File written to /Users/georgetebrean/Documents/Projects/cloned/web3j-cli/build/tmp/testing/1685548431687wNJIQvlxoM/Web3App/build/generated/sources/web3j/main/java
+

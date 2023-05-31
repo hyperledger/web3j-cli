@@ -13,6 +13,7 @@
 package org.web3j.console.project;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Assertions;
@@ -77,7 +78,9 @@ public class ImportProjectCommandTest extends ClassExecutor {
         final String[] args = {
             "-p", "org.com", "-n", "Test5", "-o", tempDirPath, "-s", solidityTestDir
         };
-        int exitCode = new CommandLine(ImportProjectCommand.class).execute(args);
+        PrintWriter outFile = new PrintWriter(System.out);
+        int exitCode = new CommandLine(ImportProjectCommand.class).setErr(outFile).execute(args);
+        //        int exitCode = new CommandLine(ImportProjectCommand.class).execute(args);
         assertEquals(0, exitCode);
 
         String pathToTests =

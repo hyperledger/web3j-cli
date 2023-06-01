@@ -14,11 +14,15 @@ sourceCompatibility = 17
 
 repositories {
     mavenCentral()
+    maven { url "https://hyperledger.jfrog.io/artifactory/besu-maven/" }
+    maven { url "https://artifacts.consensys.net/public/maven/maven/" }
+    maven { url "https://splunk.jfrog.io/splunk/ext-releases-local" }
     jcenter()
 }
 
 web3j {
     generatedPackageName = '<package_name>.generated.contracts'
+    excludedContracts = ['Mortal']
 }
 
 node {
@@ -26,9 +30,13 @@ node {
 }
 
 ext {
+    besuPluginVersion = '23.4.0'
+    besuInternalVersion = '23.4.0'
+    besuInternalCryptoVersion = '23.1.3'
     web3jVersion = '4.10.0'
     logbackVersion = '1.2.3'
     klaxonVersion = '5.5'
+    besuCryptoDepVersion = '0.7.1'
 }
 
 dependencies {
@@ -38,6 +46,25 @@ dependencies {
             "com.beust:klaxon:$klaxonVersion"
     implementation "org.web3j:web3j-unit:$web3jVersion"
     implementation "org.web3j:web3j-evm:$web3jVersion"
+
+    implementation "org.hyperledger.besu:plugin-api:$besuPluginVersion"
+    implementation "org.hyperledger.besu.internal:besu:$besuInternalVersion"
+    implementation "org.hyperledger.besu.internal:api:$besuInternalVersion"
+    implementation "org.hyperledger.besu:evm:$besuPluginVersion"
+    implementation "org.hyperledger.besu.internal:config:$besuInternalVersion"
+    implementation "org.hyperledger.besu.internal:core:$besuInternalVersion"
+    implementation "org.hyperledger.besu.internal:crypto:$besuInternalCryptoVersion"
+    implementation "org.hyperledger.besu.internal:rlp:$besuInternalVersion"
+    implementation "org.hyperledger.besu.internal:kvstore:$besuInternalVersion"
+    implementation "org.hyperledger.besu.internal:metrics-core:$besuInternalVersion"
+    implementation "org.hyperledger.besu.internal:trie:$besuInternalVersion"
+    implementation "org.hyperledger.besu.internal:util:$besuInternalVersion"
+    implementation "org.hyperledger.besu:bls12-381:$besuCryptoDepVersion"
+    implementation "org.hyperledger.besu:secp256k1:$besuCryptoDepVersion"
+
+
+
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
@@ -68,4 +95,6 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "17"
 }
 
-
+shadowJar {
+    zip64 true
+}

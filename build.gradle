@@ -19,8 +19,8 @@ mainClassName = 'org.web3j.console.Web3j'
 applicationName = 'web3j'
 
 ext {
-    web3jVersion = '4.10.0'
-    picocli = '4.7.3'
+    web3jVersion = '4.10.1-RC'
+    picocli = '4.6.0'
     slf4jVersion = '1.7.30'
     junitVersion = '5.8.2'
     mockitoVersion = '4.1.0'
@@ -61,6 +61,7 @@ apply {
 repositories {
     jcenter()
     mavenCentral()
+    mavenLocal()
     maven { url "https://dl.bintray.com/ethereum/maven/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url 'https://repo.gradle.org/gradle/libs-releases' }
@@ -179,3 +180,6 @@ task generateVersionProperties {
         generated.append("timestamp=${System.currentTimeMillis()}\n")
     }
 }
+
+tasks.named("spotlessJava").configure { dependsOn("javadoc","sourcesJar","compileTestJava","compileTestKotlin") }
+tasks.named("spotlessKotlin").configure { dependsOn("compileKotlin","sourcesJar","compileTestKotlin") }

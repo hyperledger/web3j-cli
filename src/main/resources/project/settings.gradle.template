@@ -1,1 +1,7 @@
+pluginManagement {
+  repositories {
+      mavenLocal()
+      gradlePluginPortal()
+  }
+}
 rootProject.name = '<project_name>';

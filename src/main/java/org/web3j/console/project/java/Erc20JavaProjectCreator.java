@@ -52,7 +52,7 @@ public class Erc20JavaProjectCreator extends ProjectRunner {
                     .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                     .withGradlewWrapperJar("gradle-wrapper.jar")
                     .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
+                            JavaVersion.getJavaVersionAsDouble() > 11
                                     ? "project/erc20/build.gradleErc20.template"
                                     : "project/erc20/build.gradleErc20Java11.template")
                     .withMainJavaClass("project/erc20/JavaErc20.template")

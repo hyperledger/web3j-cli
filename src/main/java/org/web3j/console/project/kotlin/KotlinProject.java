@@ -60,7 +60,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         if (command.equals("new")) {
             templateBuilder
                     .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
+                            JavaVersion.getJavaVersionAsDouble() > 11
                                     ? "project/build.gradle.template"
                                     : "project/build.gradleJava11.template")
                     .withSolidityProject("contracts/HelloWorld.sol");
@@ -68,7 +68,7 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
         } else if (command.equals("import")) {
             templateBuilder
                     .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() < 11
+                            JavaVersion.getJavaVersionAsDouble() > 11
                                     ? "project/build.gradleImport.template"
                                     : "project/build.gradleImportJava11.template")
                     .withPathToSolidityFolder(solidityImportPath);

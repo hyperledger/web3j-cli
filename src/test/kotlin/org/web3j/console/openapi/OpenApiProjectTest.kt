@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.web3j.console.project.utils.Folders
 import picocli.CommandLine
 import java.io.File
+import java.io.PrintWriter
 import java.nio.file.Paths
 
 class OpenApiProjectTest {
@@ -39,7 +40,8 @@ class OpenApiProjectTest {
     @Test
     fun testCorrectArgsOpenApiJarGeneration() {
         val args = arrayOf("-p", "org.com", "-n", "Test", "-o", tempDirPath, "-s", soliditySource.absolutePath)
-        val exitCode = CommandLine(JarOpenApiCommand::class.java).execute(*args)
+        val writer = PrintWriter(System.out)
+        val exitCode = CommandLine(JarOpenApiCommand::class.java).setErr(writer).execute(*args)
         assertEquals(0, exitCode)
         val jarFile = Paths.get(tempDirPath, "Test-server-all.jar").toFile()
         assertTrue(jarFile.exists())

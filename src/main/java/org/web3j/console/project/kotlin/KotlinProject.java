@@ -14,7 +14,6 @@ package org.web3j.console.project.kotlin;
 
 import java.io.IOException;
 
-import org.web3j.commons.JavaVersion;
 import org.web3j.console.project.AbstractProject;
 import org.web3j.console.project.Project;
 import org.web3j.console.project.ProjectStructure;
@@ -59,18 +58,12 @@ public class KotlinProject extends AbstractProject<KotlinProject> implements Pro
 
         if (command.equals("new")) {
             templateBuilder
-                    .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() > 11
-                                    ? "project/build.gradle.template"
-                                    : "project/build.gradleJava11.template")
+                    .withGradleBuild("project/build.gradle.template")
                     .withSolidityProject("contracts/HelloWorld.sol");
 
         } else if (command.equals("import")) {
             templateBuilder
-                    .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() > 11
-                                    ? "project/build.gradleImport.template"
-                                    : "project/build.gradleImportJava11.template")
+                    .withGradleBuild("project/build.gradleImport.template")
                     .withPathToSolidityFolder(solidityImportPath);
         }
 

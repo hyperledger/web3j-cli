@@ -76,3 +76,6 @@ solidity {
     evmVersion = 'constantinople'
 }
 
+shadowJar {
+    zip64 = true
+}

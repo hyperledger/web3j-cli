@@ -91,6 +91,6 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "17"
 }
 
-
-
-
+shadowJar {
+    zip64 = true
+}

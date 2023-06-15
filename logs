@@ -1,12 +1,34 @@
 
-FAILURE: Build failed with an exception.
+> Configure project :
 
-* What went wrong:
-Could not initialize class org.codehaus.groovy.runtime.InvokerHelper
+The 'org.jetbrains.kotlin.platform.*' plugins are deprecated and will no longer be available in Kotlin 1.4.
+Please migrate the project to the 'org.jetbrains.kotlin.multiplatform' plugin.
+See: https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html
 
-* Try:
-Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+> Task :nodeSetup
+> Task :npmSetup SKIPPED
+> Task :resolveSolidity
 
-* Get more help at https://help.gradle.org
+> Task :npmInstall
 
-BUILD FAILED in 5s
+up to date, audited 1 package in 120ms
+
+found 0 vulnerabilities
+
+> Task :compileSolidity
+Compiler run successful. Artifact(s) can be found in directory build/resources/main/solidity.
+
+> Task :generateContractWrappers
+Generating org.com.wrappers.HelloWorld ... File written to /Users/georgetebrean/Documents/Projects/cloned/web3j-cli/build/tmp/testing/1686831923019MNvjVGInmb/Test/build/generated/sources/web3j/main/java
+
+
+> Task :generateWeb3jOpenApi
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.6/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 2s
+6 actionable tasks: 6 executed

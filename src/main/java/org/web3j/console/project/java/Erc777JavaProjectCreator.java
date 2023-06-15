@@ -12,7 +12,6 @@
  */
 package org.web3j.console.project.java;
 
-import org.web3j.commons.JavaVersion;
 import org.web3j.console.openapi.project.erc777.CopyUtils;
 import org.web3j.console.openapi.utils.PrettyPrinter;
 import org.web3j.console.openapi.utils.SimpleFileLogger;
@@ -52,10 +51,7 @@ public class Erc777JavaProjectCreator extends ProjectRunner {
                     .withGradleSettings("project/settings.gradle.template")
                     .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                     .withGradlewWrapperJar("gradle-wrapper.jar")
-                    .withGradleBuild(
-                            JavaVersion.getJavaVersionAsDouble() > 11
-                                    ? "project/erc777/build.gradleErc777.template"
-                                    : "project/erc777/build.gradleErc777Java11.template")
+                    .withGradleBuild("project/erc777/build.gradleErc777.template")
                     .withMainJavaClass("project/erc777/JavaErc777.template")
                     .withReadme("project/erc777/README.erc777.md")
                     .build()

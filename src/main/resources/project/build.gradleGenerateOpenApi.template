@@ -1,5 +1,5 @@
 plugins {
-  id "org.web3j.openapi" version "4.10.1-RC"
+  id "org.web3j.openapi" version "4.10.1"
 }
 
 group '<package_name>'

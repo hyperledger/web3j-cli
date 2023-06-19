@@ -89,7 +89,7 @@ public abstract class ProjectRunner implements Runnable {
     protected abstract void createProject();
 
     public void buildProject(ProjectStructure projectStructure, ProgressCounter progressCounter)
-            throws IOException, InterruptedException {
+            throws IOException, InterruptedException, ClassNotFoundException {
         ProjectCreationUtils.generateWrappers(projectStructure.getProjectRoot());
         if (withTests) {
             new JavaTestCLIRunner(

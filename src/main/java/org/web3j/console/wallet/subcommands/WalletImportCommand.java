@@ -22,9 +22,9 @@ import picocli.CommandLine.Parameters;
 import org.web3j.console.Web3jVersionProvider;
 import org.web3j.console.utils.IODevice;
 import org.web3j.console.wallet.WalletManager;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.exception.CipherException;
 import org.web3j.utils.Files;
 
 import static org.web3j.codegen.Console.exitError;

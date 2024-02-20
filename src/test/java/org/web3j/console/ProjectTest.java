@@ -23,8 +23,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.web3j.console.config.ConfigManager;
 import org.web3j.console.project.utils.ClassExecutor;
 import org.web3j.console.project.utils.Folders;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.exception.CipherException;
 
 public class ProjectTest extends ClassExecutor {
     protected static File workingDirectory = Folders.tempBuildFolder();

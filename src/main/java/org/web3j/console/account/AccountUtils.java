@@ -20,7 +20,7 @@ import java.security.NoSuchProviderException;
 
 import org.web3j.codegen.Console;
 import org.web3j.console.project.wallet.ProjectWallet;
-import org.web3j.crypto.CipherException;
+import org.web3j.crypto.exception.CipherException;
 
 public class AccountUtils {
     public static String accountDefaultWalletInit(

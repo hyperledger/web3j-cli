@@ -18,9 +18,9 @@ import java.util.Arrays;
 
 import org.web3j.console.utils.ConsoleDevice;
 import org.web3j.console.utils.IODevice;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.exception.CipherException;
 
 import static org.web3j.codegen.Console.exitError;
 

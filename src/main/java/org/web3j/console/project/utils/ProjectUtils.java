@@ -28,9 +28,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.web3j.codegen.Console;
 import org.web3j.console.openapi.utils.PrettyPrinter;
 import org.web3j.console.openapi.utils.SimpleFileLogger;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.exception.CipherException;
 
 public class ProjectUtils {
 

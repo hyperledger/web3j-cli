@@ -1,0 +1,21 @@
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring root project 'generationTest'.
+> Could not resolve all files for configuration ':classpath'.
+   > Could not find org.web3j:web3j-openapi-codegen:4.11.0.
+     Searched in the following locations:
+       - file:/Users/georgetebrean/.m2/repository/org/web3j/web3j-openapi-codegen/4.11.0/web3j-openapi-codegen-4.11.0.pom
+       - https://plugins.gradle.org/m2/org/web3j/web3j-openapi-codegen/4.11.0/web3j-openapi-codegen-4.11.0.pom
+     Required by:
+         project : > org.web3j.openapi:org.web3j.openapi.gradle.plugin:4.11.0 > org.web3j.openapi:web3j-openapi-gradle-plugin:4.11.0
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 4s

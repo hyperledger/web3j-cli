@@ -24,8 +24,8 @@ import org.web3j.codegen.Console;
 import org.web3j.console.Web3jVersionProvider;
 import org.web3j.console.utils.IODevice;
 import org.web3j.console.wallet.WalletManager;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.exception.CipherException;
 
 /** Simple class for creating a wallet file. */
 @Command(

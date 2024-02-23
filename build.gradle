@@ -65,7 +65,6 @@ repositories {
     maven { url "https://dl.bintray.com/ethereum/maven/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-    maven { url "https://artifacts.consensys.net/public/maven/maven/" }
 }
 
 test {
@@ -104,8 +103,7 @@ dependencies {
             "org.apache.logging.log4j:log4j-core:$log4jVersion",
             "io.github.microutils:kotlin-logging:$kotlinLoggin",
             "com.github.docker-java:docker-java:$dockerJavaVersion",
-            "com.diogonunes:JCDP:$jcdpVersion",
-            "tech.pegasys:jc-kzg-4844:0.8.0"
+            "com.diogonunes:JCDP:$jcdpVersion"
 
     runtimeOnly "org.slf4j:slf4j-nop:$slf4jVersion"
 

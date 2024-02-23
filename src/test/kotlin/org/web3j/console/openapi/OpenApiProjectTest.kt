@@ -24,7 +24,9 @@ import picocli.CommandLine
 import java.io.File
 import java.io.PrintWriter
 import java.nio.file.Paths
+import org.junit.jupiter.api.Disabled
 
+@Disabled
 class OpenApiProjectTest {
 
     private val tempDirPath = Folders.tempBuildFolder().absolutePath

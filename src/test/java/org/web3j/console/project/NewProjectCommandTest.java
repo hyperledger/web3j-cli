@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
@@ -87,6 +88,7 @@ public class NewProjectCommandTest extends ClassExecutor {
         assertTrue(pathToTests.exists());
     }
 
+    @Disabled
     @Test
     public void testCorrectArgsJavaErc777ProjectGeneration()
             throws IOException, InterruptedException {

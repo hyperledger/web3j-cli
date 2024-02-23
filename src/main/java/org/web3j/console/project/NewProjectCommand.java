@@ -17,6 +17,7 @@ import picocli.CommandLine.Parameters;
 
 import org.web3j.console.Web3jVersionProvider;
 import org.web3j.console.project.java.Erc20JavaProjectCreator;
+import org.web3j.console.project.java.Erc721JavaProjectCreator;
 import org.web3j.console.project.java.Erc777JavaProjectCreator;
 import org.web3j.console.project.java.JavaProjectCreatorRunner;
 import org.web3j.console.project.kotlin.KotlinProjectCreatorRunner;
@@ -35,7 +36,7 @@ import org.web3j.console.project.kotlin.KotlinProjectCreatorRunner;
         footer = "Web3j CLI is licensed under the Apache License 2.0")
 public class NewProjectCommand extends AbstractProjectCommand implements Runnable {
 
-    @Parameters(description = "HelloWorld, ERC20, ERC777", defaultValue = "HelloWorld")
+    @Parameters(description = "HelloWorld, ERC20, ERC777, ERC721", defaultValue = "HelloWorld")
     TemplateType templateType = TemplateType.HelloWorld;
 
     @Override
@@ -91,6 +92,18 @@ public class NewProjectCommand extends AbstractProjectCommand implements Runnabl
                                             interactiveOptions.getTokenName("ERC20"),
                                             interactiveOptions.getTokenSymbol("erc20"),
                                             interactiveOptions.getTokenInitialSupply("1000000000")))
+                            .run();
+                    break;
+                case ERC721:
+                    new Erc721JavaProjectCreator(
+                                    new Erc721ProjectCreatorConfig(
+                                            projectOptions.projectName,
+                                            projectOptions.packageName,
+                                            projectOptions.outputDir,
+                                            projectOptions.generateJar,
+                                            projectOptions.generateTests,
+                                            interactiveOptions.getTokenName("ERC721"),
+                                            interactiveOptions.getTokenSymbol("erc721")))
                             .run();
                     break;
             }

@@ -65,7 +65,6 @@ repositories {
     maven { url "https://dl.bintray.com/ethereum/maven/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-    maven { url "https://artifacts.consensys.net/public/maven/maven/" }
 }
 
 test {

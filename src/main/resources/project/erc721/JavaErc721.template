@@ -11,7 +11,7 @@ import java.math.BigInteger;
 
 public class <project_name> {
 
-    // ERC20 token deployment parameters
+    // ERC721 token deployment parameters
     private static final String NAME = "<NAME>";
     private static final String SYMBOL = "<SYMBOL>";
 

@@ -61,6 +61,9 @@ public class NewProjectCommand extends AbstractProjectCommand implements Runnabl
                 case ERC777:
                     System.out.println("Generating ERC777 Kotlin project is currently unsupported");
                     break;
+                case ERC721:
+                    System.out.println("Generating ERC721 Kotlin project is currently unsupported");
+                    break;
             }
         } else {
             switch (templateType) {

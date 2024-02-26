@@ -50,7 +50,7 @@ public class Erc721JavaProjectCreator extends ProjectRunner {
                     .withWrapperGradleSettings("project/gradlew-wrapper.properties.template")
                     .withGradlewWrapperJar("gradle-wrapper.jar")
                     .withGradleBuild("project/erc721/build.gradleErc721.template")
-                    .withMainJavaClass("project/erc20/JavaErc721.template")
+                    .withMainJavaClass("project/erc721/JavaErc721.template")
                     .build()
                     .generateFiles(projectStructure);
 

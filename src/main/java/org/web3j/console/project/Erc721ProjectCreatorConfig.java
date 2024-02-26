@@ -27,7 +27,6 @@ public class Erc721ProjectCreatorConfig extends ProjectCreatorConfig {
         super(projectName, packageName, outputDir, withJar, withTests);
         this.tokenName = tokenName;
         this.tokenSymbol = tokenSymbol;
-        ;
     }
 
     public String getTokenName() {

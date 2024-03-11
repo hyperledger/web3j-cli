@@ -8,14 +8,13 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
 
-import <package_name>.generated.contracts.ERC20Token;
+import <package_name>.generated.contracts.ERC721Token;
 
 public class <project_name> {
 
-    // ERC20 token deployment parameters
+    // ERC721 token deployment parameters
     private static final String NAME = "<NAME>";
     private static final String SYMBOL = "<SYMBOL>";
-    private static final BigInteger INITIAL_SUPPLY = <INITIAL_SUPPLY>;
 
     private static final String nodeUrl = System.getenv().getOrDefault("WEB3J_NODE_URL", "<node_url>");
     private static final String walletPassword = System.getenv().getOrDefault("WEB3J_WALLET_PASSWORD", "<wallet_password>");
@@ -25,8 +24,8 @@ public class <project_name> {
     public static void main(String[] args) throws Exception {
         Credentials credentials = WalletUtils.loadCredentials(walletPassword, walletPath);
         Web3j web3j = Web3j.build(new HttpService(nodeUrl));
-        System.out.println("Deploying ERC20 contract ...");
-        ERC20Token erc20Token = ERC20Token.deploy(web3j, credentials, new DefaultGasProvider(), NAME, SYMBOL, INITIAL_SUPPLY).send();
-        System.out.println("Contract address: " + erc20Token.getContractAddress());
+        System.out.println("Deploying ERC721 contract ...");
+        ERC721Token erc721Token = ERC721Token.deploy(web3j, credentials, new DefaultGasProvider(), NAME, SYMBOL).send();
+        System.out.println("Contract address: " + erc721Token.getContractAddress());
     }
 }

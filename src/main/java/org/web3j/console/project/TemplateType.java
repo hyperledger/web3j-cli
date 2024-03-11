@@ -15,5 +15,6 @@ package org.web3j.console.project;
 public enum TemplateType {
     HelloWorld,
     ERC20,
-    ERC777
+    ERC777,
+    ERC721
 }

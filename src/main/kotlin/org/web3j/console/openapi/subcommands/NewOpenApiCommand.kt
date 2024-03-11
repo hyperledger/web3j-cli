@@ -40,7 +40,7 @@ import java.io.File
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 
-    @Parameters(description = ["HelloWorld, ERC20, ERC777"], defaultValue = "HelloWorld")
+    @Parameters(description = ["HelloWorld, ERC20, ERC777, ERC721"], defaultValue = "HelloWorld")
     var templateType = TemplateType.HelloWorld
 
     override fun generate(projectFolder: File) {
@@ -95,6 +95,24 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                 )
                 CopyUtils.copyFromResources(
                     "contracts/ERC20Token.sol",
+                    projectStructure.solidityPath)
+                buildProject(projectStructure.projectRoot, withSwaggerUi = false)
+            }
+
+            TemplateType.ERC721 -> {
+                val projectStructure = createProjectStructure(
+                    openApiTemplateProvider = OpenApiTemplateProvider(
+                        solidityContract = "",
+                        pathToSolidityFolder = "",
+                        gradleBuild = "project/erc721/build.gradleOpenApiErc721.template",
+                        packageName = projectOptions.packageName,
+                        projectName = projectOptions.projectName,
+                        contextPath = contextPath,
+                        addressLength = (projectOptions.addressLength * 8).toString()
+                    ), outputDir = projectOptions.outputDir
+                )
+                CopyUtils.copyFromResources(
+                    "contracts/ERC721Token.sol",
                     projectStructure.solidityPath)
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }

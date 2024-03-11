@@ -146,4 +146,31 @@ public class NewProjectCommandTest extends ClassExecutor {
 
         assertEquals(0, process.exitValue());
     }
+
+    @Test
+    public void testCorrectArgsJavaErc721ProjectGeneration()
+            throws IOException, InterruptedException {
+        final String[] args = {"new", "ERC721", "-o", tempDirPath};
+        Process process =
+                executeClassAsSubProcessAndReturnProcess(
+                                Web3j.class, Collections.emptyList(), Arrays.asList(args), false)
+                        .start();
+        BufferedWriter writer =
+                new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        writer.write("ERC721Test", 0, "ERC721Test".length());
+        writer.newLine();
+        writer.write("erc721", 0, "erc721".length());
+        writer.newLine();
+        writer.close();
+
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            List<String> stringList = reader.lines().collect(Collectors.toList());
+            stringList.forEach(System.out::println);
+        }
+
+        process.waitFor();
+
+        assertEquals(0, process.exitValue());
+    }
 }

@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.8.10'
     id 'application'
     id "com.github.johnrengelman.shadow" version "5.2.0"
-    id 'org.web3j' version '4.11.0'
+    id 'org.web3j' version '4.11.1'
 }
 
 group '<package_name>'
@@ -29,7 +29,7 @@ node {
 }
 
 ext {
-    web3jVersion = '4.11.0'
+    web3jVersion = '4.11.1'
     logbackVersion = '1.4.14'
     klaxonVersion = '5.5'
     besuPluginVersion = '24.1.1'

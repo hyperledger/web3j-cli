@@ -11,7 +11,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* Updated web3j to latest version 4.11.1 []()
+* Updated web3j to latest version 4.11.1 [#103](https://github.com/web3j/web3j-cli/pull/103)
 * Add files for repository migration [#102](https://github.com/web3j/web3j-cli/pull/102)
 * Add support for ERC-721 project creation [#101](https://github.com/web3j/web3j-cli/pull/101)
 

@@ -17,13 +17,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
 
 import org.web3j.codegen.Console;
 import org.web3j.console.Web3jVersionProvider;
 
 import static org.web3j.console.EnvironmentVariablesProperties.WEB3J_OPENAPI_VAR_PREFIX;
 import static org.web3j.console.EnvironmentVariablesProperties.WEB3J_VAR_PREFIX;
-import static org.web3j.console.utils.PrinterUtilities.coloredPrinter;
 import static org.web3j.console.utils.PrinterUtilities.printErrorAndExit;
 import static picocli.CommandLine.Command;
 import static picocli.CommandLine.Parameters;
@@ -64,6 +65,10 @@ public class RunCommand implements Runnable {
             defaultValue = "")
     String walletPassword;
 
+    static {
+        AnsiConsole.systemInstall();
+    }
+
     private Path workingDirectory = Paths.get(System.getProperty("user.dir"));
 
     @VisibleForTesting
@@ -79,16 +84,20 @@ public class RunCommand implements Runnable {
         try {
             deploy();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
     public void deploy() throws Exception {
-        coloredPrinter.println("Preparing to run your Web3App");
-        System.out.print(System.lineSeparator());
-        coloredPrinter.println("Running your Web3App");
+        printlnWithColor("Preparing to run your Web3App", Ansi.Color.GREEN);
+        printlnWithColor("Running your Web3App", Ansi.Color.GREEN);
         System.out.print(System.lineSeparator());
         runGradle(workingDirectory);
+    }
+
+    private void printlnWithColor(String message, Ansi.Color color) {
+        System.out.println(Ansi.ansi().fg(color).a(message).reset());
     }
 
     private void runGradle(Path runLocation) throws Exception {

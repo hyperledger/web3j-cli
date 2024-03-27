@@ -12,43 +12,41 @@
  */
 package org.web3j.console.utils;
 
-import com.diogonunes.jcdp.color.ColoredPrinter;
-import com.diogonunes.jcdp.color.api.Ansi;
+import org.fusesource.jansi.Ansi;
 
 public class PrinterUtilities {
-    private static final String CARRIAGE_RETURN = "\r";
-    public static ColoredPrinter coloredPrinter =
-            new ColoredPrinter.Builder(0, false)
-                    .foreground(Ansi.FColor.WHITE)
-                    .background(Ansi.BColor.GREEN)
-                    .attribute(Ansi.Attribute.BOLD)
-                    .build();
 
     public static void printErrorAndExit(String errorMessage) {
-        coloredPrinter.println(
-                errorMessage, Ansi.Attribute.BOLD, Ansi.FColor.RED, Ansi.BColor.NONE);
+        System.out.println(Ansi.ansi().fgBrightRed().bold().a(errorMessage).reset());
         System.exit(1);
     }
 
     public static void printInformationPair(
-            String firstText, int leftJustify, String secondText, Ansi.FColor informationColor) {
-        coloredPrinter.print(
-                String.format("%-" + leftJustify + "s", firstText),
-                Ansi.Attribute.CLEAR,
-                Ansi.FColor.WHITE,
-                Ansi.BColor.BLACK);
-        coloredPrinter.println(
-                secondText, Ansi.Attribute.CLEAR, informationColor, Ansi.BColor.BLACK);
+            String firstText, int leftJustify, String secondText, Ansi.Color informationColor) {
+        System.out.print(
+                Ansi.ansi()
+                        .fgBrightDefault()
+                        .a(String.format("%-" + leftJustify + "s", firstText))
+                        .reset());
+        System.out.println(Ansi.ansi().fg(informationColor).a(secondText).reset());
     }
 
     public static void printInformationPairWithStatus(
-            String firstText, int leftJustify, String secondText, Ansi.FColor statusTextColor) {
-        System.out.print(CARRIAGE_RETURN);
-        coloredPrinter.print(
-                String.format("%-" + leftJustify + "s", firstText),
-                Ansi.Attribute.CLEAR,
-                Ansi.FColor.WHITE,
-                Ansi.BColor.BLACK);
-        coloredPrinter.print(secondText, Ansi.Attribute.CLEAR, statusTextColor, Ansi.BColor.BLACK);
+            String firstText, int leftJustify, String secondText, Ansi.Color statusTextColor) {
+        System.out.print(
+                Ansi.ansi()
+                        .eraseLine()
+                        .fgBrightDefault()
+                        .a(String.format("%-" + leftJustify + "s", firstText))
+                        .reset());
+        System.out.println(Ansi.ansi().fg(statusTextColor).a(secondText).reset());
+    }
+
+    public static void main(String[] args) {
+        // Example usage
+        printErrorAndExit("Error message with exit.");
+        printInformationPair("Info:", 10, "This is an information message.", Ansi.Color.CYAN);
+        printInformationPairWithStatus(
+                "Status:", 10, "This is a status message.", Ansi.Color.GREEN);
     }
 }

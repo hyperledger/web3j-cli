@@ -12,13 +12,10 @@
  */
 package org.web3j.console.project.utils.printer;
 
-import com.diogonunes.jcdp.color.ColoredPrinter;
-
 public abstract class Printer {
 
-    public abstract void printInstructionsOnSuccess(
-            ColoredPrinter instructionPrinter, ColoredPrinter commandPrinter);
+    // Remove the parameters since JColor directly uses System.out for printing
+    public abstract void printInstructionsOnSuccess();
 
-    public abstract void printInstructionsOnSuccessOpenApi(
-            ColoredPrinter instructionPrinter, ColoredPrinter commandPrinter);
+    public abstract void printInstructionsOnSuccessOpenApi();
 }

@@ -34,7 +34,7 @@ ext {
     log4jVersion = '2.15.0'
     semverVersion = '0.9.0'
     commonsLangVersion = '3.9'
-    jcdpVersion = '4.0.1'
+    jansiVersion = '2.4.1'
 }
 
 
@@ -103,7 +103,8 @@ dependencies {
             "org.apache.logging.log4j:log4j-core:$log4jVersion",
             "io.github.microutils:kotlin-logging:$kotlinLoggin",
             "com.github.docker-java:docker-java:$dockerJavaVersion",
-            "com.diogonunes:JCDP:$jcdpVersion"
+            "org.fusesource.jansi:jansi:$jansiVersion"
+
 
     runtimeOnly "org.slf4j:slf4j-nop:$slf4jVersion"
 

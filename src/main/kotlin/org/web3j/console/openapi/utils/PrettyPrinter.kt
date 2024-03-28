@@ -12,60 +12,42 @@
  */
 package org.web3j.console.openapi.utils
 
-import com.diogonunes.jcdp.color.ColoredPrinter
-import com.diogonunes.jcdp.color.api.Ansi
 import org.web3j.console.project.utils.InstructionsPrinter
 
+import org.fusesource.jansi.Ansi
+
 object PrettyPrinter {
-    private val cp = ColoredPrinter.Builder(0, false)
-        .foreground(Ansi.FColor.WHITE)
-        .background(Ansi.BColor.GREEN)
-        .attribute(Ansi.Attribute.BOLD)
-        .build()
-    private val cpf = ColoredPrinter.Builder(0, false)
-        .foreground(Ansi.FColor.RED)
-        .background(Ansi.BColor.YELLOW)
-        .attribute(Ansi.Attribute.BOLD)
-        .build()
-    private val instructionPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build()
-    private val commandPrinter = ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build()
 
     fun onOpenApiProjectSuccess() {
         InstructionsPrinter.initContextPrinter(null)
-        InstructionsPrinter.getContextPrinterInstance().contextPrinter.printInstructionsOnSuccessOpenApi(
-            instructionPrinter, commandPrinter
-        )
+        InstructionsPrinter.getContextPrinterInstance().contextPrinter.printInstructionsOnSuccessOpenApi()
     }
 
     fun onJarSuccess() {
-        print(System.lineSeparator())
-        cp.println("JAR generated Successfully")
-        print(System.lineSeparator())
+        println(System.lineSeparator())
+        println(Ansi.ansi().fgGreen().bold().a("JAR generated Successfully").reset())
+        println(System.lineSeparator())
 
-        instructionPrinter.println(
-            "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK
-        )
-        instructionPrinter.print(String.format("%-45s", "java -jar <jar_name> <args>"))
-        commandPrinter.println("Run your Jar")
-        instructionPrinter.print(String.format("%-45s", "java -jar <jar_name> --help"))
-        commandPrinter.println("See the available options")
+        println(Ansi.ansi().fgCyan().a("Commands").reset())
+        println(String.format("%-45s", "java -jar <jar_name> <args>") + Ansi.ansi().fgGreen().a(" Run your Jar").reset())
+        println(String.format("%-45s", "java -jar <jar_name> --help") + Ansi.ansi().fgGreen().a(" See the available options").reset())
     }
 
     fun onSuccess() {
-        print(System.lineSeparator())
-        cp.println("Project generated Successfully")
-        print(System.lineSeparator())
+        println(System.lineSeparator())
+        println(Ansi.ansi().fgGreen().bold().a("Project generated Successfully").reset())
+        println(System.lineSeparator())
     }
 
     fun onFailed() {
-        print(System.lineSeparator())
-        cpf.println("Project generation Failed. Check log file for more information.")
-        print(System.lineSeparator())
+        println(System.lineSeparator())
+        println(Ansi.ansi().fgRed().bold().a("Project generation Failed. Check log file for more information.").reset())
+        println(System.lineSeparator())
     }
 
     fun onWrongPath() {
-        print(System.lineSeparator())
-        cpf.println("No Solidity smart contracts found! Please enter a correct path containing Solidity code.")
-        print(System.lineSeparator())
+        println(System.lineSeparator())
+        println(Ansi.ansi().fgRed().bold().a("No Solidity smart contracts found! Please enter a correct path containing Solidity code.").reset())
+        println(System.lineSeparator())
     }
 }

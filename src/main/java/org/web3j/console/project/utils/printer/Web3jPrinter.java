@@ -12,42 +12,38 @@
  */
 package org.web3j.console.project.utils.printer;
 
-import com.diogonunes.jcdp.color.ColoredPrinter;
-import com.diogonunes.jcdp.color.api.Ansi;
+import org.fusesource.jansi.Ansi;
 
 public class Web3jPrinter extends Printer {
 
     @Override
-    public void printInstructionsOnSuccess(
-            ColoredPrinter instructionPrinter, ColoredPrinter commandPrinter) {
+    public void printInstructionsOnSuccess() {
         String gradleCommand =
                 System.getProperty("os.name").toLowerCase().startsWith("windows")
                         ? "./gradlew.bat"
                         : "./gradlew";
-        instructionPrinter.println(
-                "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
-        instructionPrinter.print(String.format("%-40s", gradleCommand + " test"));
-        commandPrinter.println("Test your application");
-        instructionPrinter.print(String.format("%-40s", "web3j run"));
-        commandPrinter.print("Runs your application\n");
-        instructionPrinter.print(String.format("%-40s", "web3j docker run"));
-        commandPrinter.print("Runs your application in docker");
+
+        System.out.println(Ansi.ansi().fgYellow().bold().a("Commands").reset());
+        System.out.println(
+                String.format("%-40s", gradleCommand + " test") + "Test your application");
+        System.out.println(String.format("%-40s", "web3j run") + "Runs your application");
+        System.out.println(
+                String.format("%-40s", "web3j docker run") + "Runs your application in docker");
     }
 
     @Override
-    public void printInstructionsOnSuccessOpenApi(
-            ColoredPrinter instructionPrinter, ColoredPrinter commandPrinter) {
+    public void printInstructionsOnSuccessOpenApi() {
         String gradleCommand =
                 System.getProperty("os.name").toLowerCase().startsWith("windows")
                         ? "./gradlew.bat"
                         : "./gradlew";
-        System.out.println(System.lineSeparator());
-        commandPrinter.println("Project Created Successfully");
-        System.out.println(System.lineSeparator());
 
-        instructionPrinter.println(
-                "Commands", Ansi.Attribute.LIGHT, Ansi.FColor.YELLOW, Ansi.BColor.BLACK);
-        instructionPrinter.print(String.format("%-40s", gradleCommand + " run"));
-        commandPrinter.println("Run your application manually");
+        System.out.println();
+        System.out.println(Ansi.ansi().fgGreen().a("Project Created Successfully").reset());
+        System.out.println();
+
+        System.out.println(Ansi.ansi().fgYellow().bold().a("Commands").reset());
+        System.out.println(
+                String.format("%-40s", gradleCommand + " run") + "Run your application manually");
     }
 }

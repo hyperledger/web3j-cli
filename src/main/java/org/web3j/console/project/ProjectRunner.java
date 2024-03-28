@@ -14,8 +14,7 @@ package org.web3j.console.project;
 
 import java.io.IOException;
 
-import com.diogonunes.jcdp.color.ColoredPrinter;
-import com.diogonunes.jcdp.color.api.Ansi;
+import org.fusesource.jansi.Ansi;
 
 import org.web3j.console.project.java.JavaProject;
 import org.web3j.console.project.java.JavaProjectRunner;
@@ -41,44 +40,27 @@ public abstract class ProjectRunner implements Runnable {
     }
 
     public static void onSuccess(Project project) {
-        System.out.print(System.lineSeparator());
-        ColoredPrinter cp =
-                new ColoredPrinter.Builder(0, false)
-                        .foreground(Ansi.FColor.WHITE)
-                        .background(Ansi.BColor.GREEN)
-                        .attribute(Ansi.Attribute.BOLD)
-                        .build();
-        ColoredPrinter instructionPrinter =
-                new ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.CYAN).build();
-        ColoredPrinter commandPrinter =
-                new ColoredPrinter.Builder(0, false).foreground(Ansi.FColor.GREEN).build();
-        System.out.print(System.lineSeparator());
-        cp.println("Project Created Successfully");
-        System.out.print(System.lineSeparator());
+        System.out.println(Ansi.ansi().reset().newline());
+
+        System.out.println(
+                Ansi.ansi().fgGreen().bold().a("Project Created Successfully").reset().newline());
 
         if (project.getProjectWallet() != null) {
-            instructionPrinter.println(
-                    "Project information",
-                    Ansi.Attribute.LIGHT,
-                    Ansi.FColor.WHITE,
-                    Ansi.BColor.BLACK);
-            instructionPrinter.print(
-                    String.format("%-20s", "Wallet Address"),
-                    Ansi.Attribute.CLEAR,
-                    Ansi.FColor.WHITE,
-                    Ansi.BColor.BLACK);
-            instructionPrinter.println(
-                    project.getProjectWallet().getWalletAddress(),
-                    Ansi.Attribute.BOLD,
-                    Ansi.FColor.GREEN,
-                    Ansi.BColor.BLACK);
-            System.out.print(System.lineSeparator());
+            System.out.println(Ansi.ansi().fgCyan().a("Project information").reset());
+            System.out.println(
+                    Ansi.ansi()
+                            .a(String.format("%-20s", "Wallet Address") + " ")
+                            .fgGreen()
+                            .bold()
+                            .a(project.getProjectWallet().getWalletAddress())
+                            .reset()
+                            .newline());
         }
 
         InstructionsPrinter.initContextPrinter(null);
         InstructionsPrinter.getContextPrinterInstance()
                 .getContextPrinter()
-                .printInstructionsOnSuccess(instructionPrinter, commandPrinter);
+                .printInstructionsOnSuccess();
     }
 
     @Override

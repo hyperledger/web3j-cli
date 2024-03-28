@@ -1,14 +1,14 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
     id "application"
     id "distribution"
     id "idea"
     id "jacoco"
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "com.diffplug.gradle.spotless" version "3.25.0"
-    id "de.undercouch.download" version "4.0.0"
+    id "de.undercouch.download" version "4.1.2"
     id "de.marcphilipp.nexus-publish" version "0.4.0"
     id 'io.codearte.nexus-staging' version '0.21.1'
     id "com.jfrog.bintray" version "1.8.4"
@@ -19,7 +19,7 @@ mainClassName = 'org.web3j.console.Web3j'
 applicationName = 'web3j'
 
 ext {
-    web3jVersion = '4.11.0'
+    web3jVersion = '4.11.2'
     picocli = '4.6.0'
     slf4jVersion = '1.7.30'
     junitVersion = '5.8.2'

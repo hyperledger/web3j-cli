@@ -79,7 +79,8 @@ public class TruffleGenerateCommand implements Runnable {
                             jsonFileLocation.getAbsolutePath(),
                             destinationDirLocation.getAbsolutePath(),
                             basePackageName,
-                            useJavaNativeTypes)
+                            useJavaNativeTypes,
+                            true)
                     .generate();
         } catch (Exception e) {
             Console.exitError(e);

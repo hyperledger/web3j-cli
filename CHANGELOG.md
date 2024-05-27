@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/web3j/web3j-cli/releases/tag/v1.6.0) (2024-05-27)
+
+### Bug Fixes
+
+* 
+
+### Features
+
+* Updated web3j to latest version 4.12.0 [#111](https://github.com/hyperledger/web3j-cli/pull/111)
+
+### BREAKING CHANGES
+
+* Upgrade gradle to 8.7 [#111](https://github.com/hyperledger/web3j-cli/pull/111)
+
 # [1.5.3](https://github.com/web3j/web3j-cli/releases/tag/v1.5.3) (2024-03-28)
 
 ### Bug Fixes

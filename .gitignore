@@ -48,3 +48,4 @@ docs/build
 .project
 .classpath
 bin
+logs

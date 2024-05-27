@@ -30,8 +30,11 @@ public class ProjectWallet {
     private final String walletAddress;
 
     public ProjectWallet(String walletPassword, String walletPath)
-            throws NoSuchAlgorithmException, NoSuchProviderException,
-                    InvalidAlgorithmParameterException, CipherException, IOException {
+            throws NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    InvalidAlgorithmParameterException,
+                    CipherException,
+                    IOException {
         this.walletPassword = walletPassword;
         this.walletPath = walletPath;
         File walletFile = new File(walletPath);

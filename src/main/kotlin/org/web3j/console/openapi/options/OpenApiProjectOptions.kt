@@ -20,14 +20,14 @@ class OpenApiProjectOptions : BaseProjectOptions() {
 
     @Option(
         names = ["--context-path"],
-        description = ["Set the API context path (Default: project name)."]
+        description = ["Set the API context path (Default: project name)."],
     )
     var contextPath: String? = null
 
     @Option(
         names = ["--address-length"],
         description = ["Specify the address length."],
-        showDefaultValue = CommandLine.Help.Visibility.ALWAYS
+        showDefaultValue = CommandLine.Help.Visibility.ALWAYS,
     )
     var addressLength = 20
 }

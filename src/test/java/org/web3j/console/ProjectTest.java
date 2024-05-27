@@ -32,8 +32,11 @@ public class ProjectTest extends ClassExecutor {
 
     @BeforeEach
     public void createWeb3jProject()
-            throws IOException, NoSuchAlgorithmException, NoSuchProviderException,
-                    InvalidAlgorithmParameterException, CipherException {
+            throws IOException,
+                    NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    InvalidAlgorithmParameterException,
+                    CipherException {
         ConfigManager.setDevelopment();
         final File testWalletDirectory =
                 new File(workingDirectory.getPath() + File.separator + "keystore");

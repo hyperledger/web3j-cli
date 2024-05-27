@@ -12,16 +12,15 @@
  */
 package org.web3j.console.openapi.subcommands
 
+import org.apache.commons.lang3.StringUtils
 import org.web3j.console.openapi.options.OpenApiProjectOptions
 import org.web3j.console.openapi.utils.PrettyPrinter
 import org.web3j.console.openapi.utils.SimpleFileLogger
-
-import org.apache.commons.lang.StringUtils
 import org.web3j.console.project.InteractiveOptions
 import org.web3j.console.project.utils.InputVerifier
-import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.ExitCode
 import picocli.CommandLine.Mixin
+import picocli.CommandLine.Model.CommandSpec
 import picocli.CommandLine.Spec
 import java.io.File
 import java.nio.file.Paths
@@ -51,12 +50,13 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
         }
 
     override fun call(): Int {
-        if (inputIsNotValid(projectOptions.packageName, projectOptions.projectName))
+        if (inputIsNotValid(projectOptions.packageName, projectOptions.projectName)) {
             exitProcess(1)
+        }
 
         val projectFolder = Paths.get(
             projectOptions.outputDir,
-            projectOptions.projectName
+            projectOptions.projectName,
         ).toFile().apply {
             if (exists() || File("${projectOptions.projectName}$JAR_SUFFIX").exists()) {
                 if (projectOptions.overwrite || interactiveOptions.overrideExistingProject()) {
@@ -82,8 +82,10 @@ abstract class AbstractOpenApiCommand : Callable<Int> {
     abstract fun generate(projectFolder: File)
 
     private fun inputIsNotValid(vararg requiredArgs: String): Boolean {
-        return !(inputVerifier.requiredArgsAreNotEmpty(*requiredArgs) &&
-            inputVerifier.classNameIsValid(projectOptions.projectName) &&
-            inputVerifier.packageNameIsValid(projectOptions.packageName))
+        return !(
+            inputVerifier.requiredArgsAreNotEmpty(*requiredArgs) &&
+                inputVerifier.classNameIsValid(projectOptions.projectName) &&
+                inputVerifier.packageNameIsValid(projectOptions.packageName)
+            )
     }
 }

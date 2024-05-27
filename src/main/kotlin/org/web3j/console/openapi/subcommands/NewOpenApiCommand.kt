@@ -12,13 +12,12 @@
  */
 package org.web3j.console.openapi.subcommands
 
+import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import org.web3j.console.openapi.project.OpenApiTemplateProvider
 import org.web3j.console.openapi.project.erc777.CopyUtils
 import org.web3j.console.openapi.utils.PrettyPrinter
-
-import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.project.TemplateType
 import org.web3j.console.project.utils.ProgressCounter
 import picocli.CommandLine.Command
@@ -36,7 +35,7 @@ import java.io.File
     descriptionHeading = "%nDescription:%n%n",
     optionListHeading = "%nOptions:%n",
     footerHeading = "%n",
-    footer = ["Web3j CLI is licensed under the Apache License 2.0"]
+    footer = ["Web3j CLI is licensed under the Apache License 2.0"],
 )
 class NewOpenApiCommand : AbstractOpenApiCommand() {
 
@@ -57,8 +56,9 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         packageName = projectOptions.packageName,
                         projectName = projectOptions.projectName,
                         contextPath = contextPath,
-                        addressLength = (projectOptions.addressLength * 8).toString()
-                    ), outputDir = projectOptions.outputDir
+                        addressLength = (projectOptions.addressLength * 8).toString(),
+                    ),
+                    outputDir = projectOptions.outputDir,
                 )
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
@@ -72,12 +72,14 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         packageName = projectOptions.packageName,
                         projectName = projectOptions.projectName,
                         contextPath = contextPath,
-                        addressLength = (projectOptions.addressLength * 8).toString()
-                    ), outputDir = projectOptions.outputDir
+                        addressLength = (projectOptions.addressLength * 8).toString(),
+                    ),
+                    outputDir = projectOptions.outputDir,
                 )
                 CopyUtils.copyFromResources(
                     "contracts/ERC777Token.sol",
-                    projectStructure.solidityPath)
+                    projectStructure.solidityPath,
+                )
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
 
@@ -90,12 +92,14 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         packageName = projectOptions.packageName,
                         projectName = projectOptions.projectName,
                         contextPath = contextPath,
-                        addressLength = (projectOptions.addressLength * 8).toString()
-                    ), outputDir = projectOptions.outputDir
+                        addressLength = (projectOptions.addressLength * 8).toString(),
+                    ),
+                    outputDir = projectOptions.outputDir,
                 )
                 CopyUtils.copyFromResources(
                     "contracts/ERC20Token.sol",
-                    projectStructure.solidityPath)
+                    projectStructure.solidityPath,
+                )
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
 
@@ -108,12 +112,14 @@ class NewOpenApiCommand : AbstractOpenApiCommand() {
                         packageName = projectOptions.packageName,
                         projectName = projectOptions.projectName,
                         contextPath = contextPath,
-                        addressLength = (projectOptions.addressLength * 8).toString()
-                    ), outputDir = projectOptions.outputDir
+                        addressLength = (projectOptions.addressLength * 8).toString(),
+                    ),
+                    outputDir = projectOptions.outputDir,
                 )
                 CopyUtils.copyFromResources(
                     "contracts/ERC721Token.sol",
-                    projectStructure.solidityPath)
+                    projectStructure.solidityPath,
+                )
                 buildProject(projectStructure.projectRoot, withSwaggerUi = false)
             }
         }

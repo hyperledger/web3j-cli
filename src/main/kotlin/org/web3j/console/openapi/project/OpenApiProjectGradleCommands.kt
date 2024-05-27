@@ -24,11 +24,15 @@ internal object OpenApiProjectGradleCommands {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew generateWeb3jOpenApi"))
+                File(pathToDirectory!!),
+                arrayOf("bash", "-c", "./gradlew generateWeb3jOpenApi"),
+            )
         } else {
             setExecutable(pathToDirectory, "gradlew.bat")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jOpenApi"))
+                File(pathToDirectory!!),
+                arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jOpenApi"),
+            )
         }
     }
 
@@ -37,11 +41,15 @@ internal object OpenApiProjectGradleCommands {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew generateWeb3jSwaggerUI"))
+                File(pathToDirectory!!),
+                arrayOf("bash", "-c", "./gradlew generateWeb3jSwaggerUI"),
+            )
         } else {
             setExecutable(pathToDirectory, "gradlew.bat")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jSwaggerUI"))
+                File(pathToDirectory!!),
+                arrayOf("cmd", "/c", ".\\gradlew.bat generateWeb3jSwaggerUI"),
+            )
         }
     }
 
@@ -50,11 +58,15 @@ internal object OpenApiProjectGradleCommands {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew clean"))
+                File(pathToDirectory!!),
+                arrayOf("bash", "-c", "./gradlew clean"),
+            )
         } else {
             setExecutable(pathToDirectory, "gradlew.bat")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat clean"))
+                File(pathToDirectory!!),
+                arrayOf("cmd", "/c", ".\\gradlew.bat clean"),
+            )
         }
     }
 
@@ -63,11 +75,15 @@ internal object OpenApiProjectGradleCommands {
         if (!isWindows()) {
             setExecutable(pathToDirectory, "gradlew")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("bash", "-c", "./gradlew shadowJar"))
+                File(pathToDirectory!!),
+                arrayOf("bash", "-c", "./gradlew shadowJar"),
+            )
         } else {
             setExecutable(pathToDirectory, "gradlew.bat")
             executeBuild(
-                File(pathToDirectory!!), arrayOf("cmd", "/c", ".\\gradlew.bat shadowJar"))
+                File(pathToDirectory!!),
+                arrayOf("cmd", "/c", ".\\gradlew.bat shadowJar"),
+            )
         }
     }
 }

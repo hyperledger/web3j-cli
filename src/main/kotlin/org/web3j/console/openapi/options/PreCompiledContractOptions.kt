@@ -19,14 +19,14 @@ class PreCompiledContractOptions {
     @Option(
         names = ["-a", "--abi"],
         description = ["Input ABI files and folders."],
-        arity = "1..*"
+        arity = "1..*",
     )
     var abis: MutableList<File> = mutableListOf()
 
     @Option(
         names = ["-b", "--bin"],
         description = ["Input BIN files and folders."],
-        arity = "1..*"
+        arity = "1..*",
     )
     var bins: MutableList<File> = mutableListOf()
 }

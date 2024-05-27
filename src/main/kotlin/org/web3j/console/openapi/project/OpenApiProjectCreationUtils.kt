@@ -32,7 +32,7 @@ internal object OpenApiProjectCreationUtils {
         return OpenApiProjectStructure(
             outputDir,
             openApiTemplateProvider.packageName,
-            openApiTemplateProvider.projectName
+            openApiTemplateProvider.projectName,
         ).apply {
             ProjectCreationUtils.generateTopLevelDirectories(this)
             openApiTemplateProvider.generateFiles(this)

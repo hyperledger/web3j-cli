@@ -1,9 +1,9 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.24'
     id 'application'
-    id "com.github.johnrengelman.shadow" version "5.2.0"
-    id 'org.web3j' version '4.11.2'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id 'org.web3j' version '4.12.0'
 }
 
 group '<package_name>'
@@ -15,7 +15,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url "https://hyperledger.jfrog.io/hyperledger/besu-maven" }
-    maven { url "https://artifacts.consensys.net/public/maven/maven/" }
     maven { url "https://splunk.jfrog.io/splunk/ext-releases-local" }
     maven { url "https://dl.cloudsmith.io/public/consensys/quorum-mainnet-launcher/maven/"}
 }
@@ -30,9 +29,9 @@ node {
 }
 
 ext {
-    web3jVersion = '4.11.2'
-    logbackVersion = '1.4.14'
-    klaxonVersion = '5.5'
+    web3jVersion = '4.12.0'
+    logbackVersion = '1.5.6'
+    klaxonVersion = '5.6'
 }
 
 dependencies {

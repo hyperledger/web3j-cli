@@ -30,8 +30,6 @@ ext {
     kotlinLoggin = '3.0.5'
     dockerJavaVersion = '3.3.6'
     web3jEpirusVersion = '0.0.7'
-    jaxbVersion = '4.0.2'
-    activationVersion = '2.1.3'
     log4jVersion = '2.23.1'
     semverVersion = '0.10.2'
     commonsLangVersion = '3.14.0'
@@ -94,10 +92,6 @@ dependencies {
             "io.epirus:epirus-web3j:$web3jEpirusVersion",
             "info.picocli:picocli:$picocli",
             files('libs/smartcheck.jar'),
-            "jakarta.xml.bind:jakarta.xml.bind-api:$jaxbVersion",
-            "com.sun.xml.bind:jaxb-core:$jaxbVersion",
-            "com.sun.xml.bind:jaxb-impl:$jaxbVersion",
-            "jakarta.activation:jakarta.activation-api:$activationVersion",
             "com.google.code.gson:gson:$gsonVersion",
             "org.apache.commons:commons-lang3:$commonsLangVersion",
             "com.github.zafarkhaja:java-semver:$semverVersion",

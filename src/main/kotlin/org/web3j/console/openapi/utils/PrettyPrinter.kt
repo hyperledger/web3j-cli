@@ -12,9 +12,8 @@
  */
 package org.web3j.console.openapi.utils
 
-import org.web3j.console.project.utils.InstructionsPrinter
-
 import org.fusesource.jansi.Ansi
+import org.web3j.console.project.utils.InstructionsPrinter
 
 object PrettyPrinter {
 

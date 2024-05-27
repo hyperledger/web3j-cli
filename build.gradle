@@ -6,7 +6,7 @@ plugins {
     id "distribution"
     id "idea"
     id "jacoco"
-    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
     id "com.diffplug.spotless" version "6.25.0"
     id "de.undercouch.download" version "4.1.2"
     id "de.marcphilipp.nexus-publish" version "0.4.0"
@@ -24,6 +24,7 @@ ext {
     slf4jVersion = '2.0.13'
     junitVersion = '5.9.3'
     mockitoVersion = '5.12.0'
+    mockitoInline = '5.2.0'
     gsonVersion = '2.11.0'
     wireMockVersion = '3.6.0'
     kotlinLoggin = '3.0.5'
@@ -75,11 +76,11 @@ test {
 }
 
 distZip {
-    archiveName "web3j-${project.version}.zip"
+    archiveFileName.set("web3j-${project.version}.zip")
 }
 
 distTar {
-    archiveName "web3j-${project.version}.tar"
+    archiveFileName.set("web3j-${project.version}.tar")
 }
 
 dependencies {
@@ -110,7 +111,7 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion",
             "org.mockito:mockito-core:$mockitoVersion",
-            "org.mockito:mockito-inline:$mockitoVersion",
+            "org.mockito:mockito-inline:$mockitoInline",
             "org.wiremock:wiremock:$wireMockVersion"
 }
 
@@ -136,9 +137,9 @@ def getTimestamp() {
 classes { dependsOn createProperties }
 
 task shadowBugWorkaround(type: Jar) {
-    archiveBaseName = 'nested-gradle-jar'
+    archiveBaseName.set('nested-gradle-jar')
     from files(file("${rootDir}/gradle/wrapper/gradle-wrapper.jar"))
-    destinationDir file('build/shadow-bug-workaround')
+    destinationDirectory.set(file('build/shadow-bug-workaround'))
 }
 
 shadowJar {

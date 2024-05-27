@@ -12,14 +12,13 @@
  */
 package org.web3j.console.openapi.subcommands
 
+import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import org.web3j.console.openapi.project.OpenApiTemplateProvider
 import org.web3j.console.openapi.utils.PrettyPrinter
-import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.project.utils.ProgressCounter
 import org.web3j.console.project.utils.ProjectUtils.exitIfNoContractFound
-
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.File
@@ -35,13 +34,13 @@ import java.io.File
     descriptionHeading = "%nDescription:%n%n",
     optionListHeading = "%nOptions:%n",
     footerHeading = "%n",
-    footer = ["Web3j CLI is licensed under the Apache License 2.0"]
+    footer = ["Web3j CLI is licensed under the Apache License 2.0"],
 )
 class ImportOpenApiCommand : AbstractOpenApiCommand() {
 
     @Option(
         names = ["-s", "--solidity-path"],
-        description = ["Path to Solidity file/folder"]
+        description = ["Path to Solidity file/folder"],
     )
     var solidityImportPath: String? = null
 
@@ -62,8 +61,10 @@ class ImportOpenApiCommand : AbstractOpenApiCommand() {
                 packageName = projectOptions.packageName,
                 projectName = projectOptions.projectName,
                 contextPath = contextPath,
-                addressLength = (projectOptions.addressLength * 8).toString()
-            ), outputDir = projectOptions.outputDir)
+                addressLength = (projectOptions.addressLength * 8).toString(),
+            ),
+            outputDir = projectOptions.outputDir,
+        )
 
         buildProject(projectStructure.projectRoot, withSwaggerUi = false)
 

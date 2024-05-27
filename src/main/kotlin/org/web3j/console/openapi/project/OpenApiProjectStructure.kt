@@ -17,10 +17,10 @@ import org.web3j.console.project.ProjectStructure
 class OpenApiProjectStructure(
     rootDir: String,
     packageName: String,
-    projectName: String
+    projectName: String,
 ) : ProjectStructure(
     rootDir,
     packageName,
     projectName,
-    "kotlin"
+    "kotlin",
 )

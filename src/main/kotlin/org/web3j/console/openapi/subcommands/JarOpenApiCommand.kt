@@ -12,15 +12,14 @@
  */
 package org.web3j.console.openapi.subcommands
 
+import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import org.web3j.console.openapi.project.OpenApiTemplateProvider
 import org.web3j.console.openapi.utils.PrettyPrinter
-import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.project.utils.ProgressCounter
 import org.web3j.console.project.utils.ProjectUtils.exitIfNoContractFound
 import org.web3j.console.project.utils.ProjectUtils.findSolidityContracts
-
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.io.File
@@ -40,13 +39,13 @@ import java.nio.file.StandardCopyOption
     descriptionHeading = "%nDescription:%n%n",
     optionListHeading = "%nOptions:%n",
     footerHeading = "%n",
-    footer = ["Web3j CLI is licensed under the Apache License 2.0"]
+    footer = ["Web3j CLI is licensed under the Apache License 2.0"],
 )
 class JarOpenApiCommand : AbstractOpenApiCommand() {
 
     @Option(
         names = ["-s", "--solidity-path"],
-        description = ["Path to Solidity file/folder"]
+        description = ["Path to Solidity file/folder"],
     )
     var solidityImportPath: String? = null
 
@@ -77,19 +76,22 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
                     packageName = projectOptions.packageName,
                     projectName = projectOptions.projectName,
                     contextPath = contextPath,
-                    addressLength = (projectOptions.addressLength * 8).toString()
-                ), outputDir = projectDirectoryPath.toString())
+                    addressLength = (projectOptions.addressLength * 8).toString(),
+                ),
+                outputDir = projectDirectoryPath.toString(),
+            )
         }
         buildProject(
             Paths.get(projectDirectoryPath.toString(), projectOptions.projectName).toString(),
             withOpenApi = false,
             withSwaggerUi = false,
-            withShadowJar = true)
+            withShadowJar = true,
+        )
 
         Files.copy(
             getJarFile(projectDirectoryPath),
             File(projectOptions.outputDir, "${projectOptions.projectName}$JAR_SUFFIX").toPath(),
-            StandardCopyOption.REPLACE_EXISTING
+            StandardCopyOption.REPLACE_EXISTING,
         )
 
         progressCounter.setLoading(false)
@@ -103,11 +105,12 @@ class JarOpenApiCommand : AbstractOpenApiCommand() {
      * @return Path to the Jar
      */
     private fun getJarFile(outputProjectFolder: Path): Path {
-        return File(outputProjectFolder
+        return File(
+            outputProjectFolder
                 .resolve(projectOptions.projectName)
                 .resolve("build")
                 .resolve("libs")
-                .toString()
+                .toString(),
         ).listFiles()!!.first { it.name.endsWith("-all.jar") }.toPath()
     }
 

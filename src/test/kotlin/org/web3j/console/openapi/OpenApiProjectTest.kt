@@ -12,19 +12,19 @@
  */
 package org.web3j.console.openapi
 
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import org.web3j.console.openapi.subcommands.GenerateOpenApiCommand
 import org.web3j.console.openapi.subcommands.ImportOpenApiCommand
 import org.web3j.console.openapi.subcommands.JarOpenApiCommand
 import org.web3j.console.openapi.subcommands.NewOpenApiCommand
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
 import org.web3j.console.project.utils.Folders
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintWriter
 import java.nio.file.Paths
-import org.junit.jupiter.api.Disabled
 
 @Disabled
 class OpenApiProjectTest {

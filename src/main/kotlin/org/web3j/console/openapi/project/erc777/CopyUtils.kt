@@ -30,7 +30,7 @@ internal object CopyUtils {
         ProjectWriter.writeResourceFile(
             TemplateReader.readFile(inputPath),
             File(inputPath).name,
-            outputPath
+            outputPath,
         )
     }
 }

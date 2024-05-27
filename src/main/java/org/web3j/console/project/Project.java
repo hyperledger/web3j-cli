@@ -22,8 +22,12 @@ import org.web3j.crypto.exception.CipherException;
 
 public interface Project {
     void createProject()
-            throws IOException, InterruptedException, NoSuchAlgorithmException,
-                    NoSuchProviderException, InvalidAlgorithmParameterException, CipherException;
+            throws IOException,
+                    InterruptedException,
+                    NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    InvalidAlgorithmParameterException,
+                    CipherException;
 
     ProjectWallet getProjectWallet();
 }

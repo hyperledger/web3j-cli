@@ -32,7 +32,7 @@ class OpenApiTemplateProvider @JvmOverloads constructor(
     private val gradlewWrapperSettings: String = "project/gradlew-wrapper.properties.template",
     private val gradlewBatScript: String = "project/gradlew.bat.template",
     private val gradlewScript: String = "project/gradlew.template",
-    private val gradlewJar: String = "gradle-wrapper.jar"
+    private val gradlewJar: String = "gradle-wrapper.jar",
 ) : TemplateProvider {
     private fun loadGradleBuild(): String {
         return TemplateReader.readFile(gradleBuild)
@@ -66,32 +66,55 @@ class OpenApiTemplateProvider @JvmOverloads constructor(
 
     override fun generateFiles(projectStructure: ProjectStructure) {
         ProjectWriter.writeResourceFile(
-            loadGradleBuild(), "build.gradle", projectStructure.projectRoot)
+            loadGradleBuild(),
+            "build.gradle",
+            projectStructure.projectRoot,
+        )
         ProjectWriter.writeResourceFile(
-            loadGradleSettings(), "settings.gradle", projectStructure.projectRoot)
-        if (solidityContract.isNotEmpty()) ProjectWriter.writeResourceFile(
-            loadSolidityContract(), "HelloWorld.sol", projectStructure.solidityPath)
+            loadGradleSettings(),
+            "settings.gradle",
+            projectStructure.projectRoot,
+        )
+        if (solidityContract.isNotEmpty()) {
+            ProjectWriter.writeResourceFile(
+                loadSolidityContract(),
+                "HelloWorld.sol",
+                projectStructure.solidityPath,
+            )
+        }
         if (pathToSolidityFolder.isNotEmpty()) {
             ProjectWriter.importSolidityProject(
-                File(pathToSolidityFolder), projectStructure.solidityPath)
+                File(pathToSolidityFolder),
+                projectStructure.solidityPath,
+            )
         }
         ProjectWriter.writeResourceFile(
             TemplateReader.readFile("project/Dockerfile.template"),
             "Dockerfile",
-            projectStructure.projectRoot)
+            projectStructure.projectRoot,
+        )
         ProjectWriter.writeResourceFile(
             loadGradlewWrapperSettings(),
             "gradle-wrapper.properties",
-            projectStructure.wrapperPath)
+            projectStructure.wrapperPath,
+        )
         ProjectWriter.writeResourceFile(
-            loadGradlewScript(), "gradlew", projectStructure.projectRoot)
+            loadGradlewScript(),
+            "gradlew",
+            projectStructure.projectRoot,
+        )
         ProjectWriter.writeResourceFile(
-            loadGradlewBatScript(), "gradlew.bat", projectStructure.projectRoot)
+            loadGradlewBatScript(),
+            "gradlew.bat",
+            projectStructure.projectRoot,
+        )
         ProjectWriter.copyResourceFile(
             gradlewJar,
-            projectStructure.wrapperPath + "gradle-wrapper.jar")
+            projectStructure.wrapperPath + "gradle-wrapper.jar",
+        )
         ProjectWriter.copyResourceFile(
             readme,
-            projectStructure.projectRoot + File.separator + "README.md")
+            projectStructure.projectRoot + File.separator + "README.md",
+        )
     }
 }

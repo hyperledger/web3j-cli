@@ -12,12 +12,12 @@
  */
 package org.web3j.console.openapi
 
+import org.web3j.console.SubCommand
+import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.openapi.subcommands.GenerateOpenApiCommand
 import org.web3j.console.openapi.subcommands.ImportOpenApiCommand
 import org.web3j.console.openapi.subcommands.JarOpenApiCommand
 import org.web3j.console.openapi.subcommands.NewOpenApiCommand
-import org.web3j.console.SubCommand
-import org.web3j.console.Web3jVersionProvider
 import picocli.CommandLine
 import picocli.CommandLine.Command
 
@@ -29,7 +29,8 @@ import picocli.CommandLine.Command
         CommandLine.HelpCommand::class,
         ImportOpenApiCommand::class,
         JarOpenApiCommand::class,
-        NewOpenApiCommand::class],
+        NewOpenApiCommand::class,
+    ],
     showDefaultValues = true,
     abbreviateSynopsis = true,
     mixinStandardHelpOptions = true,
@@ -38,6 +39,6 @@ import picocli.CommandLine.Command
     descriptionHeading = "%nDescription:%n%n",
     optionListHeading = "%nOptions:%n",
     footerHeading = "%n",
-    footer = ["Web3j CLI is licensed under the Apache License 2.0"]
+    footer = ["Web3j CLI is licensed under the Apache License 2.0"],
 )
 class OpenApiCommand : SubCommand()

@@ -12,47 +12,47 @@
  */
 package org.web3j.console.openapi.subcommands
 
+import org.apache.commons.io.FileUtils
+import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.buildProject
 import org.web3j.console.openapi.project.OpenApiProjectCreationUtils.createProjectStructure
 import org.web3j.console.openapi.project.OpenApiTemplateProvider
 import org.web3j.console.openapi.utils.PrettyPrinter
-
-import org.apache.commons.io.FileUtils
-import org.web3j.console.Web3jVersionProvider
 import org.web3j.console.project.utils.ProgressCounter
 import org.web3j.console.project.utils.ProjectUtils.deleteFolder
 import org.web3j.console.project.utils.ProjectUtils.exitIfNoContractFound
-import picocli.CommandLine.Option
 import picocli.CommandLine.Command
 import picocli.CommandLine.Help.Visibility.ALWAYS
+import picocli.CommandLine.Option
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
 @Command(
-        name = "generate",
-        description = ["Generate REST endpoints from existing Solidity contracts."],
-        showDefaultValues = true,
-        abbreviateSynopsis = true,
-        mixinStandardHelpOptions = true,
-        versionProvider = Web3jVersionProvider::class,
-        synopsisHeading = "%n",
-        descriptionHeading = "%nDescription:%n%n",
-        optionListHeading = "%nOptions:%n",
-        footerHeading = "%n",
-        footer = ["Web3j CLI is licensed under the Apache License 2.0"])
+    name = "generate",
+    description = ["Generate REST endpoints from existing Solidity contracts."],
+    showDefaultValues = true,
+    abbreviateSynopsis = true,
+    mixinStandardHelpOptions = true,
+    versionProvider = Web3jVersionProvider::class,
+    synopsisHeading = "%n",
+    descriptionHeading = "%nDescription:%n%n",
+    optionListHeading = "%nOptions:%n",
+    footerHeading = "%n",
+    footer = ["Web3j CLI is licensed under the Apache License 2.0"],
+)
 class GenerateOpenApiCommand : AbstractOpenApiCommand() {
 
     @Option(
         names = ["-s", "--solidity-path"],
-        description = ["Path to Solidity file/folder"]
+        description = ["Path to Solidity file/folder"],
     )
     var solidityImportPath: String? = null
 
     @Option(
         names = ["--with-implementations"],
         description = ["Generate the interfaces implementations."],
-        showDefaultValue = ALWAYS
+        showDefaultValue = ALWAYS,
     )
     var withImplementations: Boolean = false
 
@@ -77,17 +77,22 @@ class GenerateOpenApiCommand : AbstractOpenApiCommand() {
                 projectName = projectOptions.projectName,
                 contextPath = contextPath,
                 addressLength = (projectOptions.addressLength * 8).toString(),
-                generateServer = withImplementations.toString()
-            ), outputDir = tempFolder.toAbsolutePath().toString())
+                generateServer = withImplementations.toString(),
+            ),
+            outputDir = tempFolder.toAbsolutePath().toString(),
+        )
 
         buildProject(
             projectStructure.projectRoot,
             withOpenApi = true,
             withSwaggerUi = false,
-            withShadowJar = false)
+            withShadowJar = false,
+        )
 
-        FileUtils.copyDirectory(Paths.get(tempFolder.toString(), projectOptions.projectName, "build", "generated", "sources", "web3j", "main").toFile(),
-            Paths.get(projectOptions.outputDir, projectOptions.projectName).toFile())
+        FileUtils.copyDirectory(
+            Paths.get(tempFolder.toString(), projectOptions.projectName, "build", "generated", "sources", "web3j", "main").toFile(),
+            Paths.get(projectOptions.outputDir, projectOptions.projectName).toFile(),
+        )
 
         deleteFolder(tempFolder)
         progressCounter.setLoading(false)
